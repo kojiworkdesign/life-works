@@ -6,106 +6,145 @@
 
 body {
   font-family: 'Hiragino Sans', 'Hiragino Kaku Gothic ProN', 'Noto Sans JP', sans-serif;
-  background: #0d0d14;
+  background: #171923;
   min-height: 100vh;
   color: #fff;
-  padding: 20px;
+  padding: 24px 20px;
 }
 
 .container {
   max-width: 680px;
   margin: 0 auto;
-  padding-bottom: 60px;
+  padding-bottom: 80px;
 }
 
 header {
   text-align: center;
-  padding: 60px 0 50px;
+  padding: 70px 0 60px;
 }
 
 .logo {
-  font-size: 2.4rem;
+  font-size: 2.8rem;
   font-weight: 900;
-  letter-spacing: 0.15em;
+  letter-spacing: 0.1em;
   color: #fff;
 }
 
+.logo span {
+  color: #7c6af7;
+}
+
 .tagline {
-  font-size: 0.9rem;
-  color: #666;
-  margin-top: 12px;
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: #e2e8f0;
+  margin-top: 18px;
+}
+
+.sub-tagline {
+  font-size: 0.875rem;
+  color: #64748b;
+  margin-top: 8px;
+  line-height: 1.7;
 }
 
 .category {
-  margin-bottom: 48px;
+  margin-bottom: 44px;
 }
 
-.category-title {
-  font-size: 1rem;
+.category-label {
+  font-size: 0.8rem;
   font-weight: 700;
-  color: #888;
-  margin-bottom: 16px;
-  padding-bottom: 8px;
-  border-bottom: 1px solid #222;
+  color: #64748b;
+  letter-spacing: 0.06em;
+  margin-bottom: 14px;
 }
 
 .app-grid {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 10px;
 }
 
 .app-card {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 14px;
-  padding: 20px;
+  display: block;
+  background: #1e2130;
+  border: 1px solid #2a2d3e;
+  border-radius: 16px;
+  overflow: hidden;
   text-decoration: none;
   color: #fff;
   transition: all 0.2s;
 }
 
 .app-card:hover {
-  background: rgba(255, 255, 255, 0.08);
-  border-color: rgba(255, 255, 255, 0.15);
   transform: translateY(-2px);
+  border-color: var(--accent);
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.35);
 }
 
-.app-card.coming-soon {
-  opacity: 0.4;
-  cursor: default;
-  pointer-events: none;
+.card-accent {
+  height: 3px;
+  background: var(--accent, #444);
+}
+
+.card-body {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 20px;
 }
 
 .app-icon {
   font-size: 2rem;
   flex-shrink: 0;
-  width: 52px;
+  width: 48px;
   text-align: center;
+}
+
+.app-text {
+  flex: 1;
 }
 
 .app-name {
   font-weight: 700;
   font-size: 1rem;
-  margin-bottom: 4px;
+  color: #f1f5f9;
+  margin-bottom: 5px;
 }
 
 .app-desc {
-  font-size: 0.85rem;
-  color: #888;
-  line-height: 1.5;
+  font-size: 0.82rem;
+  color: #64748b;
+  line-height: 1.6;
+}
+
+.arrow {
+  color: #475569;
+  font-size: 1.1rem;
+  flex-shrink: 0;
+  transition: all 0.2s;
+}
+
+.app-card:hover .arrow {
+  transform: translateX(4px);
+  color: var(--accent);
+}
+
+.coming-soon {
+  opacity: 0.35;
+  pointer-events: none;
 }
 
 footer {
   text-align: center;
-  padding-top: 40px;
-  font-size: 0.8rem;
-  color: #444;
+  padding-top: 60px;
+  font-size: 0.75rem;
+  color: #2d3748;
 }
 
 @media (max-width: 480px) {
-  .logo { font-size: 1.8rem; }
+  .logo { font-size: 2rem; }
+  .tagline { font-size: 1rem; }
+  header { padding: 50px 0 44px; }
 }
