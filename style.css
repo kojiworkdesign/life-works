@@ -6,145 +6,174 @@
 
 body {
   font-family: 'Hiragino Sans', 'Hiragino Kaku Gothic ProN', 'Noto Sans JP', sans-serif;
-  background: #171923;
-  min-height: 100vh;
-  color: #fff;
-  padding: 24px 20px;
+  background: #f5f5f3;
+  color: #111;
 }
 
-.container {
-  max-width: 680px;
+/* ヘッダー */
+.header {
+  background: #fff;
+  border-bottom: 1px solid #e8e8e8;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.header-inner {
+  max-width: 1000px;
   margin: 0 auto;
-  padding-bottom: 80px;
-}
-
-header {
-  text-align: center;
-  padding: 70px 0 60px;
+  padding: 0 24px;
+  height: 60px;
+  display: flex;
+  align-items: center;
 }
 
 .logo {
-  font-size: 2.8rem;
+  font-size: 1.3rem;
   font-weight: 900;
-  letter-spacing: 0.1em;
-  color: #fff;
+  letter-spacing: 0.08em;
+  text-decoration: none;
+  color: #111;
 }
 
 .logo span {
-  color: #7c6af7;
+  color: #f97316;
 }
 
-.tagline {
-  font-size: 1.15rem;
-  font-weight: 700;
-  color: #e2e8f0;
-  margin-top: 18px;
+/* ヒーロー */
+.hero {
+  background: #fff;
+  text-align: center;
+  padding: 72px 24px 64px;
+  border-bottom: 1px solid #e8e8e8;
 }
 
-.sub-tagline {
-  font-size: 0.875rem;
-  color: #64748b;
-  margin-top: 8px;
+.hero-title {
+  font-size: 2.6rem;
+  font-weight: 900;
+  line-height: 1.35;
+  color: #111;
+  letter-spacing: -0.01em;
+}
+
+.hero-sub {
+  font-size: 0.95rem;
+  color: #888;
+  margin-top: 16px;
   line-height: 1.7;
 }
 
+/* メインコンテンツ */
+.container {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 56px 24px 80px;
+}
+
 .category {
-  margin-bottom: 44px;
+  margin-bottom: 60px;
 }
 
 .category-label {
-  font-size: 0.8rem;
+  font-size: 0.75rem;
   font-weight: 700;
-  color: #64748b;
-  letter-spacing: 0.06em;
-  margin-bottom: 14px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #aaa;
+  margin-bottom: 20px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #e8e8e8;
 }
 
+/* アプリグリッド（横並び） */
 .app-grid {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 20px;
 }
 
+/* アプリカード */
 .app-card {
-  display: block;
-  background: #1e2130;
-  border: 1px solid #2a2d3e;
-  border-radius: 16px;
+  background: #fff;
+  border-radius: 14px;
   overflow: hidden;
   text-decoration: none;
-  color: #fff;
+  color: #111;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+  border: 1px solid #e8e8e8;
   transition: all 0.2s;
+  display: flex;
+  flex-direction: column;
 }
 
 .app-card:hover {
-  transform: translateY(-2px);
-  border-color: var(--accent);
-  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.35);
+  transform: translateY(-3px);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+  border-color: #ddd;
 }
 
-.card-accent {
-  height: 3px;
-  background: var(--accent, #444);
-}
-
-.card-body {
+/* 画像エリア */
+.card-image {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  background: linear-gradient(135deg,
+    color-mix(in srgb, var(--card-color) 15%, #f0f0f0),
+    color-mix(in srgb, var(--card-color) 8%, #f5f5f5)
+  );
+  border-bottom: 3px solid var(--card-color);
   display: flex;
   align-items: center;
-  gap: 16px;
+  justify-content: center;
+}
+
+/* カード本文 */
+.card-body {
   padding: 20px;
-}
-
-.app-icon {
-  font-size: 2rem;
-  flex-shrink: 0;
-  width: 48px;
-  text-align: center;
-}
-
-.app-text {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
   flex: 1;
 }
 
 .app-name {
   font-weight: 700;
   font-size: 1rem;
-  color: #f1f5f9;
-  margin-bottom: 5px;
+  color: #111;
 }
 
 .app-desc {
   font-size: 0.82rem;
-  color: #64748b;
+  color: #888;
   line-height: 1.6;
+  flex: 1;
 }
 
-.arrow {
-  color: #475569;
-  font-size: 1.1rem;
-  flex-shrink: 0;
-  transition: all 0.2s;
+.card-cta {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #f97316;
+  margin-top: 4px;
 }
 
-.app-card:hover .arrow {
-  transform: translateX(4px);
-  color: var(--accent);
-}
-
+/* Coming soon */
 .coming-soon {
-  opacity: 0.35;
+  opacity: 0.4;
   pointer-events: none;
 }
 
-footer {
+/* フッター */
+.footer {
   text-align: center;
-  padding-top: 60px;
+  padding: 32px 24px;
   font-size: 0.75rem;
-  color: #2d3748;
+  color: #bbb;
+  border-top: 1px solid #e8e8e8;
+  background: #fff;
 }
 
-@media (max-width: 480px) {
-  .logo { font-size: 2rem; }
-  .tagline { font-size: 1rem; }
-  header { padding: 50px 0 44px; }
+/* レスポンシブ */
+@media (max-width: 600px) {
+  .hero-title { font-size: 1.9rem; }
+  .app-grid { grid-template-columns: 1fr; }
+  .container { padding: 40px 16px 60px; }
 }
