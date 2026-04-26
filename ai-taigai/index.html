@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AIに奪われるまであと何日？</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="icon">🤖</div>
+      <h1>AIに奪われるまで<br>あと何日？</h1>
+      <p class="subtitle">あなたの仕事、いつまで持ちますか？</p>
+    </header>
+
+    <form id="form" class="form">
+      <div class="field">
+        <label class="field-label">あなたの職種</label>
+        <input type="text" id="job" placeholder="例：営業、経理、エンジニア、デザイナー" maxlength="50" required>
+      </div>
+      <div class="field">
+        <label class="field-label">主な業務内容</label>
+        <textarea id="tasks" placeholder="例：売上データの集計、取引先へのメール対応、会議の議事録作成..." rows="4" maxlength="300" required></textarea>
+      </div>
+      <button type="submit" class="submit-btn">⏳ 残り日数を診断する</button>
+    </form>
+
+    <div id="result" class="result hidden">
+      <div id="loading" class="loading">
+        <div class="spinner"></div>
+        <p>AIが計算中...<br>あなたの仕事の寿命を測定しています</p>
+      </div>
+      <div id="resultContent" class="result-content hidden">
+        <div class="countdown-box" id="countdownBox">
+          <p class="countdown-label" id="countdownLabel">⚠️ あなたの仕事が消えるまで</p>
+          <div class="days-number" id="daysNumber"></div>
+          <p class="days-unit">日</p>
+          <p class="extinction-date" id="extinctionDate"></p>
+        </div>
+        <div class="comment-box" id="commentBox"></div>
+        <div class="safe-skills" id="safeSkills"></div>
+        <div class="share-area">
+          <p class="share-label">結果をシェアする</p>
+          <a id="tweetBtn" href="#" target="_blank" class="tweet-btn">𝕏 でシェア</a>
+        </div>
+        <div class="affiliate-box">
+          <p class="affiliate-label">🎯 AIに負けないために今できること</p>
+          <a href="https://px.a8.net/svt/ejp?a8mat=XXXXX" class="affiliate-link" target="_blank" rel="noopener">スキルアップ講座を見る →</a>
+        </div>
+        <div class="made-with">
+          <p>このアプリは <strong>Claude Code</strong> で作りました →
+            <a href="https://note.com/koji_workdesign" class="note-link" target="_blank">作り方をnoteで公開中</a>
+          </p>
+        </div>
+        <button class="retry-btn" onclick="location.reload()">もう一度診断する</button>
+      </div>
+    </div>
+  </div>
+  <script src="main.js"></script>
+</body>
+</html>

@@ -1,0 +1,111 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Hiragino Sans', 'Hiragino Kaku Gothic ProN', 'Noto Sans JP', sans-serif;
+  background: #0d0d14;
+  min-height: 100vh;
+  color: #fff;
+  padding: 20px;
+}
+
+.container {
+  max-width: 680px;
+  margin: 0 auto;
+  padding-bottom: 60px;
+}
+
+header {
+  text-align: center;
+  padding: 60px 0 50px;
+}
+
+.logo {
+  font-size: 2.4rem;
+  font-weight: 900;
+  letter-spacing: 0.15em;
+  color: #fff;
+}
+
+.tagline {
+  font-size: 0.9rem;
+  color: #666;
+  margin-top: 12px;
+}
+
+.category {
+  margin-bottom: 48px;
+}
+
+.category-title {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #888;
+  margin-bottom: 16px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #222;
+}
+
+.app-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.app-card {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 14px;
+  padding: 20px;
+  text-decoration: none;
+  color: #fff;
+  transition: all 0.2s;
+}
+
+.app-card:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.15);
+  transform: translateY(-2px);
+}
+
+.app-card.coming-soon {
+  opacity: 0.4;
+  cursor: default;
+  pointer-events: none;
+}
+
+.app-icon {
+  font-size: 2rem;
+  flex-shrink: 0;
+  width: 52px;
+  text-align: center;
+}
+
+.app-name {
+  font-weight: 700;
+  font-size: 1rem;
+  margin-bottom: 4px;
+}
+
+.app-desc {
+  font-size: 0.85rem;
+  color: #888;
+  line-height: 1.5;
+}
+
+footer {
+  text-align: center;
+  padding-top: 40px;
+  font-size: 0.8rem;
+  color: #444;
+}
+
+@media (max-width: 480px) {
+  .logo { font-size: 1.8rem; }
+}
