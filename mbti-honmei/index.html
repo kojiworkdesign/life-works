@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>相手の本心、MBTIで見抜く</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1 class="title">相手の本心、<br>MBTIで見抜く</h1>
+      <p class="subtitle">発言・チャットを貼り付けると、16タイプそれぞれの本心を分析します</p>
+    </header>
+
+    <form id="form">
+      <div class="field">
+        <label class="field-label">相手との関係性</label>
+        <div class="rel-buttons">
+          <button type="button" class="rel-btn" data-value="上司">上司</button>
+          <button type="button" class="rel-btn" data-value="部下・後輩">部下・後輩</button>
+          <button type="button" class="rel-btn" data-value="同僚">同僚</button>
+          <button type="button" class="rel-btn" data-value="取引先・クライアント">取引先</button>
+          <button type="button" class="rel-btn" data-value="恋人・パートナー">恋人・パートナー</button>
+          <button type="button" class="rel-btn" data-value="友人">友人</button>
+          <button type="button" class="rel-btn" data-value="other">その他</button>
+        </div>
+        <input type="text" id="relOther" class="rel-other hidden" placeholder="関係性を入力してください">
+      </div>
+
+      <div class="field">
+        <label class="field-label">相手の発言・チャット内容</label>
+        <textarea id="message" rows="5" placeholder="相手の発言、メール、チャットの内容を貼り付けてください..." maxlength="500" required></textarea>
+      </div>
+
+      <button type="submit" class="submit-btn" id="submitBtn" disabled>🔍 本心を分析する</button>
+    </form>
+
+    <div id="result" class="result hidden">
+      <div id="loading" class="loading">
+        <div class="spinner"></div>
+        <p>16タイプの本心を分析中...<br>少々お待ちください</p>
+      </div>
+      <div id="resultContent" class="result-content hidden">
+        <p class="result-intro" id="resultIntro"></p>
+        <div id="groupsContainer"></div>
+        <div class="share-area">
+          <p class="share-label">結果をシェア</p>
+          <a id="tweetBtn" href="#" target="_blank" class="tweet-btn">𝕏 でシェア</a>
+        </div>
+        <div class="made-with">
+          <p>このアプリは <strong>Claude Code</strong> で作りました →
+            <a href="https://note.com/koji_workdesign" class="note-link" target="_blank">作り方をnoteで公開中</a>
+          </p>
+        </div>
+        <button class="retry-btn" onclick="location.reload()">もう一度分析する</button>
+      </div>
+    </div>
+  </div>
+  <script src="main.js"></script>
+</body>
+</html>
