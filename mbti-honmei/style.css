@@ -234,6 +234,71 @@ textarea::placeholder { color: rgba(255,255,255,0.2); }
 
 .retry-btn:hover { background: rgba(255,255,255,0.04); color: #fff; }
 
+.app-nav {
+  padding: 12px 0 0;
+}
+
+.back-home {
+  display: inline-block;
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.35);
+  text-decoration: none;
+  letter-spacing: 0.03em;
+  transition: color 0.15s;
+}
+
+.back-home:hover { color: #6c5ce7; }
+
+.affiliate-box {
+  position: relative;
+  background: rgba(108, 92, 231, 0.08);
+  border: 1px solid rgba(108, 92, 231, 0.25);
+  border-radius: 12px;
+  padding: 20px 20px 18px;
+  text-align: center;
+  margin-top: 8px;
+}
+
+.pr-label {
+  position: absolute;
+  top: 8px;
+  right: 10px;
+  font-size: 0.65rem;
+  color: rgba(255,255,255,0.3);
+  letter-spacing: 0.05em;
+}
+
+.affiliate-label {
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: #9b8ff7;
+  margin-bottom: 6px;
+}
+
+.affiliate-desc {
+  font-size: 0.82rem;
+  color: #777;
+  margin-bottom: 14px;
+  line-height: 1.6;
+}
+
+.affiliate-link {
+  display: inline-block;
+  padding: 11px 26px;
+  background: linear-gradient(135deg, #6c5ce7, #a29bfe);
+  color: #fff;
+  font-weight: 700;
+  font-size: 0.9rem;
+  border-radius: 8px;
+  text-decoration: none;
+  transition: all 0.2s;
+}
+
+.affiliate-link:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 18px rgba(108, 92, 231, 0.4);
+}
+
 @media (max-width: 480px) {
   .title { font-size: 1.6rem; }
   .type-info { width: 100px; }

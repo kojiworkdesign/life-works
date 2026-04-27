@@ -330,6 +330,39 @@ h1 {
   color: #fff;
 }
 
+.app-nav {
+  padding: 12px 0 0;
+}
+
+.back-home {
+  display: inline-block;
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.35);
+  text-decoration: none;
+  letter-spacing: 0.03em;
+  transition: color 0.15s;
+}
+
+.back-home:hover { color: #ffaa00; }
+
+.pr-label {
+  position: absolute;
+  top: 8px;
+  right: 10px;
+  font-size: 0.65rem;
+  color: rgba(255,255,255,0.3);
+  letter-spacing: 0.05em;
+}
+
+.affiliate-box { position: relative; }
+
+.affiliate-desc {
+  font-size: 0.82rem;
+  color: #777;
+  margin-bottom: 14px;
+  line-height: 1.6;
+}
+
 @media (max-width: 480px) {
   h1 { font-size: 1.6rem; }
   .days-number { font-size: 4rem; }
