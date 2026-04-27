@@ -345,22 +345,33 @@ h1 {
 
 .back-home:hover { color: #ffaa00; }
 
-.pr-label {
-  position: absolute;
-  top: 8px;
-  right: 10px;
-  font-size: 0.65rem;
-  color: rgba(255,255,255,0.3);
-  letter-spacing: 0.05em;
+.note-cta {
+  border-top: 1px solid rgba(255,255,255,0.07);
+  padding: 20px 0;
+  text-align: center;
 }
 
-.affiliate-box { position: relative; }
+.note-cta-text {
+  font-size: 0.88rem;
+  color: #666;
+  margin-bottom: 12px;
+  line-height: 1.7;
+}
 
-.affiliate-desc {
-  font-size: 0.82rem;
-  color: #777;
-  margin-bottom: 14px;
-  line-height: 1.6;
+.note-cta-link {
+  display: inline-block;
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: #ffaa00;
+  text-decoration: none;
+  border: 1px solid rgba(255, 170, 0, 0.4);
+  padding: 9px 22px;
+  border-radius: 8px;
+  transition: all 0.15s;
+}
+
+.note-cta-link:hover {
+  background: rgba(255, 170, 0, 0.08);
 }
 
 @media (max-width: 480px) {
