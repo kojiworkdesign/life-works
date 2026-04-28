@@ -39,6 +39,6 @@ export default async function handler(req, res) {
     return res.status(200).json({ diagnosis });
   } catch (err) {
     console.error(err);
-    return res.status(500).json({ error: 'API error' });
+    return res.status(500).json({ error: 'API error', detail: err.message });
   }
 }

@@ -40,6 +40,6 @@ groupは analysts(INTJ,INTP,ENTJ,ENTP) / diplomats(INFJ,INFP,ENFJ,ENFP) / sentin
     return res.status(200).json(data);
   } catch (err) {
     console.error(err);
-    return res.status(500).json({ error: 'API error' });
+    return res.status(500).json({ error: 'API error', detail: err.message });
   }
 }
