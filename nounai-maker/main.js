@@ -1,18 +1,13 @@
-const PALETTE = [
-  '#ff6b6b', '#ff922b', '#ffd43b', '#69db7c',
-  '#4dabf7', '#cc5de8', '#f783ac', '#20c997',
-];
-
+const PALETTE = ['#ff6b6b', '#ffa94d', '#ffd43b', '#69db7c', '#4dabf7', '#cc5de8', '#f783ac', '#20c997'];
 const APP_URL = 'https://life-works.net/nounai-maker/';
 
-const form        = document.getElementById('form');
-const resultDiv   = document.getElementById('result');
-const loadingDiv  = document.getElementById('loading');
+const form          = document.getElementById('form');
+const resultDiv     = document.getElementById('result');
+const loadingDiv    = document.getElementById('loading');
 const resultContent = document.getElementById('resultContent');
 
 form.addEventListener('submit', async function(e) {
   e.preventDefault();
-
   const name        = document.getElementById('name').value.trim();
   const description = document.getElementById('description').value.trim();
   if (!name || !description) return;
@@ -28,12 +23,10 @@ form.addEventListener('submit', async function(e) {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ name, description }),
     });
-
     const data = await response.json();
     if (data.error) throw new Error(data.detail || data.error);
 
-    renderResult(data, name);
-
+    await renderResult(data, name);
     loadingDiv.classList.add('hidden');
     resultContent.classList.remove('hidden');
 
@@ -42,19 +35,17 @@ form.addEventListener('submit', async function(e) {
   }
 });
 
-function renderResult(data, name) {
+async function renderResult(data, name) {
   document.getElementById('resultName').textContent = name + ' の脳内';
-
-  buildGrid(data.items);
+  await buildWordCloud(data.items);
   buildLegend(data.items);
-
   document.getElementById('summaryText').textContent = '「' + data.summary + '」';
   document.getElementById('commentText').textContent = data.comment;
 
   const topItems = [...data.items]
     .sort((a, b) => b.percent - a.percent)
     .slice(0, 3)
-    .map(item => item.emoji + item.label + item.percent + '%')
+    .map(i => i.emoji + i.label + i.percent + '%')
     .join('・');
 
   const tweetText = encodeURIComponent(
@@ -67,41 +58,116 @@ function renderResult(data, name) {
   document.getElementById('tweetBtn').href = 'https://twitter.com/intent/tweet?text=' + tweetText;
 }
 
-function buildGrid(items) {
-  const grid = document.getElementById('colorGrid');
-  grid.innerHTML = '';
+function loadImage(src) {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    img.crossOrigin = 'anonymous';
+    img.onload = () => resolve(img);
+    img.onerror = reject;
+    img.src = src;
+  });
+}
 
-  // percentの合計を100に正規化してセルを生成
-  const total = items.reduce((s, i) => s + i.percent, 0);
-  let assigned = 0;
-
-  items.forEach((item, idx) => {
-    const count = idx === items.length - 1
-      ? 100 - assigned
-      : Math.round(item.percent * 100 / total);
-    assigned += count;
-
-    for (let j = 0; j < count; j++) {
-      const cell = document.createElement('div');
-      cell.className = 'grid-cell';
-      cell.style.backgroundColor = PALETTE[idx % PALETTE.length];
-      grid.appendChild(cell);
+// head2.png（黒=頭の内側、白=外側）からwordcloud2用マスクを生成
+// wordcloud2: 白=配置OK、有色=配置NG → 反転が必要
+function createWCMask(img, size) {
+  const c = document.createElement('canvas');
+  c.width = size; c.height = size;
+  const ctx = c.getContext('2d');
+  ctx.drawImage(img, 0, 0, size, size);
+  const d = ctx.getImageData(0, 0, size, size);
+  for (let i = 0; i < d.data.length; i += 4) {
+    const bright = (d.data[i] + d.data[i+1] + d.data[i+2]) / 3;
+    if (bright < 128) {
+      // 黒（頭の内側）→ 白（配置OK）
+      d.data[i] = 255; d.data[i+1] = 255; d.data[i+2] = 255; d.data[i+3] = 255;
+    } else {
+      // 白（外側）→ 黒（配置NG）
+      d.data[i] = 0; d.data[i+1] = 0; d.data[i+2] = 0; d.data[i+3] = 255;
     }
+  }
+  ctx.putImageData(d, 0, 0);
+  return c;
+}
+
+// head2.pngからCSSマスク用data URLを生成
+// 黒（内側）→ 不透明（表示）、白（外側）→ 透明（非表示）
+function createCSSMask(img, size) {
+  const c = document.createElement('canvas');
+  c.width = size; c.height = size;
+  const ctx = c.getContext('2d');
+  ctx.drawImage(img, 0, 0, size, size);
+  const d = ctx.getImageData(0, 0, size, size);
+  for (let i = 0; i < d.data.length; i += 4) {
+    const bright = (d.data[i] + d.data[i+1] + d.data[i+2]) / 3;
+    if (bright < 128) {
+      d.data[i] = 255; d.data[i+1] = 255; d.data[i+2] = 255; d.data[i+3] = 255;
+    } else {
+      d.data[i] = 0; d.data[i+1] = 0; d.data[i+2] = 0; d.data[i+3] = 0;
+    }
+  }
+  ctx.putImageData(d, 0, 0);
+  return c.toDataURL('image/png');
+}
+
+function buildWordCloud(items) {
+  return new Promise(async (resolve) => {
+    const headImg = await loadImage('head2.png');
+    const SIZE = 600;
+    const wcCanvas = document.getElementById('wcCanvas');
+    wcCanvas.width = SIZE;
+    wcCanvas.height = SIZE;
+
+    // CSSマスク適用（頭の形にくり抜く）
+    const cssMaskUrl = createCSSMask(headImg, SIZE);
+    wcCanvas.style.webkitMaskImage = `url(${cssMaskUrl})`;
+    wcCanvas.style.webkitMaskSize = '100% 100%';
+    wcCanvas.style.maskImage = `url(${cssMaskUrl})`;
+    wcCanvas.style.maskSize = '100% 100%';
+
+    // wordcloud2用マスク
+    const wcMask = createWCMask(headImg, SIZE);
+
+    // 色をアイテムに固定割り当て
+    const colorMap = {};
+    items.forEach((item, idx) => { colorMap[item.label] = PALETTE[idx % PALETTE.length]; });
+
+    // パーセントを正規化（max=10）してフォントサイズのばらつきを確保
+    const maxP = Math.max(...items.map(i => i.percent));
+    const wordList = items.map(item => [item.label, Math.round(item.percent / maxP * 10)]);
+
+    WordCloud(wcCanvas, {
+      list: wordList,
+      gridSize: Math.round(SIZE / 25),
+      weightFactor: SIZE / 12,
+      fontFamily: '"Hiragino Sans", "Noto Sans JP", "Yu Gothic", sans-serif',
+      fontWeight: 'bold',
+      color: (word) => colorMap[word] || PALETTE[0],
+      rotateRatio: 0.3,
+      rotationSteps: 2,
+      backgroundColor: '#08080f',
+      maskCanvas: wcMask,
+      shrinkToFit: true,
+      drawOutOfBound: false,
+      shuffle: false,
+    });
+
+    wcCanvas.addEventListener('wordcloudstop', resolve, { once: true });
+    setTimeout(resolve, 5000);
   });
 }
 
 function buildLegend(items) {
   const legend = document.getElementById('legend');
   legend.innerHTML = '';
-
   [...items]
     .sort((a, b) => b.percent - a.percent)
-    .forEach((item, idx) => {
-      const originalIdx = items.indexOf(item);
+    .forEach((item) => {
+      const idx = items.indexOf(item);
       const row = document.createElement('div');
       row.className = 'legend-item';
       row.innerHTML = `
-        <div class="legend-color" style="background:${PALETTE[originalIdx % PALETTE.length]}"></div>
+        <div class="legend-color" style="background:${PALETTE[idx % PALETTE.length]}"></div>
         <span class="legend-emoji">${item.emoji}</span>
         <span class="legend-label">${item.label}</span>
         <span class="legend-percent">${item.percent}%</span>

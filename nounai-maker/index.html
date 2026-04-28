@@ -47,8 +47,8 @@
         <!-- スクショ① -->
         <div class="screenshot-area">
           <p class="area-label" id="resultName"></p>
-          <div class="grid-wrap">
-            <div id="colorGrid" class="color-grid"></div>
+          <div class="head-container">
+            <canvas id="wcCanvas"></canvas>
             <img src="head.png" class="head-overlay" alt="">
           </div>
           <div id="legend" class="legend"></div>
@@ -63,12 +63,10 @@
             <p class="summary-text" id="summaryText"></p>
           </div>
           <div class="comment-box" id="commentText"></div>
-
           <div class="share-area">
             <p class="share-label">結果をシェア</p>
             <a id="tweetBtn" href="#" target="_blank" class="tweet-btn">𝕏 でシェア</a>
           </div>
-
           <div class="note-banner">
             <a href="https://note.com/koji_workdesign/n/n6d575819beab" target="_blank" rel="noopener">
               <img src="../images/note-banner.png" alt="非エンジニアの私がClaude CodeだけでWebアプリを作った話" style="width:100%;border-radius:8px;display:block;">
@@ -80,6 +78,7 @@
       </div>
     </div>
   </div>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/wordcloud2.js/1.2.2/wordcloud2.min.js"></script>
   <script src="main.js"></script>
 </body>
 </html>
