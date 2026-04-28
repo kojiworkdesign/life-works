@@ -49,15 +49,16 @@ const form = document.getElementById('quiz');
         body: JSON.stringify({answers: answers, hellPercent: hellPercent})
       });
       var data = await response.json();
+      if (data.error) throw new Error(data.detail || data.error);
       document.getElementById('hellScore').textContent = hellPercent + '%';
       document.getElementById('hellName').textContent = getHellName(hellPercent);
       document.getElementById('diagnosisText').textContent = data.diagnosis;
       var tweetText = encodeURIComponent('私の職場の地獄度は ' + hellPercent + '%「' +
   getHellName(hellPercent) + '」でした🔥\n\n#職場地獄度診断\n' + APP_URL);
-      document.getElementById('tweetBtn').href = 'https://twitter.com/intent/tweet?text=' + tweetText;      
+      document.getElementById('tweetBtn').href = 'https://twitter.com/intent/tweet?text=' + tweetText;
       loadingDiv.classList.add('hidden');
       resultContent.classList.remove('hidden');
     } catch(err) {
-      loadingDiv.innerHTML = '<p style="color:#ff6b6b">エラーが発生しました。再度お試しください。</p>';     
+      loadingDiv.innerHTML = '<p style="color:#ff6b6b">エラー: ' + err.message + '</p>';
     }
   });

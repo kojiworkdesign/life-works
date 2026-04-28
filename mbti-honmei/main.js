@@ -121,7 +121,7 @@ form.addEventListener('submit', async function(e) {
     });
 
     const data = await response.json();
-    if (data.error) throw new Error(data.error);
+    if (data.error) throw new Error(data.detail || data.error);
 
     renderResults(data, selectedRelation);
 
@@ -136,6 +136,6 @@ form.addEventListener('submit', async function(e) {
 
   } catch (err) {
     loadingDiv.innerHTML =
-      '<p style="color:#ff6b6b;line-height:1.8">エラーが発生しました。<br>再度お試しください。</p>';
+      '<p style="color:#ff6b6b;line-height:1.8">エラー: ' + err.message + '</p>';
   }
 });
