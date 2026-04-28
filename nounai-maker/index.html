@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>令和版脳内ビジュアライザー | LIFE WORKS</title>
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="LIFE WORKS">
+  <meta property="og:title" content="令和版脳内ビジュアライザー | LIFE WORKS">
+  <meta property="og:description" content="名前と一言を入力するだけ。あなたの脳内を令和2026年のキーワードで可視化します。">
+  <meta property="og:url" content="https://life-works.net/nounai-maker/">
+  <meta property="og:image" content="https://life-works.net/nounai-maker/ogp.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://life-works.net/nounai-maker/ogp.png">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <nav class="app-nav"><a href="/" class="back-home">← LIFE WORKS</a></nav>
+
+    <header>
+      <div class="icon">🧠</div>
+      <h1>令和版<br>脳内ビジュアライザー</h1>
+      <p class="subtitle">あなたの脳内、何で占領されてる？</p>
+    </header>
+
+    <form id="form">
+      <div class="field">
+        <label class="field-label">あなたの名前</label>
+        <input type="text" id="name" placeholder="例：田中太郎" maxlength="20" required>
+      </div>
+      <div class="field">
+        <label class="field-label">あなたを一言で表すと？</label>
+        <input type="text" id="description" placeholder="例：40代会社員・育児中のワーママ・副業模索中" maxlength="50" required>
+      </div>
+      <button type="submit" class="submit-btn">🧠 脳内を解析する</button>
+    </form>
+
+    <div id="result" class="result hidden">
+      <div id="loading" class="loading">
+        <div class="spinner"></div>
+        <p>脳内スキャン中...<br>少々お待ちください</p>
+      </div>
+
+      <div id="resultContent" class="result-content hidden">
+
+        <!-- スクショ① -->
+        <div class="screenshot-area">
+          <p class="area-label" id="resultName"></p>
+          <div class="grid-wrap">
+            <div id="colorGrid" class="color-grid"></div>
+            <img src="head.png" class="head-overlay" alt="">
+          </div>
+          <div id="legend" class="legend"></div>
+        </div>
+
+        <div class="section-divider"></div>
+
+        <!-- スクショ② -->
+        <div class="screenshot-area">
+          <div class="summary-box">
+            <p class="summary-label">あなたの脳内を要約すると...？</p>
+            <p class="summary-text" id="summaryText"></p>
+          </div>
+          <div class="comment-box" id="commentText"></div>
+
+          <div class="share-area">
+            <p class="share-label">結果をシェア</p>
+            <a id="tweetBtn" href="#" target="_blank" class="tweet-btn">𝕏 でシェア</a>
+          </div>
+
+          <div class="note-banner">
+            <a href="https://note.com/koji_workdesign/n/n6d575819beab" target="_blank" rel="noopener">
+              <img src="../images/note-banner.png" alt="非エンジニアの私がClaude CodeだけでWebアプリを作った話" style="width:100%;border-radius:8px;display:block;">
+            </a>
+          </div>
+        </div>
+
+        <button class="retry-btn" onclick="location.reload()">もう一度診断する</button>
+      </div>
+    </div>
+  </div>
+  <script src="main.js"></script>
+</body>
+</html>
