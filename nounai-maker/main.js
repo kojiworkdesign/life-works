@@ -118,28 +118,21 @@ function buildWordCloud(items) {
     wcCanvas.width = SIZE;
     wcCanvas.height = SIZE;
 
-    // CSSマスク適用（頭の形にくり抜く）
-    const cssMaskUrl = createCSSMask(headImg, SIZE);
-    wcCanvas.style.webkitMaskImage = `url(${cssMaskUrl})`;
-    wcCanvas.style.webkitMaskSize = '100% 100%';
-    wcCanvas.style.maskImage = `url(${cssMaskUrl})`;
-    wcCanvas.style.maskSize = '100% 100%';
-
-    // wordcloud2用マスク
+    // wordcloud2用マスク（反転: 白=配置OK、黒=配置NG）
     const wcMask = createWCMask(headImg, SIZE);
 
     // 色をアイテムに固定割り当て
     const colorMap = {};
     items.forEach((item, idx) => { colorMap[item.label] = PALETTE[idx % PALETTE.length]; });
 
-    // パーセントを正規化（max=10）してフォントサイズのばらつきを確保
+    // パーセントを正規化（max=10）
     const maxP = Math.max(...items.map(i => i.percent));
     const wordList = items.map(item => [item.label, Math.round(item.percent / maxP * 10)]);
 
     WordCloud(wcCanvas, {
       list: wordList,
       gridSize: Math.round(SIZE / 25),
-      weightFactor: SIZE / 12,
+      weightFactor: SIZE / 25,  // サイズ縮小（元: SIZE/12）
       fontFamily: '"Hiragino Sans", "Noto Sans JP", "Yu Gothic", sans-serif',
       fontWeight: 'bold',
       color: (word) => colorMap[word] || PALETTE[0],
@@ -152,7 +145,20 @@ function buildWordCloud(items) {
       shuffle: false,
     });
 
-    wcCanvas.addEventListener('wordcloudstop', resolve, { once: true });
+    // wordcloudstop後にcanvas合成でくり抜く（CSS maskより確実）
+    wcCanvas.addEventListener('wordcloudstop', () => {
+      const alphaMaskUrl = createCSSMask(headImg, SIZE);
+      const maskImg = new Image();
+      maskImg.onload = () => {
+        const ctx = wcCanvas.getContext('2d');
+        ctx.globalCompositeOperation = 'destination-in';
+        ctx.drawImage(maskImg, 0, 0, SIZE, SIZE);
+        ctx.globalCompositeOperation = 'source-over';
+        resolve();
+      };
+      maskImg.src = alphaMaskUrl;
+    }, { once: true });
+
     setTimeout(resolve, 5000);
   });
 }
