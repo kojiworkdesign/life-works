@@ -138,7 +138,7 @@ function buildWordCloud(items) {
       color: (word) => colorMap[word] || PALETTE[0],
       rotateRatio: 0,
       rotationSteps: 1,
-      backgroundColor: '#08080f',
+      backgroundColor: '#ffffff',
       maskCanvas: wcMask,
       shrinkToFit: true,
       drawOutOfBound: false,
