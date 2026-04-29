@@ -131,8 +131,8 @@ function buildWordCloud(items) {
 
     WordCloud(wcCanvas, {
       list: wordList,
-      gridSize: Math.round(SIZE / 25),
-      weightFactor: SIZE / 25,  // サイズ縮小（元: SIZE/12）
+      gridSize: Math.round(SIZE / 40),
+      weightFactor: SIZE / 80,
       fontFamily: '"Hiragino Sans", "Noto Sans JP", "Yu Gothic", sans-serif',
       fontWeight: 'bold',
       color: (word) => colorMap[word] || PALETTE[0],
