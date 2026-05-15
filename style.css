@@ -151,6 +151,7 @@ body {
     color-mix(in srgb, var(--card-color) 8%, #fdf3e3)
   );
   border-bottom: 3px solid var(--card-color);
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -158,6 +159,8 @@ body {
 }
 
 .card-image img {
+  position: absolute;
+  inset: 0;
   width: 100%;
   height: 100%;
   object-fit: cover;
