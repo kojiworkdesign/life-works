@@ -1,0 +1,831 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>老後資金 準備率チェッカー | らくらく夫婦ツール</title>
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="老後資金 準備率チェッカー | らくらく夫婦ツール">
+  <meta property="og:description" content="今の積立ペースで老後資金が何%準備できるか、すぐわかります。不足額と対策もあわせて表示。">
+  <meta property="og:url" content="https://life-works.net/rougo-junbiritsu/">
+  <meta property="og:image" content="https://life-works.net/images/card-rougo-junbiritsu.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://life-works.net/images/card-rougo-junbiritsu.png">
+  <link rel="stylesheet" href="../style.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <style>
+    .tool-wrap {
+      max-width: 560px;
+      margin: 0 auto;
+      padding: 48px 24px 80px;
+    }
+
+    .tool-header {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+
+    .tool-eyebrow {
+      display: inline-block;
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      color: var(--color-primary);
+      background: var(--color-primary-light);
+      padding: 4px 12px;
+      border-radius: 100px;
+      margin-bottom: 16px;
+    }
+
+    .tool-title {
+      font-size: 1.7rem;
+      font-weight: 900;
+      color: var(--color-text);
+      line-height: 1.3;
+    }
+
+    .tool-desc {
+      font-size: 0.88rem;
+      color: var(--color-text-muted);
+      margin-top: 12px;
+      line-height: 1.8;
+    }
+
+    .form-card {
+      background: var(--color-surface);
+      border-radius: 20px;
+      padding: 32px;
+      border: 1px solid var(--color-border);
+      box-shadow: 0 2px 12px rgba(61,43,31,0.06);
+      margin-bottom: 20px;
+    }
+
+    .step-label {
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      color: var(--color-primary);
+      margin-bottom: 16px;
+    }
+
+    .form-group {
+      margin-bottom: 24px;
+    }
+
+    .form-group:last-child {
+      margin-bottom: 0;
+    }
+
+    label {
+      display: block;
+      font-size: 0.88rem;
+      font-weight: 700;
+      color: var(--color-text);
+      margin-bottom: 8px;
+    }
+
+    .label-note {
+      font-weight: 400;
+      font-size: 0.78rem;
+      color: var(--color-text-muted);
+      margin-left: 6px;
+    }
+
+    input[type="number"],
+    select {
+      width: 100%;
+      padding: 12px 16px;
+      border: 1.5px solid var(--color-border);
+      border-radius: 10px;
+      font-size: 1rem;
+      font-family: 'Inter', 'Noto Sans JP', sans-serif;
+      color: var(--color-text);
+      background: var(--color-bg);
+      transition: border-color 0.2s;
+      appearance: none;
+      -webkit-appearance: none;
+    }
+
+    input[type="number"]::placeholder {
+      color: #C8B8A8;
+    }
+
+    input[type="number"]:focus,
+    select:focus {
+      outline: none;
+      border-color: var(--color-primary);
+      background: var(--color-surface);
+    }
+
+    .input-with-unit {
+      position: relative;
+    }
+
+    .input-with-unit input {
+      padding-right: 48px;
+    }
+
+    .unit {
+      position: absolute;
+      right: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 0.85rem;
+      color: var(--color-text-muted);
+      pointer-events: none;
+    }
+
+    .select-wrap {
+      position: relative;
+    }
+
+    .select-wrap::after {
+      content: '▼';
+      position: absolute;
+      right: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 0.65rem;
+      color: var(--color-text-muted);
+      pointer-events: none;
+    }
+
+    .toggle-tabs {
+      display: flex;
+      background: var(--color-bg);
+      border-radius: 10px;
+      padding: 4px;
+      gap: 4px;
+      margin-bottom: 20px;
+    }
+
+    .toggle-tab {
+      flex: 1;
+      padding: 9px 8px;
+      border: none;
+      border-radius: 8px;
+      font-size: 0.82rem;
+      font-weight: 700;
+      font-family: 'Noto Sans JP', sans-serif;
+      cursor: pointer;
+      background: transparent;
+      color: var(--color-text-muted);
+      transition: all 0.2s;
+    }
+
+    .toggle-tab.active {
+      background: var(--color-surface);
+      color: var(--color-primary);
+      box-shadow: 0 1px 4px rgba(61,43,31,0.08);
+    }
+
+    .target-panel {
+      display: none;
+    }
+
+    .target-panel.active {
+      display: block;
+    }
+
+    .calc-result-hint {
+      font-size: 0.82rem;
+      color: var(--color-text-muted);
+      margin-top: 8px;
+      padding: 10px 14px;
+      background: var(--color-primary-light);
+      border-radius: 8px;
+    }
+
+    .calc-result-hint strong {
+      color: var(--color-primary);
+    }
+
+    .btn-calc {
+      width: 100%;
+      padding: 16px;
+      background: var(--color-primary);
+      color: #fff;
+      border: none;
+      border-radius: 12px;
+      font-size: 1rem;
+      font-weight: 700;
+      font-family: 'Noto Sans JP', sans-serif;
+      cursor: pointer;
+      transition: all 0.2s;
+      letter-spacing: 0.04em;
+    }
+
+    .btn-calc:hover {
+      background: #4a6b4e;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 16px rgba(91,124,95,0.3);
+    }
+
+    .result-area {
+      display: none;
+    }
+
+    .result-area.show {
+      display: block;
+      margin-top: 40px;
+    }
+
+    .result-card {
+      background: var(--color-surface);
+      border-radius: 20px;
+      padding: 32px;
+      border: 1px solid var(--color-border);
+      box-shadow: 0 2px 12px rgba(61,43,31,0.06);
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+    .result-label {
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: var(--color-text-muted);
+      letter-spacing: 0.08em;
+      margin-bottom: 12px;
+    }
+
+    .result-rate {
+      font-size: 4.5rem;
+      font-weight: 900;
+      font-family: 'Inter', sans-serif;
+      color: var(--color-primary);
+      line-height: 1;
+      margin-bottom: 8px;
+    }
+
+    .result-rate span {
+      font-size: 2rem;
+    }
+
+    .progress-bar-wrap {
+      background: var(--color-bg-sub);
+      border-radius: 100px;
+      height: 12px;
+      margin: 20px 0;
+      overflow: hidden;
+    }
+
+    .progress-bar-fill {
+      height: 100%;
+      border-radius: 100px;
+      background: linear-gradient(90deg, var(--color-primary), #7aaa7f);
+      transition: width 0.8s ease;
+    }
+
+    .result-numbers {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-top: 20px;
+      text-align: left;
+    }
+
+    .result-number-item {
+      background: var(--color-bg);
+      border-radius: 12px;
+      padding: 16px;
+    }
+
+    .result-number-label {
+      font-size: 0.75rem;
+      color: var(--color-text-muted);
+      margin-bottom: 6px;
+    }
+
+    .result-number-value {
+      font-size: 1.2rem;
+      font-weight: 900;
+      font-family: 'Inter', sans-serif;
+      color: var(--color-text);
+    }
+
+    .result-number-value.shortage {
+      color: #c0392b;
+    }
+
+    .result-number-value.surplus {
+      color: var(--color-primary);
+    }
+
+    .result-achieve {
+      margin-top: 12px;
+      background: var(--color-bg);
+      border-radius: 12px;
+      padding: 14px 16px;
+      text-align: center;
+    }
+
+    .result-achieve-label {
+      font-size: 0.75rem;
+      color: var(--color-text-muted);
+      margin-bottom: 4px;
+    }
+
+    .result-achieve-value {
+      font-size: 1.2rem;
+      font-weight: 900;
+      font-family: 'Inter', sans-serif;
+      color: var(--color-text);
+    }
+
+    .chart-wrap {
+      margin-top: 28px;
+    }
+
+    .chart-title {
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: var(--color-text-muted);
+      margin-bottom: 12px;
+      text-align: left;
+    }
+
+    .prescription-card {
+      background: var(--color-primary-light);
+      border-radius: 16px;
+      padding: 24px;
+      margin-bottom: 20px;
+      border-left: 4px solid var(--color-primary);
+    }
+
+    .prescription-title {
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: var(--color-primary);
+      margin-bottom: 10px;
+    }
+
+    .prescription-text {
+      font-size: 0.92rem;
+      color: var(--color-text);
+      line-height: 1.8;
+    }
+
+    .share-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      width: 100%;
+      padding: 14px;
+      background: #000;
+      color: #fff;
+      border: none;
+      border-radius: 12px;
+      font-size: 0.9rem;
+      font-weight: 700;
+      font-family: 'Noto Sans JP', sans-serif;
+      cursor: pointer;
+      text-decoration: none;
+      transition: all 0.2s;
+      margin-bottom: 12px;
+    }
+
+    .share-btn:hover {
+      background: #222;
+      transform: translateY(-1px);
+    }
+
+    .cta-card {
+      background: var(--color-surface);
+      border-radius: 20px;
+      padding: 28px;
+      border: 1px solid var(--color-border);
+      text-align: center;
+    }
+
+    .cta-card-title {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--color-text);
+      margin-bottom: 8px;
+    }
+
+    .cta-card-desc {
+      font-size: 0.82rem;
+      color: var(--color-text-muted);
+      line-height: 1.7;
+      margin-bottom: 16px;
+    }
+
+    .btn-cta {
+      display: inline-block;
+      padding: 12px 24px;
+      background: var(--color-accent);
+      color: var(--color-text);
+      border-radius: 10px;
+      font-size: 0.88rem;
+      font-weight: 700;
+      text-decoration: none;
+      transition: all 0.2s;
+    }
+
+    .btn-cta:hover {
+      background: #d4a43e;
+      transform: translateY(-1px);
+    }
+
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.82rem;
+      color: var(--color-text-muted);
+      text-decoration: none;
+      margin-bottom: 32px;
+    }
+
+    .back-link:hover {
+      color: var(--color-primary);
+    }
+
+    @media (max-width: 600px) {
+      .tool-wrap { padding: 32px 16px 60px; }
+      .form-card { padding: 24px 20px; }
+      .result-card { padding: 24px 20px; }
+      .tool-title { font-size: 1.45rem; }
+      .result-rate { font-size: 3.5rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="header">
+    <div class="header-inner">
+      <a href="/" class="logo">らくらく夫婦<span>ツール</span></a>
+    </div>
+  </header>
+
+  <div class="tool-wrap">
+
+    <a href="/" class="back-link">← ツール一覧へ</a>
+
+    <div class="tool-header">
+      <p class="tool-eyebrow">家計・資産形成</p>
+      <h1 class="tool-title">老後資金<br>準備率チェッカー</h1>
+      <p class="tool-desc">今の積立ペースで、老後資金が何%準備できているか確認できます。<br>不足額と対策もあわせてわかります。</p>
+    </div>
+
+    <!-- STEP1：目標金額 -->
+    <div class="form-card">
+      <p class="step-label">STEP 1 ／ 老後の目標金額を設定する</p>
+
+      <div class="toggle-tabs">
+        <button class="toggle-tab active" onclick="switchTab('direct')">金額がわかる</button>
+        <button class="toggle-tab" onclick="switchTab('calc')">計算したい</button>
+      </div>
+
+      <div id="panel-direct" class="target-panel active">
+        <div class="form-group">
+          <label>老後の目標金額<span class="label-note">例：3000（万円）</span></label>
+          <div class="input-with-unit">
+            <input type="number" id="target-direct" placeholder="3000" min="100" max="99999">
+            <span class="unit">万円</span>
+          </div>
+        </div>
+      </div>
+
+      <div id="panel-calc" class="target-panel">
+        <div class="form-group">
+          <label>老後の月間生活費の目標<span class="label-note">例：25（万円）</span></label>
+          <div class="input-with-unit">
+            <input type="number" id="monthly-expense" placeholder="25" min="5" max="200" oninput="calcTarget()">
+            <span class="unit">万円</span>
+          </div>
+        </div>
+        <div class="calc-result-hint" id="target-hint">月間生活費を入力すると目標金額が自動計算されます（老後20年間分）</div>
+      </div>
+    </div>
+
+    <!-- STEP2：現状入力 -->
+    <div class="form-card">
+      <p class="step-label">STEP 2 ／ 現状を入力する</p>
+
+      <div class="form-group">
+        <label>現在の年齢</label>
+        <div class="input-with-unit">
+          <input type="number" id="current-age" placeholder="35" min="20" max="64">
+          <span class="unit">歳</span>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>退職予定年齢<span class="label-note">デフォルト65歳</span></label>
+        <div class="input-with-unit">
+          <input type="number" id="retirement-age" placeholder="65" value="65" min="50" max="80">
+          <span class="unit">歳</span>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>現在の老後用資産残高<span class="label-note">NISAやiDeCoの残高など</span></label>
+        <div class="input-with-unit">
+          <input type="number" id="current-assets" placeholder="0" min="0">
+          <span class="unit">万円</span>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>月々の積立額<span class="label-note">老後向けの合計</span></label>
+        <div class="input-with-unit">
+          <input type="number" id="monthly-contribution" placeholder="5" min="0">
+          <span class="unit">万円</span>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>積立スタイル（想定年利回り）</label>
+        <div class="select-wrap">
+          <select id="return-rate">
+            <option value="0">0%：現金のみ（銀行預金・タンス預金）</option>
+            <option value="1">1%：定期預金・個人向け国債</option>
+            <option value="2">2%：債券重視（債券90%・株式10%程度）</option>
+            <option value="3">3%：債券中心（債券70%・株式30%程度）</option>
+            <option value="4">4%：バランス型（債券50%・株式50%程度）</option>
+            <option value="5" selected>5%：株式重視（株式70%・債券30%程度）</option>
+            <option value="6">6%：株式中心（株式90%・債券10%程度）</option>
+            <option value="7">7%：株式のみ（株式100%）</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <button class="btn-calc" onclick="calculate()">準備率をチェックする</button>
+
+    <!-- 結果エリア -->
+    <div class="result-area" id="result-area">
+
+      <div class="result-card">
+        <p class="result-label">あなたの老後資金 準備率</p>
+        <div class="result-rate" id="result-rate-text">0<span>%</span></div>
+        <div class="progress-bar-wrap">
+          <div class="progress-bar-fill" id="progress-bar" style="width: 0%"></div>
+        </div>
+        <div class="result-numbers">
+          <div class="result-number-item">
+            <p class="result-number-label" id="label-future-value">退職時点の予測資産</p>
+            <p class="result-number-value" id="result-future-value">—</p>
+          </div>
+          <div class="result-number-item">
+            <p class="result-number-label" id="shortage-label">不足額</p>
+            <p class="result-number-value" id="result-shortage">—</p>
+          </div>
+        </div>
+        <div class="result-achieve">
+          <p class="result-achieve-label">目標達成見込み年齢</p>
+          <p class="result-achieve-value" id="result-achieve-age">—</p>
+        </div>
+        <div class="chart-wrap">
+          <p class="chart-title">年齢別 資産推移シミュレーション</p>
+          <canvas id="asset-chart"></canvas>
+        </div>
+      </div>
+
+      <div class="prescription-card">
+        <p class="prescription-title">📋 アドバイス</p>
+        <p class="prescription-text" id="prescription-text"></p>
+      </div>
+
+      <a class="share-btn" id="share-btn" href="#" target="_blank">
+        𝕏 結果をポストする
+      </a>
+
+      <div class="cta-card">
+        <p class="cta-card-title">目的別の積立額の設計方法</p>
+        <p class="cta-card-desc">老後・教育・住宅ローン……目的ごとに積立額を整理すると、家計全体がすっきりします。設計の考え方をnoteに書きました。</p>
+        <a href="https://note.com/rakufu_log/n/n9010a2ce6012" target="_blank" class="btn-cta">noteで読む →</a>
+      </div>
+
+    </div>
+
+  </div>
+
+  <footer class="footer">
+    <p>© 2026 <a href="https://note.com/rakufu_log" target="_blank">らくらく夫婦</a> ｜ <a href="/">ツール一覧</a></p>
+  </footer>
+
+  <script>
+    let currentTab = 'direct';
+    let assetChart = null;
+
+    function switchTab(tab) {
+      currentTab = tab;
+      document.querySelectorAll('.toggle-tab').forEach((el, i) => {
+        el.classList.toggle('active', (i === 0 && tab === 'direct') || (i === 1 && tab === 'calc'));
+      });
+      document.getElementById('panel-direct').classList.toggle('active', tab === 'direct');
+      document.getElementById('panel-calc').classList.toggle('active', tab === 'calc');
+    }
+
+    function calcTarget() {
+      const monthly = parseFloat(document.getElementById('monthly-expense').value);
+      if (!monthly || monthly <= 0) {
+        document.getElementById('target-hint').innerHTML = '月間生活費を入力すると目標金額が自動計算されます（老後20年間分）';
+        return;
+      }
+      const target = Math.round(monthly * 12 * 20);
+      document.getElementById('target-hint').innerHTML = `目標金額：<strong>${target.toLocaleString()}万円</strong>（月${monthly}万円 × 12ヶ月 × 20年）`;
+    }
+
+    function getTargetAmount() {
+      if (currentTab === 'direct') {
+        return parseFloat(document.getElementById('target-direct').value) || 0;
+      } else {
+        const monthly = parseFloat(document.getElementById('monthly-expense').value) || 0;
+        return Math.round(monthly * 12 * 20);
+      }
+    }
+
+    function formatMan(value) {
+      if (value >= 10000) return (value / 10000).toFixed(1) + '億円';
+      return Math.round(value).toLocaleString() + '万円';
+    }
+
+    function calcAssetsAt(yearsElapsed, initAssets, monthlyAmt, rate) {
+      if (rate === 0) return initAssets + monthlyAmt * 12 * yearsElapsed;
+      return initAssets * Math.pow(1 + rate, yearsElapsed)
+           + monthlyAmt * 12 * ((Math.pow(1 + rate, yearsElapsed) - 1) / rate);
+    }
+
+    function calculate() {
+      const targetAmount = getTargetAmount();
+      const currentAge = parseInt(document.getElementById('current-age').value);
+      const retirementAge = parseInt(document.getElementById('retirement-age').value);
+      const currentAssets = parseFloat(document.getElementById('current-assets').value) || 0;
+      const monthlyContribution = parseFloat(document.getElementById('monthly-contribution').value) || 0;
+      const annualRate = parseFloat(document.getElementById('return-rate').value) / 100;
+
+      if (!targetAmount || targetAmount <= 0) return alert('目標金額を入力してください');
+      if (!currentAge || currentAge <= 0) return alert('現在の年齢を入力してください');
+      if (!retirementAge || retirementAge <= currentAge) return alert('退職予定年齢は現在の年齢より大きく入力してください');
+
+      const years = retirementAge - currentAge;
+      const futureValue = calcAssetsAt(years, currentAssets, monthlyContribution, annualRate);
+      const rate = Math.min(Math.round((futureValue / targetAmount) * 100), 999);
+      const shortage = targetAmount - futureValue;
+
+      // 達成見込み年齢（退職後最大50年まで探索）
+      let achieveAge = null;
+      if (currentAssets >= targetAmount) {
+        achieveAge = currentAge;
+      } else {
+        for (let age = currentAge + 1; age <= retirementAge + 50; age++) {
+          if (calcAssetsAt(age - currentAge, currentAssets, monthlyContribution, annualRate) >= targetAmount) {
+            achieveAge = age;
+            break;
+          }
+        }
+      }
+
+      // 不足を補う追加月積立額
+      let additionalMonthly = 0;
+      if (shortage > 0) {
+        if (annualRate === 0) {
+          additionalMonthly = Math.ceil(shortage / (12 * years));
+        } else {
+          additionalMonthly = Math.ceil(shortage / (12 * ((Math.pow(1 + annualRate, years) - 1) / annualRate)));
+        }
+      }
+
+      // 準備率・プログレスバー
+      document.getElementById('result-rate-text').innerHTML = `${rate}<span>%</span>`;
+      document.getElementById('progress-bar').style.width = `${Math.min(rate, 100)}%`;
+      document.getElementById('label-future-value').textContent = `退職時点（${retirementAge}歳）の予測資産`;
+      document.getElementById('result-future-value').textContent = formatMan(futureValue);
+
+      if (shortage > 0) {
+        document.getElementById('shortage-label').textContent = '不足額';
+        document.getElementById('result-shortage').textContent = formatMan(shortage);
+        document.getElementById('result-shortage').className = 'result-number-value shortage';
+      } else {
+        document.getElementById('shortage-label').textContent = '余裕額';
+        document.getElementById('result-shortage').textContent = formatMan(Math.abs(shortage));
+        document.getElementById('result-shortage').className = 'result-number-value surplus';
+      }
+
+      // 達成見込み年齢の表示
+      const achieveEl = document.getElementById('result-achieve-age');
+      if (achieveAge === null) {
+        achieveEl.textContent = '到達困難';
+        achieveEl.style.color = '#c0392b';
+      } else if (achieveAge > retirementAge) {
+        achieveEl.textContent = `${achieveAge}歳（退職後）`;
+        achieveEl.style.color = '#c0392b';
+      } else {
+        achieveEl.textContent = `${achieveAge}歳`;
+        achieveEl.style.color = 'var(--color-primary)';
+      }
+
+      // 処方箋
+      let prescription;
+      if (rate >= 120) {
+        prescription = `目標を大きく上回るペースで準備できています。このまま継続しましょう。余裕があれば、教育資金や住宅ローンの繰り上げ返済にも回す選択肢があります。`;
+      } else if (rate >= 80) {
+        prescription = `おおむね順調です。このペースを維持すれば、退職時点で目標に近い金額を準備できる見込みです。ライフイベントで支出が増える時期に備えて、積立額を少し多めに設定しておくと安心です。`;
+      } else if (rate >= 50) {
+        prescription = `目標まであと少しです。月${additionalMonthly.toLocaleString()}万円ほど積立額を増やすと目標に届きます。また、利回りを少し上げる（株式比率を高める）だけでも大きく変わります。`;
+      } else {
+        prescription = `積立額か利回りの見直しが必要です。月${additionalMonthly.toLocaleString()}万円ほど追加できると目標に届く計算です。まずは固定費の見直しや、積立スタイルを確認してみましょう。`;
+      }
+      document.getElementById('prescription-text').textContent = prescription;
+
+      // Xシェアテキスト（達成年齢 + 不足額の両方）
+      let shareText;
+      if (achieveAge !== null && achieveAge <= retirementAge) {
+        shareText = `老後資金チェック📊\n今のペースだと${achieveAge}歳で達成見込み（${retirementAge}歳退職予定）\n準備率${rate}%、このまま続けよう🎉\n\n#老後資金 #資産形成 #らくらく夫婦\nhttps://life-works.net/rougo-junbiritsu/`;
+      } else if (achieveAge !== null) {
+        shareText = `老後資金チェック📊\n準備率${rate}%、退職時点であと${formatMan(shortage)}不足😅\n（達成は${achieveAge}歳の見込み）\n\n#老後資金 #資産形成 #らくらく夫婦\nhttps://life-works.net/rougo-junbiritsu/`;
+      } else {
+        shareText = `老後資金チェック📊\n準備率${rate}%、退職時点であと${formatMan(shortage)}不足😅\n積立を見直したい...\n\n#老後資金 #資産形成 #らくらく夫婦\nhttps://life-works.net/rougo-junbiritsu/`;
+      }
+      document.getElementById('share-btn').href = `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}`;
+
+      // チャート（5年刻み + 退職年齢）
+      const milestones = [];
+      for (let age = currentAge; age <= retirementAge; age += 5) {
+        milestones.push(age);
+      }
+      if (milestones[milestones.length - 1] !== retirementAge) {
+        milestones.push(retirementAge);
+      }
+
+      const assetValues = milestones.map(age =>
+        Math.round(calcAssetsAt(age - currentAge, currentAssets, monthlyContribution, annualRate))
+      );
+      const barColors = assetValues.map(v => v >= targetAmount ? '#5B7C5F' : '#a8c4ab');
+
+      const ctx = document.getElementById('asset-chart').getContext('2d');
+      if (assetChart) assetChart.destroy();
+      assetChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: milestones.map(a => `${a}歳`),
+          datasets: [
+            {
+              type: 'bar',
+              label: '予測資産',
+              data: assetValues,
+              backgroundColor: barColors,
+              borderRadius: 4,
+              order: 2,
+            },
+            {
+              type: 'line',
+              label: '目標金額',
+              data: milestones.map(() => targetAmount),
+              borderColor: '#E8B84B',
+              borderWidth: 2.5,
+              borderDash: [6, 4],
+              pointRadius: 0,
+              fill: false,
+              order: 1,
+              tension: 0,
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          interaction: { mode: 'index', intersect: false },
+          plugins: {
+            legend: {
+              display: true,
+              labels: {
+                boxWidth: 12,
+                font: { family: "'Noto Sans JP', sans-serif", size: 11 }
+              }
+            },
+            tooltip: {
+              callbacks: {
+                label: (ctx) => ` ${formatMan(ctx.raw)}`
+              }
+            }
+          },
+          scales: {
+            y: {
+              beginAtZero: true,
+              ticks: {
+                callback: (v) => v >= 10000 ? (v / 10000).toFixed(0) + '億' : v.toLocaleString() + '万',
+                font: { family: "'Noto Sans JP', sans-serif", size: 10 }
+              },
+              grid: { color: 'rgba(61,43,31,0.06)' }
+            },
+            x: {
+              ticks: { font: { family: "'Noto Sans JP', sans-serif", size: 11 } },
+              grid: { display: false }
+            }
+          }
+        }
+      });
+
+      const resultArea = document.getElementById('result-area');
+      resultArea.classList.add('show');
+      setTimeout(() => resultArea.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
+    }
+  </script>
+
+</body>
+</html>
