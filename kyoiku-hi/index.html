@@ -498,6 +498,89 @@
     }
     .btn-cta:hover { background: #d4a43e; transform: translateY(-1px); }
 
+    /* セクションラベル */
+    .result-section-label {
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      color: var(--color-text-muted);
+      margin: 32px 0 14px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--color-border);
+    }
+    .result-section-label:first-child { margin-top: 0; }
+
+    /* 総額カード */
+    .result-total-card {
+      background: var(--color-surface);
+      border-radius: 20px;
+      padding: 28px;
+      border: 1px solid var(--color-border);
+      box-shadow: 0 2px 12px rgba(61,43,31,0.06);
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+    /* 内訳カード */
+    .breakdown-card {
+      background: var(--color-surface);
+      border-radius: 20px;
+      padding: 24px 28px;
+      border: 1px solid var(--color-border);
+      box-shadow: 0 2px 12px rgba(61,43,31,0.06);
+      margin-bottom: 20px;
+    }
+    .breakdown-card-title {
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: var(--color-text-muted);
+      margin-bottom: 16px;
+    }
+    .breakdown-child-block { margin-bottom: 20px; }
+    .breakdown-child-block:last-child { margin-bottom: 0; }
+    .breakdown-child-label {
+      font-size: 0.83rem;
+      font-weight: 700;
+      color: var(--color-text);
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .breakdown-child-total {
+      margin-left: auto;
+      color: var(--color-primary);
+      font-family: 'Inter', sans-serif;
+    }
+    .breakdown-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 7px 0;
+      font-size: 0.83rem;
+      border-bottom: 1px dashed var(--color-border);
+    }
+    .breakdown-row:last-child { border-bottom: none; }
+    .breakdown-row-stage { color: var(--color-text-muted); }
+    .breakdown-row-cost {
+      font-weight: 700;
+      font-family: 'Inter', sans-serif;
+      color: var(--color-text);
+    }
+    .breakdown-total-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 10px 0 0;
+      margin-top: 6px;
+      border-top: 1.5px solid var(--color-border);
+      font-size: 0.88rem;
+      font-weight: 700;
+    }
+    .breakdown-total-row span:last-child {
+      color: var(--color-primary);
+      font-family: 'Inter', sans-serif;
+    }
+
     /* 積立スケジュール */
     .schedule-card {
       background: var(--color-surface);
@@ -648,54 +731,43 @@
     <!-- 結果エリア -->
     <div class="result-area" id="result-area">
 
-      <div class="result-metrics">
-        <div class="metric-total">
-          <p class="metric-total-label">教育費の総額（全子ども合計）</p>
-          <div class="metric-total-value" id="result-total-cost">—<span>万円</span></div>
-        </div>
+      <p class="result-section-label">教育費シミュレーション結果</p>
 
-        <div class="metric-children" id="result-children-rows"></div>
-
-        <div class="metric-summary">
-          <div class="metric-summary-row">
-            <span>世帯合計の必要積立額</span>
-            <span id="result-required-monthly" style="font-weight:900;font-family:'Inter',sans-serif;">—</span>
-          </div>
-          <div class="metric-summary-row">
-            <span>現在の積立額</span>
-            <span id="result-current-monthly">—</span>
-          </div>
-        </div>
-
-        <div class="metric-diff" id="result-diff">
-          <p class="metric-diff-label" id="result-diff-label">—</p>
-          <div class="metric-diff-value" id="result-diff-value">—</div>
-        </div>
+      <div class="result-total-card">
+        <p class="metric-total-label">教育費の総額（全子ども合計）</p>
+        <div class="metric-total-value" id="result-total-cost">—<span>万円</span></div>
       </div>
 
+      <div class="breakdown-card">
+        <p class="breakdown-card-title">内訳（子どもごと・ステージ別）</p>
+        <div id="result-breakdown"></div>
+      </div>
+
+      <div class="chart-card">
+        <p class="chart-card-title">年ごとの教育費支出の推移</p>
+        <canvas id="expense-chart"></canvas>
+      </div>
+
+      <p class="result-section-label">積立シミュレーション結果</p>
+
       <div class="schedule-card">
-        <p class="schedule-card-title">積立スケジュール（期間ごとの必要積立額）</p>
+        <p class="schedule-card-title">必要な積立額（期間ごと）</p>
         <div id="result-schedule"></div>
       </div>
 
       <div class="chart-card">
-        <p class="chart-card-title">年ごとの教育費支出</p>
-        <canvas id="expense-chart"></canvas>
-      </div>
-
-      <div class="chart-card">
-        <p class="chart-card-title">教育資金残高の推移</p>
+        <p class="chart-card-title">教育資金残高の推移（現在の積立額の場合）</p>
         <canvas id="balance-chart"></canvas>
       </div>
-
-      <a class="share-btn" id="share-btn" href="#" target="_blank">
-        𝕏 結果をポストする
-      </a>
 
       <div class="prescription-card">
         <p class="prescription-from">らくらく夫婦よりアドバイス</p>
         <p class="prescription-text" id="prescription-text"></p>
       </div>
+
+      <a class="share-btn" id="share-btn" href="#" target="_blank">
+        𝕏 結果をポストする
+      </a>
 
       <div class="brand-cta-section">
         <div class="brand-cta-header">
@@ -1119,42 +1191,58 @@
       const totalRequired = childPMTs.reduce((a, b) => a + b, 0);
       const diff = monthlySaving - totalRequired;
 
-      // ── 結果表示 ──
+      // ── 教育費の総額 ──
       document.getElementById('result-total-cost').innerHTML =
         `${formatMan(grandTotal)}<span>万円</span>`;
 
-      // 子どもごとの行
-      let childRowsHtml = '';
+      // ── 内訳（子どもごと・ステージ別費用） ──
+      const STAGE_LABELS = ['幼稚園', '小学校', '中学校', '高校', '大学・専門'];
+      let breakdownHtml = '';
       for (let i = 0; i < numChildren; i++) {
-        childRowsHtml += `
-          <div class="metric-child-row">
-            <span class="metric-child-name">
+        const age = childAges[i];
+        const settings = childSettings[i];
+        const childTotal = futureCosts[i];
+        breakdownHtml += `<div class="breakdown-child-block">`;
+        if (numChildren > 1) {
+          breakdownHtml += `
+            <div class="breakdown-child-label">
               <span class="child-dot" style="background:${CHILD_COLORS[i]}"></span>
-              子ども${i + 1}（${childAges[i]}歳）の必要積立額
-            </span>
-            <span class="metric-child-amount">${formatMan(Math.round(childPMTs[i] * 10) / 10)}万円/月</span>
-          </div>`;
+              子ども${i + 1}（${age}歳）
+              <span class="breakdown-child-total">${formatMan(Math.round(childTotal * 10) / 10)}万円</span>
+            </div>`;
+        }
+        for (let si = 0; si < 5; si++) {
+          const stage = STAGES[si];
+          if (age >= stage.deadlineAge) continue;
+          const cost = getStageCostRaw(si, settings[si]);
+          if (cost <= 0) continue;
+          let stageLabel = STAGE_LABELS[si];
+          if (si < 4) {
+            stageLabel += `（${settings[si].school === 'public' ? '公立' : '私立'}`;
+            if (settings[si].exam !== 'none') {
+              stageLabel += `・塾${settings[si].exam === 'standard' ? '標準' : 'しっかり'}`;
+            }
+            stageLabel += '）';
+          } else {
+            const opt = stage.options[settings[si].school];
+            if (opt) stageLabel += `（${opt.label}）`;
+          }
+          breakdownHtml += `
+            <div class="breakdown-row">
+              <span class="breakdown-row-stage">${stageLabel}</span>
+              <span class="breakdown-row-cost">${formatMan(Math.round(cost * 10) / 10)}万円</span>
+            </div>`;
+        }
+        if (numChildren === 1) {
+          breakdownHtml += `
+            <div class="breakdown-total-row">
+              <span>合計</span>
+              <span>${formatMan(Math.round(childTotal * 10) / 10)}万円</span>
+            </div>`;
+        }
+        breakdownHtml += `</div>`;
       }
-      document.getElementById('result-children-rows').innerHTML = childRowsHtml;
-
-      document.getElementById('result-required-monthly').textContent =
-        `${formatMan(Math.round(totalRequired * 10) / 10)}万円/月`;
-      document.getElementById('result-current-monthly').textContent =
-        `${formatMan(monthlySaving)}万円/月`;
-
-      const diffEl = document.getElementById('result-diff');
-      const diffLabel = document.getElementById('result-diff-label');
-      const diffValue = document.getElementById('result-diff-value');
-
-      if (diff >= 0) {
-        diffEl.className = 'metric-diff surplus';
-        diffLabel.textContent = '月々の積立で対応できています';
-        diffValue.textContent = `+${formatMan(Math.round(diff * 10) / 10)}万円/月 余裕あり`;
-      } else {
-        diffEl.className = 'metric-diff shortage';
-        diffLabel.textContent = '月々の積立が不足しています';
-        diffValue.textContent = `あと${formatMan(Math.round(Math.abs(diff) * 10) / 10)}万円/月 追加が必要`;
-      }
+      document.getElementById('result-breakdown').innerHTML = breakdownHtml;
 
       // ── 積立スケジュール表示 ──
       let scheduleHtml = '';
