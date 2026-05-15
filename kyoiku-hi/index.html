@@ -1,0 +1,1234 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>教育費シミュレーター | らくらく夫婦ツール</title>
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="教育費シミュレーター | らくらく夫婦ツール">
+  <meta property="og:description" content="子どもの年齢・進路から教育費の総額と必要な積立額を計算します。幼稚園から大学まで、ステージごとに細かく設定できます。">
+  <meta property="og:url" content="https://life-works.net/kyoiku-hi/">
+  <meta property="og:image" content="https://life-works.net/images/card-kyoiku-hi.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://life-works.net/images/card-kyoiku-hi.png">
+  <link rel="stylesheet" href="../style.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <style>
+    .tool-wrap {
+      max-width: 560px;
+      margin: 0 auto;
+      padding: 48px 24px 80px;
+    }
+    .tool-header {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+    .tool-eyebrow {
+      display: inline-block;
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      color: var(--color-primary);
+      background: var(--color-primary-light);
+      padding: 4px 12px;
+      border-radius: 100px;
+      margin-bottom: 16px;
+    }
+    .tool-title {
+      font-size: 1.7rem;
+      font-weight: 900;
+      color: var(--color-text);
+      line-height: 1.3;
+    }
+    .tool-desc {
+      font-size: 0.88rem;
+      color: var(--color-text-muted);
+      margin-top: 12px;
+      line-height: 1.8;
+    }
+    .form-card {
+      background: var(--color-surface);
+      border-radius: 20px;
+      padding: 32px;
+      border: 1px solid var(--color-border);
+      box-shadow: 0 2px 12px rgba(61,43,31,0.06);
+      margin-bottom: 20px;
+    }
+    .step-label {
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      color: var(--color-primary);
+      margin-bottom: 16px;
+    }
+    .step-note {
+      font-size: 0.82rem;
+      color: var(--color-text-muted);
+      margin-bottom: 16px;
+      margin-top: -8px;
+    }
+    .form-group {
+      margin-bottom: 24px;
+    }
+    .form-group:last-child { margin-bottom: 0; }
+    label {
+      display: block;
+      font-size: 0.88rem;
+      font-weight: 700;
+      color: var(--color-text);
+      margin-bottom: 8px;
+    }
+    .label-note {
+      font-weight: 400;
+      font-size: 0.78rem;
+      color: var(--color-text-muted);
+      margin-left: 6px;
+    }
+    input[type="number"], select {
+      width: 100%;
+      padding: 12px 16px;
+      border: 1.5px solid var(--color-border);
+      border-radius: 10px;
+      font-size: 1rem;
+      font-family: 'Inter', 'Noto Sans JP', sans-serif;
+      color: var(--color-text);
+      background: var(--color-bg);
+      transition: border-color 0.2s;
+      appearance: none;
+      -webkit-appearance: none;
+    }
+    input[type="number"]::placeholder { color: #C8B8A8; }
+    input[type="number"]:focus, select:focus {
+      outline: none;
+      border-color: var(--color-primary);
+      background: var(--color-surface);
+    }
+    .input-with-unit { position: relative; }
+    .input-with-unit input { padding-right: 48px; }
+    .unit {
+      position: absolute;
+      right: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 0.85rem;
+      color: var(--color-text-muted);
+      pointer-events: none;
+    }
+    .select-wrap { position: relative; }
+    .select-wrap::after {
+      content: '▼';
+      position: absolute;
+      right: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 0.65rem;
+      color: var(--color-text-muted);
+      pointer-events: none;
+    }
+
+    /* ボタングループ */
+    .btn-group {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+    .btn-opt {
+      padding: 8px 16px;
+      border: 1.5px solid var(--color-border);
+      border-radius: 8px;
+      font-size: 0.85rem;
+      font-weight: 700;
+      font-family: 'Noto Sans JP', sans-serif;
+      cursor: pointer;
+      background: var(--color-bg);
+      color: var(--color-text-muted);
+      transition: all 0.15s;
+      white-space: nowrap;
+    }
+    .btn-opt.selected {
+      background: var(--color-primary);
+      border-color: var(--color-primary);
+      color: #fff;
+    }
+    .btn-opt-sm {
+      padding: 6px 11px;
+      font-size: 0.78rem;
+    }
+
+    /* 子どもタブ */
+    .child-tab-header {
+      display: flex;
+      gap: 0;
+      border-bottom: 2px solid var(--color-border);
+      margin-bottom: 20px;
+    }
+    .child-tab-btn {
+      padding: 8px 16px;
+      border: none;
+      background: none;
+      font-size: 0.85rem;
+      font-weight: 700;
+      font-family: 'Noto Sans JP', sans-serif;
+      color: var(--color-text-muted);
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+      margin-bottom: -2px;
+      transition: all 0.15s;
+      white-space: nowrap;
+    }
+    .child-tab-btn.active {
+      color: var(--color-primary);
+      border-bottom-color: var(--color-primary);
+    }
+    .child-panel { display: none; }
+    .child-panel.active { display: block; }
+
+    /* ステージ行 */
+    .stage-row {
+      border: 1px solid var(--color-border);
+      border-radius: 12px;
+      padding: 14px 16px;
+      margin-bottom: 10px;
+      background: var(--color-bg);
+    }
+    .stage-row.past-stage { opacity: 0.38; pointer-events: none; }
+    .stage-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+    .stage-name-text {
+      font-size: 0.88rem;
+      font-weight: 700;
+      color: var(--color-text);
+    }
+    .stage-badge {
+      font-size: 0.67rem;
+      padding: 2px 8px;
+      border-radius: 100px;
+      font-weight: 700;
+    }
+    .badge-info { background: var(--color-primary-light); color: var(--color-primary); }
+    .badge-past { background: var(--color-bg-sub); color: var(--color-text-muted); }
+    .badge-current { background: #FFF3CD; color: #856404; }
+    .stage-field { margin-bottom: 10px; }
+    .stage-field:last-child { margin-bottom: 0; }
+    .stage-field-label {
+      font-size: 0.75rem;
+      color: var(--color-text-muted);
+      margin-bottom: 6px;
+    }
+
+    /* 計算ボタン */
+    .btn-calc {
+      width: 100%;
+      padding: 16px;
+      background: var(--color-primary);
+      color: #fff;
+      border: none;
+      border-radius: 12px;
+      font-size: 1rem;
+      font-weight: 700;
+      font-family: 'Noto Sans JP', sans-serif;
+      cursor: pointer;
+      transition: all 0.2s;
+      letter-spacing: 0.04em;
+    }
+    .btn-calc:hover {
+      background: #4a6b4e;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 16px rgba(91,124,95,0.3);
+    }
+
+    /* 結果エリア */
+    .result-area { display: none; }
+    .result-area.show { display: block; margin-top: 40px; }
+
+    .result-metrics {
+      background: var(--color-surface);
+      border-radius: 20px;
+      padding: 28px;
+      border: 1px solid var(--color-border);
+      box-shadow: 0 2px 12px rgba(61,43,31,0.06);
+      margin-bottom: 20px;
+    }
+    .metric-total {
+      text-align: center;
+      padding-bottom: 20px;
+      border-bottom: 1px solid var(--color-border);
+      margin-bottom: 20px;
+    }
+    .metric-total-label {
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: var(--color-text-muted);
+      margin-bottom: 8px;
+      letter-spacing: 0.06em;
+    }
+    .metric-total-value {
+      font-size: 2.6rem;
+      font-weight: 900;
+      font-family: 'Inter', sans-serif;
+      color: var(--color-text);
+      line-height: 1;
+    }
+    .metric-total-value span { font-size: 1.3rem; }
+
+    .metric-children {
+      margin-bottom: 16px;
+    }
+    .metric-child-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 9px 0;
+      border-bottom: 1px dashed var(--color-border);
+      gap: 8px;
+    }
+    .metric-child-row:last-child { border-bottom: none; }
+    .metric-child-name {
+      font-size: 0.83rem;
+      color: var(--color-text-muted);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .child-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .metric-child-amount {
+      font-size: 1.05rem;
+      font-weight: 900;
+      font-family: 'Inter', sans-serif;
+      color: var(--color-text);
+      white-space: nowrap;
+    }
+
+    .metric-summary {
+      background: var(--color-bg);
+      border-radius: 12px;
+      padding: 16px;
+    }
+    .metric-summary-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 5px 0;
+      font-size: 0.88rem;
+    }
+    .metric-summary-row.divider {
+      border-top: 1.5px solid var(--color-border);
+      margin-top: 6px;
+      padding-top: 10px;
+      font-weight: 700;
+    }
+    .metric-diff {
+      margin-top: 12px;
+      padding: 14px 16px;
+      border-radius: 10px;
+      text-align: center;
+    }
+    .metric-diff.shortage {
+      background: #fef0f0;
+    }
+    .metric-diff.surplus {
+      background: var(--color-primary-light);
+    }
+    .metric-diff-label {
+      font-size: 0.78rem;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+    .metric-diff.shortage .metric-diff-label { color: #c0392b; }
+    .metric-diff.surplus .metric-diff-label { color: var(--color-primary); }
+    .metric-diff-value {
+      font-size: 1.6rem;
+      font-weight: 900;
+      font-family: 'Inter', sans-serif;
+    }
+    .metric-diff.shortage .metric-diff-value { color: #c0392b; }
+    .metric-diff.surplus .metric-diff-value { color: var(--color-primary); }
+
+    /* グラフカード */
+    .chart-card {
+      background: var(--color-surface);
+      border-radius: 20px;
+      padding: 24px;
+      border: 1px solid var(--color-border);
+      box-shadow: 0 2px 12px rgba(61,43,31,0.06);
+      margin-bottom: 20px;
+    }
+    .chart-card-title {
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: var(--color-text-muted);
+      margin-bottom: 16px;
+    }
+
+    /* アドバイス */
+    .prescription-card {
+      background: var(--color-primary-light);
+      border-radius: 16px;
+      padding: 24px;
+      margin-bottom: 20px;
+      border-left: 4px solid var(--color-primary);
+    }
+    .prescription-from {
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: var(--color-primary);
+      margin-bottom: 10px;
+    }
+    .prescription-text {
+      font-size: 0.92rem;
+      color: var(--color-text);
+      line-height: 1.8;
+    }
+
+    /* Xシェア */
+    .share-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      width: 100%;
+      padding: 14px;
+      background: #000;
+      color: #fff;
+      border: none;
+      border-radius: 12px;
+      font-size: 0.9rem;
+      font-weight: 700;
+      font-family: 'Noto Sans JP', sans-serif;
+      cursor: pointer;
+      text-decoration: none;
+      transition: all 0.2s;
+      margin-bottom: 20px;
+    }
+    .share-btn:hover { background: #222; transform: translateY(-1px); }
+
+    /* ブランドCTA */
+    .brand-cta-section {
+      background: var(--color-surface);
+      border-radius: 20px;
+      padding: 28px;
+      border: 1px solid var(--color-border);
+      box-shadow: 0 2px 12px rgba(61,43,31,0.06);
+      margin-bottom: 16px;
+    }
+    .brand-cta-header {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 14px;
+    }
+    .brand-icon {
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      object-fit: cover;
+      flex-shrink: 0;
+      border: 2px solid var(--color-primary);
+    }
+    .brand-cta-lead {
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: var(--color-primary);
+      letter-spacing: 0.08em;
+      margin-bottom: 4px;
+    }
+    .brand-cta-title {
+      font-size: 1.05rem;
+      font-weight: 900;
+      color: var(--color-text);
+      line-height: 1.45;
+    }
+    .brand-cta-body {
+      font-size: 0.83rem;
+      color: var(--color-text-muted);
+      line-height: 1.75;
+      margin-bottom: 16px;
+    }
+    .line-banner-link {
+      display: block;
+      margin-bottom: 12px;
+      border-radius: 12px;
+      overflow: hidden;
+      transition: opacity 0.2s, transform 0.2s;
+    }
+    .line-banner-link:hover { opacity: 0.9; transform: translateY(-2px); }
+    .line-banner-link img { width: 100%; display: block; }
+    .cta-note {
+      background: var(--color-bg);
+      border-radius: 12px;
+      padding: 14px 16px;
+      margin-top: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+    .cta-note-text { flex: 1; }
+    .cta-note-title {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--color-text);
+      margin-bottom: 3px;
+    }
+    .cta-note-desc {
+      font-size: 0.78rem;
+      color: var(--color-text-muted);
+      line-height: 1.6;
+    }
+    .btn-cta {
+      display: inline-block;
+      padding: 10px 18px;
+      background: var(--color-accent);
+      color: var(--color-text);
+      border-radius: 10px;
+      font-size: 0.85rem;
+      font-weight: 700;
+      text-decoration: none;
+      transition: all 0.2s;
+      white-space: nowrap;
+    }
+    .btn-cta:hover { background: #d4a43e; transform: translateY(-1px); }
+
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.82rem;
+      color: var(--color-text-muted);
+      text-decoration: none;
+      margin-bottom: 32px;
+    }
+    .back-link:hover { color: var(--color-primary); }
+
+    @media (max-width: 600px) {
+      .tool-wrap { padding: 32px 16px 60px; }
+      .form-card { padding: 24px 18px; }
+      .tool-title { font-size: 1.45rem; }
+      .metric-total-value { font-size: 2rem; }
+      .metric-diff-value { font-size: 1.3rem; }
+      .btn-opt-sm { padding: 5px 9px; font-size: 0.75rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="header">
+    <div class="header-inner">
+      <a href="/" class="logo">らくらく夫婦<span>ツール</span></a>
+    </div>
+  </header>
+
+  <div class="tool-wrap">
+
+    <a href="/" class="back-link">← ツール一覧へ</a>
+
+    <div class="tool-header">
+      <p class="tool-eyebrow">家計・資産形成</p>
+      <h1 class="tool-title">教育費<br>シミュレーター</h1>
+      <p class="tool-desc">子どもの年齢・進路から教育費の総額と必要な積立額を計算します。<br>幼稚園から大学まで、ステージごとに細かく設定できます。</p>
+    </div>
+
+    <!-- STEP 1 -->
+    <div class="form-card">
+      <p class="step-label">STEP 1 ／ 子どもの情報</p>
+
+      <div class="form-group">
+        <label>子どもの人数</label>
+        <div class="btn-group" id="num-children-group">
+          <button class="btn-opt selected" onclick="setNumChildren(1)">1人</button>
+          <button class="btn-opt" onclick="setNumChildren(2)">2人</button>
+          <button class="btn-opt" onclick="setNumChildren(3)">3人</button>
+          <button class="btn-opt" onclick="setNumChildren(4)">4人</button>
+        </div>
+      </div>
+
+      <div id="age-inputs-wrap"></div>
+    </div>
+
+    <!-- STEP 2 -->
+    <div class="form-card">
+      <p class="step-label">STEP 2 ／ 進路設定</p>
+      <p class="step-note">子どもごとにタブを切り替えて、各ステージの学校・塾を設定してください。</p>
+
+      <div class="child-tab-header" id="child-tab-header"></div>
+      <div id="child-tab-panels"></div>
+    </div>
+
+    <!-- STEP 3 -->
+    <div class="form-card">
+      <p class="step-label">STEP 3 ／ 現在の教育資金状況</p>
+
+      <div class="form-group">
+        <label>現在の教育資金残高<span class="label-note">学資保険・積立NISA・預金など合計</span></label>
+        <div class="input-with-unit">
+          <input type="number" id="current-balance" placeholder="0" min="0">
+          <span class="unit">万円</span>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>月々の積立額<span class="label-note">現在の教育費向け積立</span></label>
+        <div class="input-with-unit">
+          <input type="number" id="monthly-saving" placeholder="3" min="0">
+          <span class="unit">万円</span>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>積立スタイル（想定年利回り）</label>
+        <div class="select-wrap">
+          <select id="return-rate">
+            <option value="0">0%：現金のみ（銀行預金・タンス預金）</option>
+            <option value="1">1%：定期預金・個人向け国債</option>
+            <option value="2">2%：債券重視（債券90%・株式10%程度）</option>
+            <option value="3" selected>3%：債券中心（債券70%・株式30%程度）</option>
+            <option value="4">4%：バランス型（債券50%・株式50%程度）</option>
+            <option value="5">5%：株式重視（株式70%・債券30%程度）</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <button class="btn-calc" onclick="calculate()">教育費を計算する</button>
+
+    <!-- 結果エリア -->
+    <div class="result-area" id="result-area">
+
+      <div class="result-metrics">
+        <div class="metric-total">
+          <p class="metric-total-label">教育費の総額（全子ども合計）</p>
+          <div class="metric-total-value" id="result-total-cost">—<span>万円</span></div>
+        </div>
+
+        <div class="metric-children" id="result-children-rows"></div>
+
+        <div class="metric-summary">
+          <div class="metric-summary-row">
+            <span>世帯合計の必要積立額</span>
+            <span id="result-required-monthly" style="font-weight:900;font-family:'Inter',sans-serif;">—</span>
+          </div>
+          <div class="metric-summary-row">
+            <span>現在の積立額</span>
+            <span id="result-current-monthly">—</span>
+          </div>
+        </div>
+
+        <div class="metric-diff" id="result-diff">
+          <p class="metric-diff-label" id="result-diff-label">—</p>
+          <div class="metric-diff-value" id="result-diff-value">—</div>
+        </div>
+      </div>
+
+      <div class="chart-card">
+        <p class="chart-card-title">年ごとの教育費支出</p>
+        <canvas id="expense-chart"></canvas>
+      </div>
+
+      <div class="chart-card">
+        <p class="chart-card-title">教育資金残高の推移</p>
+        <canvas id="balance-chart"></canvas>
+      </div>
+
+      <a class="share-btn" id="share-btn" href="#" target="_blank">
+        𝕏 結果をポストする
+      </a>
+
+      <div class="prescription-card">
+        <p class="prescription-from">らくらく夫婦よりアドバイス</p>
+        <p class="prescription-text" id="prescription-text"></p>
+      </div>
+
+      <div class="brand-cta-section">
+        <div class="brand-cta-header">
+          <img src="/images/icon.png" alt="らくらく夫婦" class="brand-icon">
+          <div>
+            <p class="brand-cta-lead">らくらく夫婦と一緒に</p>
+            <p class="brand-cta-title">お金の仕組みを、<br>夫婦でつくっていきませんか？</p>
+          </div>
+        </div>
+        <p class="brand-cta-body">家計管理・資産形成のコツをLINEとnoteで発信中。まずは無料テンプレをLINEで受け取ってみてください。</p>
+        <a href="https://lin.ee/Yzw8sE4" target="_blank" class="line-banner-link">
+          <img src="/images/banner-line.png" alt="LINEで家計レントゲンシートを今すぐ受け取る">
+        </a>
+        <div class="cta-note">
+          <div class="cta-note-text">
+            <p class="cta-note-title">教育費の積立設計の考え方</p>
+            <p class="cta-note-desc">いつまでにいくら必要か、noteで解説しています。</p>
+          </div>
+          <a href="https://note.com/rakufu_log" target="_blank" class="btn-cta">読む →</a>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+  <footer class="footer">
+    <p>© 2026 <a href="https://note.com/rakufu_log" target="_blank">らくらく夫婦</a> ｜ <a href="/">ツール一覧</a></p>
+  </footer>
+
+  <script>
+    // ── 定数 ──────────────────────────────────────────
+    const STAGES = [
+      {
+        id: 'kindergarten', name: '幼稚園', years: 3, deadlineAge: 3,
+        costs: { public: 16.5, private: 31.0 },
+        examLabel: '小学校受験の準備',
+        examCosts: { none: 0, standard: 30, full: 80 }
+      },
+      {
+        id: 'elementary', name: '小学校', years: 6, deadlineAge: 6,
+        costs: { public: 35.2, private: 166.9 },
+        examLabel: '中学受験の準備',
+        examCosts: { none: 0, standard: 80, full: 200 }
+      },
+      {
+        id: 'middle', name: '中学校', years: 3, deadlineAge: 12,
+        costs: { public: 53.8, private: 143.6 },
+        examLabel: '高校受験の準備',
+        examCosts: { none: 0, standard: 45, full: 90 }
+      },
+      {
+        id: 'highschool', name: '高校', years: 3, deadlineAge: 15,
+        costs: { public: 51.3, private: 105.4 },
+        examLabel: '大学受験の準備',
+        examCosts: { none: 0, standard: 75, full: 120 }
+      },
+      {
+        id: 'university', name: '大学・専門', deadlineAge: 18,
+        options: {
+          national:   { label: '国公立',    annual: 53.6,  entrance: 28.2, years: 4 },
+          liberal:    { label: '私立文系',  annual: 93.9,  entrance: 22.0, years: 4 },
+          science:    { label: '私立理系',  annual: 122.9, entrance: 24.0, years: 4 },
+          vocational: { label: '専門・短大', annual: 82.0, entrance: 20.0, years: 2 },
+          skip:       { label: '進学しない', annual: 0,    entrance: 0,    years: 0 }
+        }
+      }
+    ];
+
+    const CHILD_COLORS = ['#5B7C5F', '#E8B84B', '#7BA7BC', '#C27B7B'];
+
+    // ── 状態 ──────────────────────────────────────────
+    let numChildren = 1;
+    let childAges = [null];
+    let childSettings = [defaultSettings()];
+    let activeChildTab = 0;
+    let expenseChart = null;
+    let balanceChart = null;
+
+    function defaultSettings() {
+      return [
+        { school: 'public', exam: 'none' },
+        { school: 'public', exam: 'none' },
+        { school: 'public', exam: 'none' },
+        { school: 'public', exam: 'none' },
+        { school: 'national' }
+      ];
+    }
+
+    // ── STEP 1 ────────────────────────────────────────
+    function setNumChildren(n) {
+      numChildren = n;
+      document.querySelectorAll('#num-children-group .btn-opt').forEach((btn, i) => {
+        btn.classList.toggle('selected', i + 1 === n);
+      });
+      while (childAges.length < n) { childAges.push(null); }
+      while (childSettings.length < n) { childSettings.push(defaultSettings()); }
+      renderAgeInputs();
+      if (activeChildTab >= n) activeChildTab = n - 1;
+      renderChildTabs();
+    }
+
+    function renderAgeInputs() {
+      const wrap = document.getElementById('age-inputs-wrap');
+      let html = '';
+      for (let i = 0; i < numChildren; i++) {
+        const val = childAges[i] !== null ? childAges[i] : '';
+        html += `
+          <div class="form-group" style="margin-top:18px;">
+            <label>子ども${i + 1}の現在年齢</label>
+            <div class="input-with-unit">
+              <input type="number" id="age-input-${i}" placeholder="0" min="0" max="17"
+                value="${val}" oninput="onAgeChange(${i}, this.value)">
+              <span class="unit">歳</span>
+            </div>
+          </div>`;
+      }
+      wrap.innerHTML = html;
+    }
+
+    function onAgeChange(childIndex, value) {
+      childAges[childIndex] = value !== '' ? parseInt(value) : null;
+      const btn = document.querySelector(`[data-ctab="${childIndex}"]`);
+      if (btn) btn.textContent = childTabLabel(childIndex);
+      renderChildPanel(childIndex);
+    }
+
+    function childTabLabel(i) {
+      const age = childAges[i];
+      return `子ども${i + 1}${age !== null ? `（${age}歳）` : ''}`;
+    }
+
+    // ── STEP 2 ────────────────────────────────────────
+    function renderChildTabs() {
+      const header = document.getElementById('child-tab-header');
+      const panels = document.getElementById('child-tab-panels');
+
+      let hHtml = '', pHtml = '';
+      for (let i = 0; i < numChildren; i++) {
+        hHtml += `<button class="child-tab-btn ${i === activeChildTab ? 'active' : ''}"
+          data-ctab="${i}" onclick="switchChildTab(${i})">${childTabLabel(i)}</button>`;
+        pHtml += `<div id="child-panel-${i}" class="child-panel ${i === activeChildTab ? 'active' : ''}"></div>`;
+      }
+      header.innerHTML = hHtml;
+      panels.innerHTML = pHtml;
+      for (let i = 0; i < numChildren; i++) renderChildPanel(i);
+    }
+
+    function switchChildTab(index) {
+      activeChildTab = index;
+      document.querySelectorAll('.child-tab-btn').forEach((btn, i) => {
+        btn.classList.toggle('active', i === index);
+      });
+      document.querySelectorAll('.child-panel').forEach((p, i) => {
+        p.classList.toggle('active', i === index);
+      });
+    }
+
+    function renderChildPanel(childIndex) {
+      const panel = document.getElementById(`child-panel-${childIndex}`);
+      if (!panel) return;
+      const age = childAges[childIndex];
+      const settings = childSettings[childIndex];
+      let html = '';
+
+      // 幼稚園〜高校
+      for (let si = 0; si < 4; si++) {
+        const stage = STAGES[si];
+        const stageEnd = stage.deadlineAge + stage.years;
+        const isPast = age !== null && age >= stageEnd;
+        const isCurrent = age !== null && age >= stage.deadlineAge && age < stageEnd;
+        const sel = settings[si];
+
+        let badge = '';
+        if (isPast) {
+          badge = `<span class="stage-badge badge-past">終了</span>`;
+        } else if (isCurrent) {
+          badge = `<span class="stage-badge badge-current">在学中</span>`;
+        } else if (age !== null) {
+          const yrs = stage.deadlineAge - age;
+          badge = `<span class="stage-badge badge-info">${yrs}年後〜</span>`;
+        }
+
+        html += `
+          <div class="stage-row ${isPast ? 'past-stage' : ''}">
+            <div class="stage-header">
+              <span class="stage-name-text">${stage.name}</span>${badge}
+            </div>
+            <div class="stage-field">
+              <div class="stage-field-label">学校の種別</div>
+              <div class="btn-group">
+                <button class="btn-opt btn-opt-sm ${sel.school === 'public' ? 'selected' : ''}"
+                  onclick="setStage(${childIndex},${si},'school','public')">公立</button>
+                <button class="btn-opt btn-opt-sm ${sel.school === 'private' ? 'selected' : ''}"
+                  onclick="setStage(${childIndex},${si},'school','private')">私立</button>
+              </div>
+            </div>
+            <div class="stage-field">
+              <div class="stage-field-label">${stage.examLabel}</div>
+              <div class="btn-group">
+                <button class="btn-opt btn-opt-sm ${sel.exam === 'none' ? 'selected' : ''}"
+                  onclick="setStage(${childIndex},${si},'exam','none')">なし</button>
+                <button class="btn-opt btn-opt-sm ${sel.exam === 'standard' ? 'selected' : ''}"
+                  onclick="setStage(${childIndex},${si},'exam','standard')">標準</button>
+                <button class="btn-opt btn-opt-sm ${sel.exam === 'full' ? 'selected' : ''}"
+                  onclick="setStage(${childIndex},${si},'exam','full')">しっかり</button>
+              </div>
+            </div>
+          </div>`;
+      }
+
+      // 大学
+      const univSel = settings[4];
+      const univOpts = STAGES[4].options;
+      const univPast = age !== null && age >= 22;
+      const univCurrent = age !== null && age >= 18 && age < 22;
+      let univBadge = '';
+      if (univPast) {
+        univBadge = `<span class="stage-badge badge-past">終了</span>`;
+      } else if (univCurrent) {
+        univBadge = `<span class="stage-badge badge-current">在学中</span>`;
+      } else if (age !== null) {
+        const yrs = 18 - age;
+        if (yrs > 0) univBadge = `<span class="stage-badge badge-info">${yrs}年後〜</span>`;
+      }
+
+      html += `
+        <div class="stage-row ${univPast ? 'past-stage' : ''}">
+          <div class="stage-header">
+            <span class="stage-name-text">大学・専門</span>${univBadge}
+          </div>
+          <div class="stage-field">
+            <div class="stage-field-label">進路の種別</div>
+            <div class="btn-group">
+              ${Object.entries(univOpts).map(([key, opt]) =>
+                `<button class="btn-opt btn-opt-sm ${univSel.school === key ? 'selected' : ''}"
+                  onclick="setStage(${childIndex},4,'school','${key}')">${opt.label}</button>`
+              ).join('')}
+            </div>
+          </div>
+        </div>`;
+
+      panel.innerHTML = html;
+    }
+
+    function setStage(childIndex, stageIndex, field, value) {
+      childSettings[childIndex][stageIndex][field] = value;
+      renderChildPanel(childIndex);
+    }
+
+    // ── 計算ロジック ──────────────────────────────────
+    function getStageCostRaw(si, settings) {
+      const stage = STAGES[si];
+      if (si < 4) {
+        const schoolAnnual = settings.school === 'public' ? stage.costs.public : stage.costs.private;
+        const examCost = stage.examCosts[settings.exam] || 0;
+        return schoolAnnual * stage.years + examCost;
+      } else {
+        const opt = stage.options[settings.school];
+        if (!opt || opt.years === 0) return 0;
+        return opt.annual * opt.years + opt.entrance;
+      }
+    }
+
+    function getChildFutureCost(childIndex) {
+      const age = childAges[childIndex];
+      if (age === null) return 0;
+      const settings = childSettings[childIndex];
+      let total = 0;
+      for (let si = 0; si < 5; si++) {
+        const deadlineAge = STAGES[si].deadlineAge;
+        if (age >= deadlineAge) continue;
+        total += getStageCostRaw(si, settings[si]);
+      }
+      return total;
+    }
+
+    function calcPMT(monthlyRate, n, fv, pv) {
+      if (n <= 0 || fv <= 0) return 0;
+      if (monthlyRate === 0) return Math.max(0, (fv - pv) / n);
+      const factor = Math.pow(1 + monthlyRate, n);
+      return Math.max(0, (fv - pv * factor) * monthlyRate / (factor - 1));
+    }
+
+    function calcChildMonthly(childIndex, monthlyRate, balance) {
+      const age = childAges[childIndex];
+      if (age === null) return 0;
+      const settings = childSettings[childIndex];
+      let totalPMT = 0;
+      let remaining = balance;
+
+      for (let si = 0; si < 5; si++) {
+        const deadlineAge = STAGES[si].deadlineAge;
+        const months = (deadlineAge - age) * 12;
+        if (months <= 0) continue;
+        const cost = getStageCostRaw(si, settings[si]);
+        if (cost <= 0) continue;
+
+        const fvOfBalance = remaining > 0
+          ? remaining * Math.pow(1 + monthlyRate, months)
+          : 0;
+
+        if (fvOfBalance >= cost) {
+          const pvConsumed = monthlyRate > 0
+            ? cost / Math.pow(1 + monthlyRate, months)
+            : cost;
+          remaining = Math.max(0, remaining - pvConsumed);
+        } else {
+          totalPMT += calcPMT(monthlyRate, months, cost, remaining);
+          remaining = 0;
+        }
+      }
+      return totalPMT;
+    }
+
+    // 年ごとの教育費支出（グラフ用）
+    function getAnnualExpenses(childIndex) {
+      const age = childAges[childIndex];
+      const settings = childSettings[childIndex];
+      const currentYear = new Date().getFullYear();
+      const expenses = {};
+
+      for (let si = 0; si < 4; si++) {
+        const stage = STAGES[si];
+        const schoolAnnual = settings[si].school === 'public' ? stage.costs.public : stage.costs.private;
+        const examPerYear = (stage.examCosts[settings[si].exam] || 0) / stage.years;
+        const annualCost = schoolAnnual + examPerYear;
+
+        for (let a = stage.deadlineAge; a < stage.deadlineAge + stage.years; a++) {
+          const yr = currentYear + (a - age);
+          if (yr >= currentYear) {
+            expenses[yr] = (expenses[yr] || 0) + annualCost;
+          }
+        }
+      }
+
+      const univOpt = STAGES[4].options[settings[4].school];
+      if (univOpt && univOpt.years > 0) {
+        const univStart = currentYear + (18 - age);
+        for (let y = 0; y < univOpt.years; y++) {
+          const yr = univStart + y;
+          if (yr >= currentYear) {
+            const cost = y === 0 ? univOpt.annual + univOpt.entrance : univOpt.annual;
+            expenses[yr] = (expenses[yr] || 0) + cost;
+          }
+        }
+      }
+
+      return expenses;
+    }
+
+    function formatMan(v) {
+      const rounded = Math.round(v * 10) / 10;
+      return rounded.toLocaleString();
+    }
+
+    // ── メイン計算 ────────────────────────────────────
+    function calculate() {
+      for (let i = 0; i < numChildren; i++) {
+        if (childAges[i] === null || isNaN(childAges[i])) {
+          alert(`子ども${i + 1}の年齢を入力してください`);
+          return;
+        }
+      }
+
+      const currentBalance = parseFloat(document.getElementById('current-balance').value) || 0;
+      const monthlySaving = parseFloat(document.getElementById('monthly-saving').value) || 0;
+      const annualRate = parseFloat(document.getElementById('return-rate').value) / 100;
+      const monthlyRate = annualRate / 12;
+
+      // 子どもごとの将来教育費合計
+      const futureCosts = Array.from({ length: numChildren }, (_, i) => getChildFutureCost(i));
+      const grandTotal = futureCosts.reduce((a, b) => a + b, 0);
+
+      // 現在残高を将来費用の比率で配分
+      const childBalances = futureCosts.map(c =>
+        grandTotal > 0 ? currentBalance * (c / grandTotal) : currentBalance / numChildren
+      );
+
+      // 子どもごとの必要月積立
+      const childPMTs = Array.from({ length: numChildren }, (_, i) =>
+        calcChildMonthly(i, monthlyRate, childBalances[i])
+      );
+      const totalRequired = childPMTs.reduce((a, b) => a + b, 0);
+      const diff = monthlySaving - totalRequired;
+
+      // ── 結果表示 ──
+      document.getElementById('result-total-cost').innerHTML =
+        `${formatMan(grandTotal)}<span>万円</span>`;
+
+      // 子どもごとの行
+      let childRowsHtml = '';
+      for (let i = 0; i < numChildren; i++) {
+        childRowsHtml += `
+          <div class="metric-child-row">
+            <span class="metric-child-name">
+              <span class="child-dot" style="background:${CHILD_COLORS[i]}"></span>
+              子ども${i + 1}（${childAges[i]}歳）の必要積立額
+            </span>
+            <span class="metric-child-amount">${formatMan(Math.round(childPMTs[i] * 10) / 10)}万円/月</span>
+          </div>`;
+      }
+      document.getElementById('result-children-rows').innerHTML = childRowsHtml;
+
+      document.getElementById('result-required-monthly').textContent =
+        `${formatMan(Math.round(totalRequired * 10) / 10)}万円/月`;
+      document.getElementById('result-current-monthly').textContent =
+        `${formatMan(monthlySaving)}万円/月`;
+
+      const diffEl = document.getElementById('result-diff');
+      const diffLabel = document.getElementById('result-diff-label');
+      const diffValue = document.getElementById('result-diff-value');
+
+      if (diff >= 0) {
+        diffEl.className = 'metric-diff surplus';
+        diffLabel.textContent = '月々の積立で対応できています';
+        diffValue.textContent = `+${formatMan(Math.round(diff * 10) / 10)}万円/月 余裕あり`;
+      } else {
+        diffEl.className = 'metric-diff shortage';
+        diffLabel.textContent = '月々の積立が不足しています';
+        diffValue.textContent = `あと${formatMan(Math.round(Math.abs(diff) * 10) / 10)}万円/月 追加が必要`;
+      }
+
+      // ── グラフ ──
+      const currentYear = new Date().getFullYear();
+      const allExpenses = Array.from({ length: numChildren }, (_, i) => getAnnualExpenses(i));
+
+      // 終了年（末子の大学卒業年）
+      let endYear = currentYear;
+      for (let i = 0; i < numChildren; i++) {
+        const univOpt = STAGES[4].options[childSettings[i][4].school];
+        const univEndAge = 18 + (univOpt ? univOpt.years : 4);
+        const childEndYear = currentYear + (univEndAge - childAges[i]);
+        endYear = Math.max(endYear, childEndYear);
+      }
+
+      const years = [];
+      for (let y = currentYear; y <= endYear; y++) years.push(y);
+
+      // グラフ1：支出（子どもごとに積み上げ）
+      const expenseDatasets = Array.from({ length: numChildren }, (_, i) => ({
+        label: `子ども${i + 1}`,
+        data: years.map(y => Math.round((allExpenses[i][y] || 0) * 10) / 10),
+        backgroundColor: CHILD_COLORS[i],
+        borderRadius: 3,
+        stack: 'expenses'
+      }));
+
+      const expCtx = document.getElementById('expense-chart').getContext('2d');
+      if (expenseChart) expenseChart.destroy();
+      expenseChart = new Chart(expCtx, {
+        type: 'bar',
+        data: { labels: years.map(y => `${y}`), datasets: expenseDatasets },
+        options: {
+          responsive: true,
+          plugins: {
+            legend: {
+              display: numChildren > 1,
+              labels: { boxWidth: 10, font: { family: "'Noto Sans JP', sans-serif", size: 11 } }
+            },
+            tooltip: {
+              callbacks: {
+                label: ctx => ` ${ctx.dataset.label}：${ctx.raw}万円`
+              }
+            }
+          },
+          scales: {
+            x: {
+              stacked: true,
+              ticks: { font: { family: "'Noto Sans JP', sans-serif", size: 10 } },
+              grid: { display: false }
+            },
+            y: {
+              stacked: true,
+              beginAtZero: true,
+              ticks: {
+                callback: v => v + '万',
+                font: { family: "'Noto Sans JP', sans-serif", size: 10 }
+              },
+              grid: { color: 'rgba(61,43,31,0.06)' }
+            }
+          }
+        }
+      });
+
+      // グラフ2：残高推移
+      let balance = currentBalance;
+      const balanceData = years.map(y => {
+        const totalExpense = allExpenses.reduce((sum, exp) => sum + (exp[y] || 0), 0);
+        balance = balance * (1 + annualRate) + monthlySaving * 12 - totalExpense;
+        return Math.round(balance * 10) / 10;
+      });
+      const balColors = balanceData.map(v => v < 0 ? '#e74c3c' : '#5B7C5F');
+      const balAlpha = balanceData.map(v => v < 0 ? '#fadadd' : '#a8c4ab');
+
+      const balCtx = document.getElementById('balance-chart').getContext('2d');
+      if (balanceChart) balanceChart.destroy();
+      balanceChart = new Chart(balCtx, {
+        type: 'bar',
+        data: {
+          labels: years.map(y => `${y}`),
+          datasets: [
+            {
+              label: '残高',
+              data: balanceData,
+              backgroundColor: balanceData.map(v => v < 0 ? '#e74c3c' : '#5B7C5F'),
+              borderRadius: 3,
+              order: 2
+            },
+            {
+              type: 'line',
+              label: '目標ライン（0円）',
+              data: years.map(() => 0),
+              borderColor: '#E8B84B',
+              borderWidth: 2,
+              borderDash: [5, 4],
+              pointRadius: 0,
+              fill: false,
+              order: 1
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          plugins: {
+            legend: {
+              labels: { boxWidth: 10, font: { family: "'Noto Sans JP', sans-serif", size: 11 } }
+            },
+            tooltip: {
+              callbacks: {
+                label: ctx => ctx.dataset.label === '残高'
+                  ? ` 残高：${ctx.raw}万円`
+                  : undefined
+              }
+            }
+          },
+          scales: {
+            x: {
+              ticks: { font: { family: "'Noto Sans JP', sans-serif", size: 10 } },
+              grid: { display: false }
+            },
+            y: {
+              ticks: {
+                callback: v => v + '万',
+                font: { family: "'Noto Sans JP', sans-serif", size: 10 }
+              },
+              grid: { color: 'rgba(61,43,31,0.06)' }
+            }
+          }
+        }
+      });
+
+      // ── アドバイス ──
+      const negYears = years.filter((y, idx) => balanceData[idx] < 0);
+      let advice;
+      if (negYears.length === 0) {
+        advice = `このペースで積み立てを続ければ、教育費の山を乗り越えられる見込みです。余裕がある時期は老後資金や住宅ローンの繰り上げ返済に回すのも一つの選択肢です。`;
+      } else if (negYears[0] === currentYear) {
+        const add = Math.round(Math.abs(diff) * 10) / 10;
+        advice = `現状の積立では資金が不足する見込みです。月${add}万円ほど追加できると解消できます。まずは固定費の見直しや、学資保険・積立NISAの活用を検討してみましょう。`;
+      } else {
+        const add = Math.round(Math.abs(diff) * 10) / 10;
+        advice = `${negYears[0]}年頃に資金が一時的に不足する見込みです。月${add}万円ほど積立額を増やすと解消できます。早めに手を打つほど複利の効果が大きくなります。`;
+      }
+      document.getElementById('prescription-text').textContent = advice;
+
+      // ── Xシェア ──
+      const childrenStr = Array.from({ length: numChildren }, (_, i) =>
+        `子ども${i + 1}（${childAges[i]}歳）`
+      ).join('・');
+      const shareText = `教育費シミュレーション📚\n${childrenStr}の教育費総額：${formatMan(grandTotal)}万円\n必要な積立：月${formatMan(Math.round(totalRequired * 10) / 10)}万円\n\n#教育費 #資産形成 #らくらく夫婦\nhttps://life-works.net/kyoiku-hi/`;
+      document.getElementById('share-btn').href =
+        `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}`;
+
+      // ── 表示 ──
+      const resultArea = document.getElementById('result-area');
+      resultArea.classList.add('show');
+      setTimeout(() => resultArea.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
+    }
+
+    // ── 初期化 ────────────────────────────────────────
+    setNumChildren(1);
+  </script>
+
+</body>
+</html>
