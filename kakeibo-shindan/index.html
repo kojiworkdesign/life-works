@@ -19,10 +19,7 @@
       padding: 48px 24px 80px;
     }
 
-    .tool-header {
-      text-align: center;
-      margin-bottom: 40px;
-    }
+    .tool-header { text-align: center; margin-bottom: 40px; }
 
     .tool-eyebrow {
       display: inline-block;
@@ -50,10 +47,7 @@
       line-height: 1.8;
     }
 
-    /* プログレスバー */
-    .progress-wrap {
-      margin-bottom: 32px;
-    }
+    .progress-wrap { margin-bottom: 28px; }
 
     .progress-meta {
       display: flex;
@@ -77,20 +71,19 @@
       transition: width 0.4s ease;
     }
 
-    /* 設問カード */
     .question-card {
       background: var(--color-surface);
       border-radius: 20px;
       padding: 32px;
       border: 1px solid var(--color-border);
       box-shadow: 0 2px 12px rgba(61,43,31,0.06);
-      margin-bottom: 20px;
+      margin-bottom: 12px;
       animation: fadeIn 0.25s ease;
     }
 
     @keyframes fadeIn {
       from { opacity: 0; transform: translateY(8px); }
-      to { opacity: 1; transform: translateY(0); }
+      to   { opacity: 1; transform: translateY(0); }
     }
 
     .question-text {
@@ -135,6 +128,90 @@
       font-weight: 700;
     }
 
+    .back-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.82rem;
+      color: var(--color-text-muted);
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 4px 0;
+      font-family: 'Noto Sans JP', sans-serif;
+      transition: color 0.2s;
+      margin-bottom: 8px;
+    }
+
+    .back-btn:hover { color: var(--color-primary); }
+
+    /* 基本情報エリア */
+    .info-label {
+      display: block;
+      font-size: 0.88rem;
+      font-weight: 700;
+      color: var(--color-text);
+      margin-bottom: 10px;
+    }
+
+    .info-group { margin-bottom: 22px; }
+
+    input[type="number"] {
+      width: 100%;
+      padding: 12px 48px 12px 16px;
+      border: 1.5px solid var(--color-border);
+      border-radius: 10px;
+      font-size: 1rem;
+      font-family: 'Inter', 'Noto Sans JP', sans-serif;
+      color: var(--color-text);
+      background: var(--color-bg);
+      appearance: none;
+      -webkit-appearance: none;
+      transition: border-color 0.2s;
+    }
+
+    input[type="number"]:focus {
+      outline: none;
+      border-color: var(--color-primary);
+      background: var(--color-surface);
+    }
+
+    input[type="number"]::placeholder { color: #C8B8A8; }
+
+    .input-with-unit { position: relative; }
+
+    .unit {
+      position: absolute;
+      right: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 0.85rem;
+      color: var(--color-text-muted);
+      pointer-events: none;
+    }
+
+    .btn-next {
+      width: 100%;
+      padding: 16px;
+      background: var(--color-primary);
+      color: #fff;
+      border: none;
+      border-radius: 12px;
+      font-size: 1rem;
+      font-weight: 700;
+      font-family: 'Noto Sans JP', sans-serif;
+      cursor: pointer;
+      transition: all 0.2s;
+      letter-spacing: 0.04em;
+      margin-top: 8px;
+    }
+
+    .btn-next:hover {
+      background: #4a6b4e;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 16px rgba(91,124,95,0.3);
+    }
+
     /* ローディング */
     .loading-area {
       display: none;
@@ -154,9 +231,7 @@
       margin: 0 auto 20px;
     }
 
-    @keyframes spin {
-      to { transform: rotate(360deg); }
-    }
+    @keyframes spin { to { transform: rotate(360deg); } }
 
     .loading-text {
       font-size: 0.95rem;
@@ -170,11 +245,8 @@
       margin-top: 8px;
     }
 
-    /* 結果エリア */
-    .result-area {
-      display: none;
-    }
-
+    /* 結果 */
+    .result-area { display: none; }
     .result-area.show { display: block; }
 
     .result-type-card {
@@ -268,10 +340,7 @@
       margin-bottom: 12px;
     }
 
-    .share-btn:hover {
-      background: #222;
-      transform: translateY(-1px);
-    }
+    .share-btn:hover { background: #222; transform: translateY(-1px); }
 
     .retry-btn {
       display: block;
@@ -290,10 +359,7 @@
       margin-bottom: 20px;
     }
 
-    .retry-btn:hover {
-      border-color: var(--color-primary);
-      color: var(--color-primary);
-    }
+    .retry-btn:hover { border-color: var(--color-primary); color: var(--color-primary); }
 
     .brand-cta-section {
       background: var(--color-surface);
@@ -349,14 +415,10 @@
       transition: opacity 0.2s, transform 0.2s;
     }
 
-    .line-banner-link:hover {
-      opacity: 0.9;
-      transform: translateY(-2px);
-    }
-
+    .line-banner-link:hover { opacity: 0.9; transform: translateY(-2px); }
     .line-banner-link img { width: 100%; display: block; }
 
-    .back-link {
+    .page-back-link {
       display: inline-flex;
       align-items: center;
       gap: 6px;
@@ -366,7 +428,7 @@
       margin-bottom: 32px;
     }
 
-    .back-link:hover { color: var(--color-primary); }
+    .page-back-link:hover { color: var(--color-primary); }
 
     @media (max-width: 600px) {
       .tool-wrap { padding: 32px 16px 60px; }
@@ -387,16 +449,14 @@
 
   <div class="tool-wrap">
 
-    <a href="/" class="back-link">← ツール一覧へ</a>
+    <a href="/" class="page-back-link">← ツール一覧へ</a>
 
-    <!-- ヘッダー -->
     <div class="tool-header" id="tool-header">
       <p class="tool-eyebrow">夫婦のお金・家計</p>
       <h1 class="tool-title">家計タイプ診断</h1>
-      <p class="tool-desc">10問に答えるだけ。あなただけの家計タイプ名がつきます。<br>夫婦あるある・お金の価値観まで丸裸に。</p>
+      <p class="tool-desc">10問に答えるだけ。AIがあなただけの家計タイプ名をつけます。<br>夫婦あるある・お金の価値観まで丸裸に。</p>
     </div>
 
-    <!-- プログレスバー -->
     <div class="progress-wrap" id="progress-wrap" style="display:none;">
       <div class="progress-meta">
         <span id="progress-label">Q1 / 10</span>
@@ -407,24 +467,23 @@
       </div>
     </div>
 
-    <!-- 設問エリア -->
-    <div id="question-area"></div>
-
-    <!-- スタートボタン -->
-    <div id="start-area" style="text-align:center;padding:8px 0 0;">
-      <button class="btn-calc" onclick="startDiagnosis()" style="width:100%;padding:16px;background:var(--color-primary);color:#fff;border:none;border-radius:12px;font-size:1rem;font-weight:700;font-family:'Noto Sans JP',sans-serif;cursor:pointer;letter-spacing:0.04em;">診断スタート →</button>
+    <div id="back-btn-area" style="display:none;">
+      <button class="back-btn" onclick="goBack()">← 前の質問に戻る</button>
     </div>
 
-    <!-- ローディング -->
+    <div id="question-area"></div>
+
+    <div id="start-area" style="text-align:center;">
+      <button class="btn-next" onclick="showBasicInfo()">診断スタート →</button>
+    </div>
+
     <div class="loading-area" id="loading-area">
       <div class="loading-spinner"></div>
       <p class="loading-text">あなたの家計タイプを診断中…</p>
       <p class="loading-sub">AIがあなただけのタイプ名を考えています</p>
     </div>
 
-    <!-- 結果エリア -->
     <div class="result-area" id="result-area">
-
       <div class="result-type-card">
         <p class="result-eyebrow">あなたの家計タイプ</p>
         <p class="result-type-name" id="result-type-name">—</p>
@@ -457,8 +516,8 @@
           <img src="/images/banner-line.png" alt="LINEで家計レントゲンシートを今すぐ受け取る">
         </a>
       </div>
-
     </div>
+
   </div>
 
   <footer class="footer">
@@ -520,6 +579,7 @@
           { value: 'B', label: '資産を守りながら少しずつ増やしたい（インフレ対策）' },
           { value: 'C', label: '早期リタイア・FIREを本気で目指してる' },
           { value: 'D', label: 'みんなやってるし、とりあえずやらないとと思って' },
+          { value: 'E', label: '正直、もっと稼いでいい暮らしがしたい' },
         ],
         next: () => 'q7a',
       },
@@ -579,37 +639,76 @@
           { value: 'B', label: 'ボーナスで何とかする作戦' },
           { value: 'C', label: 'カードで払ってなんとかなってる' },
           { value: 'D', label: '毎回オーバーして後悔してる。でも懲りない' },
+          { value: 'E', label: '貯金や投資を切り崩して対応してる' },
         ],
         next: () => null,
       },
     };
 
     let currentId = null;
-    let history = [];
-    let answers = [];
+    let history = [];   // 回答済み設問IDのスタック
+    let answers = [];   // {question, answer} の配列
     let stepCount = 0;
+    let totalSteps = 10;
+    let basicInfo = { role: null, age: null };
 
-    function startDiagnosis() {
+    function showBasicInfo() {
       document.getElementById('start-area').style.display = 'none';
       document.getElementById('tool-header').style.display = 'none';
-      document.getElementById('progress-wrap').style.display = 'block';
+
+      document.getElementById('question-area').innerHTML = `
+        <div class="question-card">
+          <p class="question-text">まず、あなたのことを教えてください</p>
+          <div class="info-group">
+            <span class="info-label">あなたは？</span>
+            <div class="choice-group" id="role-group">
+              <button class="choice-btn" onclick="selectRole('妻（既婚・女性）', this)">妻（既婚・女性）</button>
+              <button class="choice-btn" onclick="selectRole('夫（既婚・男性）', this)">夫（既婚・男性）</button>
+              <button class="choice-btn" onclick="selectRole('独り身の女性', this)">独り身の女性</button>
+              <button class="choice-btn" onclick="selectRole('独り身の男性', this)">独り身の男性</button>
+            </div>
+          </div>
+          <div class="info-group">
+            <span class="info-label">年齢</span>
+            <div class="input-with-unit">
+              <input type="number" id="age-input" placeholder="35" min="18" max="80">
+              <span class="unit">歳</span>
+            </div>
+          </div>
+          <button class="btn-next" onclick="submitBasicInfo()">診断スタート →</button>
+        </div>
+      `;
+    }
+
+    function selectRole(role, btn) {
+      document.querySelectorAll('#role-group .choice-btn').forEach(b => b.classList.remove('selected'));
+      btn.classList.add('selected');
+      basicInfo.role = role;
+    }
+
+    function submitBasicInfo() {
+      const age = parseInt(document.getElementById('age-input').value);
+      if (!basicInfo.role) return alert('あなたの立場を選んでください');
+      if (!age || age < 18 || age > 80) return alert('年齢を入力してください（18〜80歳）');
+      basicInfo.age = age;
+
       currentId = 'q1';
       history = [];
       answers = [];
       stepCount = 0;
-      showQuestion(currentId);
-    }
 
-    function estimateTotalSteps(firstChoice) {
-      return firstChoice === 'C' ? 8 : 10;
+      document.getElementById('progress-wrap').style.display = 'block';
+      showQuestion('q1');
     }
 
     function showQuestion(id) {
       const q = QUESTIONS[id];
       stepCount++;
+      updateProgress();
 
-      const area = document.getElementById('question-area');
-      area.innerHTML = `
+      document.getElementById('back-btn-area').style.display = history.length > 0 ? 'block' : 'none';
+
+      document.getElementById('question-area').innerHTML = `
         <div class="question-card">
           <p class="question-text">${q.text}</p>
           <div class="choice-group">
@@ -621,35 +720,31 @@
           </div>
         </div>
       `;
-
-      updateProgress();
     }
 
     function escapeJs(str) {
-      return str.replace(/'/g, "\\'").replace(/"/g, '&quot;');
+      return str.replace(/\\/g, '\\\\').replace(/'/g, "\\'");
     }
 
     function updateProgress() {
-      const total = answers.length > 0 && answers[0].value === 'C' ? 8 : 10;
-      const current = stepCount;
-      const pct = Math.round(((current - 1) / total) * 100);
-      document.getElementById('progress-label').textContent = `Q${current} / ${total}`;
+      // Q4でCを選んでいた場合は8問、それ以外は10問
+      const q4answer = answers.find(a => a.qId === 'q4');
+      totalSteps = (q4answer && q4answer.value === 'C') ? 8 : 10;
+      const pct = Math.round(((stepCount - 1) / totalSteps) * 100);
+      document.getElementById('progress-label').textContent = `Q${stepCount} / ${totalSteps}`;
       document.getElementById('progress-pct').textContent = `${pct}%`;
       document.getElementById('progress-fill').style.width = `${pct}%`;
     }
 
     function selectAnswer(qId, value, label, btn) {
-      // 選択済みスタイル
       btn.closest('.choice-group').querySelectorAll('.choice-btn').forEach(b => b.classList.remove('selected'));
       btn.classList.add('selected');
 
       const q = QUESTIONS[qId];
-
-      answers.push({ question: q.text, answer: label });
+      answers.push({ qId, value, question: q.text, answer: label });
       history.push(qId);
 
       const nextId = q.next(value);
-
       setTimeout(() => {
         if (nextId) {
           currentId = nextId;
@@ -660,8 +755,19 @@
       }, 280);
     }
 
+    function goBack() {
+      if (history.length === 0) return;
+      answers.pop();
+      const prevId = history.pop();
+      stepCount -= 2; // showQuestionで+1されるので2引く
+      currentId = prevId;
+      document.getElementById('back-btn-area').style.display = history.length > 0 ? 'block' : 'none';
+      showQuestion(prevId);
+    }
+
     async function submitDiagnosis() {
       document.getElementById('question-area').style.display = 'none';
+      document.getElementById('back-btn-area').style.display = 'none';
       document.getElementById('progress-wrap').style.display = 'none';
       document.getElementById('loading-area').classList.add('show');
 
@@ -669,14 +775,17 @@
         const res = await fetch('/api/kakeibo-shindan/diagnose', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ answers }),
+          body: JSON.stringify({
+            answers: answers.map(a => ({ question: a.question, answer: a.answer })),
+            basicInfo,
+          }),
         });
 
-        if (!res.ok) throw new Error('API error');
+        if (!res.ok) throw new Error(`API error: ${res.status}`);
         const data = await res.json();
-
         showResult(data);
       } catch (err) {
+        console.error(err);
         document.getElementById('loading-area').classList.remove('show');
         document.getElementById('question-area').style.display = 'block';
         document.getElementById('question-area').innerHTML = `
@@ -684,7 +793,7 @@
             <p style="font-size:0.95rem;color:var(--color-text-muted);line-height:1.8;">
               診断中にエラーが発生しました。<br>もう一度お試しください。
             </p>
-            <button class="btn-calc" onclick="resetDiagnosis()" style="margin-top:20px;width:100%;padding:14px;background:var(--color-primary);color:#fff;border:none;border-radius:12px;font-size:0.95rem;font-weight:700;font-family:'Noto Sans JP',sans-serif;cursor:pointer;">
+            <button class="btn-next" onclick="resetDiagnosis()" style="margin-top:20px;">
               最初からやり直す
             </button>
           </div>
@@ -694,7 +803,6 @@
 
     function showResult(data) {
       document.getElementById('loading-area').classList.remove('show');
-
       document.getElementById('result-type-name').textContent = data.type_name;
       document.getElementById('result-subtitle').textContent = data.subtitle;
       document.getElementById('result-desc').textContent = data.description;
@@ -713,11 +821,13 @@
       history = [];
       answers = [];
       stepCount = 0;
+      basicInfo = { role: null, age: null };
 
       document.getElementById('result-area').classList.remove('show');
       document.getElementById('loading-area').classList.remove('show');
       document.getElementById('question-area').style.display = 'block';
       document.getElementById('question-area').innerHTML = '';
+      document.getElementById('back-btn-area').style.display = 'none';
       document.getElementById('tool-header').style.display = 'block';
       document.getElementById('start-area').style.display = 'block';
       document.getElementById('progress-wrap').style.display = 'none';

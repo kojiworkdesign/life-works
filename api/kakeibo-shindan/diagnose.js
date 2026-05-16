@@ -7,11 +7,15 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  const { answers } = req.body;
+  const { answers, basicInfo } = req.body;
 
   const answersText = answers
     .map(a => `${a.question} → ${a.answer}`)
     .join('\n');
+
+  const basicInfoText = basicInfo
+    ? `【基本情報】\n立場：${basicInfo.role}\n年齢：${basicInfo.age}歳\n\n`
+    : '';
 
   const prompt = `あなたは家計・夫婦のお金をテーマにした診断コンテンツのキャラクター命名の専門家です。
 
@@ -33,7 +37,7 @@ export default async function handler(req, res) {
   "advice": "らくらく夫婦からのひとこと（1文）"
 }
 
-【回答内容】
+${basicInfoText}【回答内容】
 ${answersText}`;
 
   try {
@@ -43,7 +47,9 @@ ${answersText}`;
       messages: [{ role: 'user', content: prompt }],
     });
 
-    const text = message.content[0].text.trim();
+    let text = message.content[0].text.trim();
+    // コードブロックで囲まれていた場合に除去
+    text = text.replace(/^```json\s*/i, '').replace(/^```\s*/i, '').replace(/```\s*$/i, '').trim();
     const result = JSON.parse(text);
     return res.status(200).json(result);
   } catch (err) {
