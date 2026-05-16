@@ -7,7 +7,7 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  const { answers, basicInfo } = req.body;
+  const { answers, basicInfo, freeComment } = req.body;
 
   const answersText = answers
     .map(a => `${a.question} → ${a.answer}`)
@@ -15,6 +15,10 @@ export default async function handler(req, res) {
 
   const basicInfoText = basicInfo
     ? `【基本情報】\n立場：${basicInfo.role}\n年齢：${basicInfo.age}歳\n\n`
+    : '';
+
+  const freeCommentText = freeComment
+    ? `\n【ひとこと】\n${freeComment}\n`
     : '';
 
   const prompt = `あなたは家計・夫婦のお金をテーマにした診断コンテンツのキャラクター命名の専門家です。
@@ -38,7 +42,7 @@ export default async function handler(req, res) {
 }
 
 ${basicInfoText}【回答内容】
-${answersText}`;
+${answersText}${freeCommentText}`;
 
   try {
     const message = await client.messages.create({
