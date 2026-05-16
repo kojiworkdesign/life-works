@@ -1,0 +1,1065 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>iDeCo 診断ツール | らくらく夫婦ツール</title>
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="iDeCo 診断ツール | らくらく夫婦ツール">
+  <meta property="og:description" content="年収・年齢・考え方を入力するだけ。iDeCoを始めるべきか、節税メリットはいくらか、何に投資すべきかが一括でわかります。">
+  <meta property="og:url" content="https://life-works.net/ideco-nisa/">
+  <meta property="og:image" content="https://life-works.net/images/ideco-nisa.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://life-works.net/images/ideco-nisa.png">
+  <link rel="stylesheet" href="../style.css">
+  <style>
+    .tool-wrap {
+      max-width: 560px;
+      margin: 0 auto;
+      padding: 48px 24px 80px;
+    }
+
+    .tool-header {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+
+    .tool-eyebrow {
+      display: inline-block;
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      color: var(--color-primary);
+      background: var(--color-primary-light);
+      padding: 4px 12px;
+      border-radius: 100px;
+      margin-bottom: 16px;
+    }
+
+    .tool-title {
+      font-size: 1.7rem;
+      font-weight: 900;
+      color: var(--color-text);
+      line-height: 1.3;
+    }
+
+    .tool-desc {
+      font-size: 0.88rem;
+      color: var(--color-text-muted);
+      margin-top: 12px;
+      line-height: 1.8;
+    }
+
+    .form-card {
+      background: var(--color-surface);
+      border-radius: 20px;
+      padding: 32px;
+      border: 1px solid var(--color-border);
+      box-shadow: 0 2px 12px rgba(61,43,31,0.06);
+      margin-bottom: 20px;
+    }
+
+    .step-label {
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      color: var(--color-primary);
+      margin-bottom: 20px;
+    }
+
+    .form-group {
+      margin-bottom: 24px;
+    }
+
+    .form-group:last-child {
+      margin-bottom: 0;
+    }
+
+    label {
+      display: block;
+      font-size: 0.88rem;
+      font-weight: 700;
+      color: var(--color-text);
+      margin-bottom: 8px;
+    }
+
+    .label-note {
+      font-weight: 400;
+      font-size: 0.78rem;
+      color: var(--color-text-muted);
+      margin-left: 6px;
+    }
+
+    input[type="number"],
+    select {
+      width: 100%;
+      padding: 12px 16px;
+      border: 1.5px solid var(--color-border);
+      border-radius: 10px;
+      font-size: 1rem;
+      font-family: 'Inter', 'Noto Sans JP', sans-serif;
+      color: var(--color-text);
+      background: var(--color-bg);
+      transition: border-color 0.2s;
+      appearance: none;
+      -webkit-appearance: none;
+    }
+
+    input[type="number"]::placeholder { color: #C8B8A8; }
+
+    input[type="number"]:focus,
+    select:focus {
+      outline: none;
+      border-color: var(--color-primary);
+      background: var(--color-surface);
+    }
+
+    .input-with-unit { position: relative; }
+    .input-with-unit input { padding-right: 48px; }
+
+    .unit {
+      position: absolute;
+      right: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 0.85rem;
+      color: var(--color-text-muted);
+      pointer-events: none;
+    }
+
+    .select-wrap { position: relative; }
+
+    .select-wrap::after {
+      content: '▼';
+      position: absolute;
+      right: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 0.65rem;
+      color: var(--color-text-muted);
+      pointer-events: none;
+    }
+
+    .ideco-limit-hint {
+      font-size: 0.82rem;
+      color: var(--color-text-muted);
+      margin-top: 10px;
+      padding: 10px 14px;
+      background: var(--color-primary-light);
+      border-radius: 8px;
+    }
+
+    .ideco-limit-hint strong { color: var(--color-primary); }
+
+    /* 選択肢カード */
+    .q-label {
+      font-size: 0.88rem;
+      font-weight: 700;
+      color: var(--color-text);
+      margin-bottom: 12px;
+      line-height: 1.6;
+    }
+
+    .choice-group {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .choice-label {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 14px 16px;
+      border: 1.5px solid var(--color-border);
+      border-radius: 10px;
+      cursor: pointer;
+      transition: all 0.18s;
+      background: var(--color-bg);
+    }
+
+    .choice-label:hover {
+      border-color: var(--color-primary);
+      background: var(--color-primary-light);
+    }
+
+    .choice-label.selected {
+      border-color: var(--color-primary);
+      background: var(--color-primary-light);
+    }
+
+    .choice-label input[type="radio"] {
+      width: 16px;
+      height: 16px;
+      margin-top: 2px;
+      flex-shrink: 0;
+      accent-color: var(--color-primary);
+      cursor: pointer;
+    }
+
+    .choice-text {
+      font-size: 0.88rem;
+      line-height: 1.6;
+      color: var(--color-text);
+      font-weight: 400;
+    }
+
+    .btn-calc {
+      width: 100%;
+      padding: 16px;
+      background: var(--color-primary);
+      color: #fff;
+      border: none;
+      border-radius: 12px;
+      font-size: 1rem;
+      font-weight: 700;
+      font-family: 'Noto Sans JP', sans-serif;
+      cursor: pointer;
+      transition: all 0.2s;
+      letter-spacing: 0.04em;
+    }
+
+    .btn-calc:hover {
+      background: #4a6b4e;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 16px rgba(91,124,95,0.3);
+    }
+
+    /* 結果エリア */
+    .result-area { display: none; }
+    .result-area.show { display: block; margin-top: 40px; }
+
+    .result-card {
+      background: var(--color-surface);
+      border-radius: 20px;
+      padding: 32px;
+      border: 1px solid var(--color-border);
+      box-shadow: 0 2px 12px rgba(61,43,31,0.06);
+      margin-bottom: 20px;
+    }
+
+    .result-card-title {
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      color: var(--color-text-muted);
+      margin-bottom: 16px;
+    }
+
+    /* 推奨度バッジ */
+    .verdict-badge {
+      display: inline-block;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      padding: 5px 14px;
+      border-radius: 100px;
+      margin-bottom: 14px;
+    }
+
+    .verdict-badge.strong {
+      background: var(--color-primary-light);
+      color: var(--color-primary);
+    }
+
+    .verdict-badge.limited {
+      background: #FFF3CD;
+      color: #856404;
+    }
+
+    .verdict-badge.ng {
+      background: #FCE8E8;
+      color: #C0392B;
+    }
+
+    .verdict-title {
+      font-size: 1.45rem;
+      font-weight: 900;
+      color: var(--color-text);
+      line-height: 1.45;
+      margin-bottom: 12px;
+    }
+
+    .verdict-desc {
+      font-size: 0.88rem;
+      color: var(--color-text-muted);
+      line-height: 1.85;
+    }
+
+    /* 数値行 */
+    .data-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 13px 0;
+      border-bottom: 1px solid var(--color-border);
+    }
+
+    .data-row:last-child { border-bottom: none; }
+
+    .data-label {
+      font-size: 0.83rem;
+      color: var(--color-text-muted);
+    }
+
+    .data-value {
+      font-size: 1.15rem;
+      font-weight: 900;
+      font-family: 'Inter', sans-serif;
+      color: var(--color-primary);
+    }
+
+    .data-value.large {
+      font-size: 1.45rem;
+    }
+
+    /* 配分バー */
+    .allocation-bar-wrap {
+      margin: 16px 0 12px;
+      border-radius: 100px;
+      overflow: hidden;
+      height: 16px;
+      display: flex;
+    }
+
+    .bar-ideco {
+      background: var(--color-primary);
+      height: 100%;
+      transition: width 0.6s ease;
+    }
+
+    .bar-nisa {
+      background: #7aaa7f;
+      height: 100%;
+      transition: width 0.6s ease;
+    }
+
+    .allocation-labels {
+      display: flex;
+      gap: 16px;
+      font-size: 0.78rem;
+      color: var(--color-text-muted);
+      margin-bottom: 12px;
+    }
+
+    .allocation-labels span {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .allocation-amounts {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-top: 16px;
+    }
+
+    .allocation-item {
+      background: var(--color-bg);
+      border-radius: 12px;
+      padding: 14px 16px;
+      text-align: center;
+    }
+
+    .allocation-item-label {
+      font-size: 0.75rem;
+      color: var(--color-text-muted);
+      margin-bottom: 6px;
+    }
+
+    .allocation-item-value {
+      font-size: 1.2rem;
+      font-weight: 900;
+      font-family: 'Inter', sans-serif;
+      color: var(--color-text);
+    }
+
+    .allocation-note {
+      font-size: 0.82rem;
+      color: var(--color-text-muted);
+      line-height: 1.7;
+      margin-top: 14px;
+    }
+
+    /* ポートフォリオ */
+    .portfolio-type {
+      font-size: 1.2rem;
+      font-weight: 900;
+      color: var(--color-primary);
+      margin-bottom: 10px;
+    }
+
+    .portfolio-bar-wrap {
+      display: flex;
+      border-radius: 8px;
+      overflow: hidden;
+      height: 24px;
+      margin: 12px 0;
+    }
+
+    .pbar-stocks {
+      background: var(--color-primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: #fff;
+      transition: width 0.6s ease;
+    }
+
+    .pbar-bonds {
+      background: #a8c4ab;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: #fff;
+      transition: width 0.6s ease;
+    }
+
+    .portfolio-detail {
+      font-size: 0.85rem;
+      color: var(--color-text-muted);
+      line-height: 1.8;
+    }
+
+    /* 注意事項 */
+    .caution-card {
+      background: #FFF8EC;
+      border-radius: 16px;
+      padding: 20px 24px;
+      border: 1px solid #F5D98A;
+      margin-bottom: 20px;
+    }
+
+    .caution-title {
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: #8B6914;
+      margin-bottom: 10px;
+    }
+
+    .caution-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .caution-list li {
+      font-size: 0.82rem;
+      color: #7A5F20;
+      line-height: 1.75;
+      padding-left: 1.2em;
+      position: relative;
+    }
+
+    .caution-list li::before {
+      content: '・';
+      position: absolute;
+      left: 0;
+    }
+
+    /* CTA */
+    .brand-cta-section {
+      background: var(--color-surface);
+      border-radius: 20px;
+      padding: 28px;
+      border: 1px solid var(--color-border);
+      box-shadow: 0 2px 12px rgba(61,43,31,0.06);
+      margin-bottom: 16px;
+    }
+
+    .brand-cta-header {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 14px;
+    }
+
+    .brand-icon {
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      object-fit: cover;
+      flex-shrink: 0;
+      border: 2px solid var(--color-primary);
+    }
+
+    .brand-cta-lead {
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: var(--color-primary);
+      letter-spacing: 0.08em;
+      margin-bottom: 4px;
+    }
+
+    .brand-cta-title {
+      font-size: 1.05rem;
+      font-weight: 900;
+      color: var(--color-text);
+      line-height: 1.45;
+    }
+
+    .brand-cta-body {
+      font-size: 0.83rem;
+      color: var(--color-text-muted);
+      line-height: 1.75;
+      margin-bottom: 16px;
+    }
+
+    .cta-note {
+      background: var(--color-bg);
+      border-radius: 12px;
+      padding: 14px 16px;
+      margin-top: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .cta-note-text { flex: 1; }
+
+    .cta-note-title {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--color-text);
+      margin-bottom: 3px;
+    }
+
+    .cta-note-desc {
+      font-size: 0.78rem;
+      color: var(--color-text-muted);
+      line-height: 1.6;
+    }
+
+    .line-banner-link {
+      display: block;
+      margin-bottom: 12px;
+      border-radius: 12px;
+      overflow: hidden;
+      transition: opacity 0.2s, transform 0.2s;
+    }
+
+    .line-banner-link:hover {
+      opacity: 0.9;
+      transform: translateY(-2px);
+    }
+
+    .line-banner-link img { width: 100%; display: block; }
+
+    .share-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      width: 100%;
+      padding: 14px;
+      background: #000;
+      color: #fff;
+      border: none;
+      border-radius: 12px;
+      font-size: 0.9rem;
+      font-weight: 700;
+      font-family: 'Noto Sans JP', sans-serif;
+      cursor: pointer;
+      text-decoration: none;
+      transition: all 0.2s;
+      margin-bottom: 12px;
+    }
+
+    .share-btn:hover {
+      background: #222;
+      transform: translateY(-1px);
+    }
+
+    .btn-cta {
+      display: inline-block;
+      padding: 12px 24px;
+      background: var(--color-accent);
+      color: var(--color-text);
+      border-radius: 10px;
+      font-size: 0.88rem;
+      font-weight: 700;
+      text-decoration: none;
+      transition: all 0.2s;
+      white-space: nowrap;
+    }
+
+    .btn-cta:hover {
+      background: #d4a43e;
+      transform: translateY(-1px);
+    }
+
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.82rem;
+      color: var(--color-text-muted);
+      text-decoration: none;
+      margin-bottom: 32px;
+    }
+
+    .back-link:hover { color: var(--color-primary); }
+
+    @media (max-width: 600px) {
+      .tool-wrap { padding: 32px 16px 60px; }
+      .form-card { padding: 24px 20px; }
+      .result-card { padding: 24px 20px; }
+      .tool-title { font-size: 1.45rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="header">
+    <div class="header-inner">
+      <a href="/" class="logo">らくらく夫婦<span>ツール</span></a>
+    </div>
+  </header>
+
+  <div class="tool-wrap">
+
+    <a href="/" class="back-link">← ツール一覧へ</a>
+
+    <div class="tool-header">
+      <p class="tool-eyebrow">投資・資産形成</p>
+      <h1 class="tool-title">iDeCo<br>診断ツール</h1>
+      <p class="tool-desc">あなたの条件と考え方から、iDeCoを始めるべきかを判定します。節税額・積立配分・投資スタイルまで一括でわかります。</p>
+    </div>
+
+    <!-- STEP1：基本条件 -->
+    <div class="form-card">
+      <p class="step-label">STEP 1 ／ あなたの基本条件</p>
+
+      <div class="form-group">
+        <label>現在の年齢</label>
+        <div class="input-with-unit">
+          <input type="number" id="age" placeholder="35" min="20" max="65">
+          <span class="unit">歳</span>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>職業区分</label>
+        <div class="select-wrap">
+          <select id="profession" onchange="updateIdecoLimit()">
+            <option value="employee_no_pension">会社員（企業年金なし）</option>
+            <option value="employee_dc">会社員（企業型DC加入中）</option>
+            <option value="employee_db">会社員（確定給付年金DB加入中）</option>
+            <option value="public">公務員</option>
+            <option value="self_employed">自営業・フリーランス</option>
+            <option value="homemaker">専業主婦（夫）</option>
+          </select>
+        </div>
+        <div class="ideco-limit-hint">iDeCoの掛金上限：<strong id="limit-text">月2.3万円</strong></div>
+      </div>
+
+      <div class="form-group">
+        <label>年収<span class="label-note">税引き前の額面年収</span></label>
+        <div class="input-with-unit">
+          <input type="number" id="income" placeholder="600" min="0" max="5000">
+          <span class="unit">万円</span>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>月々の積立余力<span class="label-note">iDeCo・NISAに回せる合計額</span></label>
+        <div class="input-with-unit">
+          <input type="number" id="monthly" placeholder="3" min="0.1" max="30" step="0.1">
+          <span class="unit">万円</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- STEP2：考え方 -->
+    <div class="form-card">
+      <p class="step-label">STEP 2 ／ あなたの考え方</p>
+
+      <div class="form-group">
+        <p class="q-label">Q1. 生活防衛資金（生活費3〜6ヶ月分）は確保できていますか？</p>
+        <div class="choice-group" id="q1-group">
+          <label class="choice-label" onclick="selectChoice('q1', 'ok', this)">
+            <input type="radio" name="q1" value="ok">
+            <span class="choice-text">確保済み（生活費3〜6ヶ月分以上ある）</span>
+          </label>
+          <label class="choice-label" onclick="selectChoice('q1', 'ng', this)">
+            <input type="radio" name="q1" value="ng">
+            <span class="choice-text">まだ確保できていない／不安</span>
+          </label>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <p class="q-label">Q2.「60歳まで絶対引き出せない」と聞いて、どう感じますか？</p>
+        <div class="choice-group" id="q2-group">
+          <label class="choice-label" onclick="selectChoice('q2', 'ok', this)">
+            <input type="radio" name="q2" value="ok">
+            <span class="choice-text">老後のためなら全然OK。むしろ強制的に貯まるのが助かる</span>
+          </label>
+          <label class="choice-label" onclick="selectChoice('q2', 'ng', this)">
+            <input type="radio" name="q2" value="ng">
+            <span class="choice-text">正直ちょっと不安。何かあったとき困るかも</span>
+          </label>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <p class="q-label">Q3. 投資に対するスタンスは？</p>
+        <div class="choice-group" id="q3-group">
+          <label class="choice-label" onclick="selectChoice('q3', 'aggressive', this)">
+            <input type="radio" name="q3" value="aggressive">
+            <span class="choice-text">多少の値下がりは気にしない。利益を最大化したい</span>
+          </label>
+          <label class="choice-label" onclick="selectChoice('q3', 'balanced', this)">
+            <input type="radio" name="q3" value="balanced">
+            <span class="choice-text">バランスよく、安定的に増やしたい</span>
+          </label>
+          <label class="choice-label" onclick="selectChoice('q3', 'conservative', this)">
+            <input type="radio" name="q3" value="conservative">
+            <span class="choice-text">なるべく元本を守りたい</span>
+          </label>
+        </div>
+      </div>
+    </div>
+
+    <button class="btn-calc" onclick="calculate()">診断する</button>
+
+    <!-- 結果エリア -->
+    <div class="result-area" id="result-area">
+
+      <!-- 推奨度 -->
+      <div class="result-card" style="text-align:center;">
+        <span class="verdict-badge" id="verdict-badge">判定</span>
+        <p class="verdict-title" id="verdict-title">—</p>
+        <p class="verdict-desc" id="verdict-desc">—</p>
+      </div>
+
+      <!-- 節税メリット -->
+      <div class="result-card" id="savings-card">
+        <p class="result-card-title">iDeCo の節税メリット</p>
+        <div class="data-row">
+          <span class="data-label">実効税率（所得税＋住民税）</span>
+          <span class="data-value" id="tax-rate-text">—</span>
+        </div>
+        <div class="data-row">
+          <span class="data-label">iDeCo有効掛金（月額）</span>
+          <span class="data-value" id="effective-contribution">—</span>
+        </div>
+        <div class="data-row">
+          <span class="data-label">年間節税額</span>
+          <span class="data-value" id="annual-savings">—</span>
+        </div>
+        <div class="data-row">
+          <span class="data-label">60歳までの累計節税額</span>
+          <span class="data-value large" id="total-savings">—</span>
+        </div>
+      </div>
+
+      <!-- 見送り時カード -->
+      <div class="result-card" id="ng-card" style="display:none;">
+        <p class="result-card-title">今やること</p>
+        <p class="portfolio-type">生活防衛資金を貯める</p>
+        <p class="portfolio-detail" id="ng-detail">—</p>
+      </div>
+
+      <!-- 積立配分 -->
+      <div class="result-card" id="allocation-card">
+        <p class="result-card-title">積立配分の提案</p>
+        <div class="allocation-labels">
+          <span><i class="dot" style="background:var(--color-primary)"></i>iDeCo</span>
+          <span><i class="dot" style="background:#7aaa7f"></i>NISA</span>
+        </div>
+        <div class="allocation-bar-wrap">
+          <div class="bar-ideco" id="bar-ideco" style="width:0%"></div>
+          <div class="bar-nisa" id="bar-nisa" style="width:0%"></div>
+        </div>
+        <div class="allocation-amounts">
+          <div class="allocation-item">
+            <p class="allocation-item-label">iDeCo（月額）</p>
+            <p class="allocation-item-value" id="alloc-ideco">—</p>
+          </div>
+          <div class="allocation-item">
+            <p class="allocation-item-label">NISA（月額）</p>
+            <p class="allocation-item-value" id="alloc-nisa">—</p>
+          </div>
+        </div>
+        <p class="allocation-note" id="allocation-note">—</p>
+      </div>
+
+      <!-- ポートフォリオ提案 -->
+      <div class="result-card" id="portfolio-card">
+        <p class="result-card-title">iDeCo で選ぶ投資タイプ</p>
+        <p class="portfolio-type" id="portfolio-type">—</p>
+        <div class="portfolio-bar-wrap">
+          <div class="pbar-stocks" id="pbar-stocks" style="width:0%"></div>
+          <div class="pbar-bonds" id="pbar-bonds" style="width:0%"></div>
+        </div>
+        <p class="portfolio-detail" id="portfolio-detail">—</p>
+      </div>
+
+      <!-- Xシェア -->
+      <a class="share-btn" id="share-btn" href="#" target="_blank">
+        𝕏 結果をポストする
+      </a>
+
+      <!-- 注意事項 -->
+      <div class="caution-card">
+        <p class="caution-title">⚠️ 利用前に確認してほしいこと</p>
+        <ul class="caution-list">
+          <li>iDeCoは原則60歳まで引き出しできません。生活防衛資金（生活費3〜6ヶ月分）を確保してから始めましょう。</li>
+          <li id="dc-caution" style="display:none;">企業型DC加入者は、会社の規約でiDeCo加入を制限している場合があります。人事・総務に確認してください。</li>
+          <li>企業型DC・iDeCoと会社の退職金を同じ年に受け取ると、退職所得控除の枠を共有します。受取タイミングの分散を検討しましょう。</li>
+          <li>本ツールの計算はあくまで目安です。詳細はFPまたは各金融機関にご相談ください。</li>
+        </ul>
+      </div>
+
+      <!-- CTA -->
+      <div class="brand-cta-section">
+        <div class="brand-cta-header">
+          <img src="/images/icon.png" alt="らくらく夫婦" class="brand-icon">
+          <div>
+            <p class="brand-cta-lead">らくらく夫婦と一緒に</p>
+            <p class="brand-cta-title">お金の仕組みを、<br>夫婦でつくっていきませんか？</p>
+          </div>
+        </div>
+        <p class="brand-cta-body">家計管理・資産形成のコツをLINEとnoteで発信中。まずは無料テンプレをLINEで受け取ってみてください。</p>
+        <a href="https://lin.ee/Yzw8sE4" target="_blank" class="line-banner-link">
+          <img src="/images/banner-line.png" alt="LINEで家計レントゲンシートを今すぐ受け取る">
+        </a>
+        <div class="cta-note">
+          <div class="cta-note-text">
+            <p class="cta-note-title">iDeCoの受取課税・退職金との関係</p>
+            <p class="cta-note-desc">受取時の税金・退職所得控除の仕組みをnoteで詳しく解説。</p>
+          </div>
+          <a href="https://note.com/rakufu_log" target="_blank" class="btn-cta">読む →</a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <footer class="footer">
+    <p>© 2026 <a href="https://note.com/rakufu_log" target="_blank">らくらく夫婦</a> ｜ <a href="/">ツール一覧</a></p>
+  </footer>
+
+  <script>
+    const IDECO_LIMITS = {
+      employee_no_pension: 2.3,
+      employee_dc: 2.0,
+      employee_db: 1.2,
+      public: 1.2,
+      self_employed: 6.8,
+      homemaker: 2.3,
+    };
+
+    const LIMIT_LABELS = {
+      employee_no_pension: '月2.3万円',
+      employee_dc: '月2.0万円',
+      employee_db: '月1.2万円',
+      public: '月1.2万円',
+      self_employed: '月6.8万円',
+      homemaker: '月2.3万円',
+    };
+
+    const answers = { q1: null, q2: null, q3: null };
+
+    function selectChoice(q, value, el) {
+      answers[q] = value;
+      el.closest('.choice-group').querySelectorAll('.choice-label').forEach(l => l.classList.remove('selected'));
+      el.classList.add('selected');
+    }
+
+    function updateIdecoLimit() {
+      const prof = document.getElementById('profession').value;
+      document.getElementById('limit-text').textContent = LIMIT_LABELS[prof];
+    }
+
+    function calcEmploymentDeduction(income) {
+      if (income <= 162.5) return 55;
+      if (income <= 180) return Math.max(income * 0.4 - 10, 55);
+      if (income <= 360) return income * 0.3 + 8;
+      if (income <= 660) return income * 0.2 + 44;
+      if (income <= 850) return income * 0.1 + 110;
+      return 195;
+    }
+
+    function calcEffectiveTaxRate(income) {
+      const empDeduction = calcEmploymentDeduction(income);
+      const socialInsurance = income * 0.15;
+      const basicDeduction = 48;
+      const taxableIncome = Math.max(income - empDeduction - socialInsurance - basicDeduction, 0);
+      if (taxableIncome <= 195) return 0.15;
+      if (taxableIncome <= 330) return 0.20;
+      if (taxableIncome <= 695) return 0.30;
+      if (taxableIncome <= 900) return 0.33;
+      if (taxableIncome <= 1800) return 0.43;
+      return 0.50;
+    }
+
+    function calcRetirementDeduction(years) {
+      if (years <= 20) return 40 * years;
+      return 800 + 70 * (years - 20);
+    }
+
+    function getPortfolio(age, riskStance) {
+      if (riskStance === 'conservative') {
+        return {
+          type: '定期預金型 or 債券中心',
+          stocks: 0,
+          bonds: 100,
+          detail: '元本確保型の定期預金商品や国内債券ファンドが中心。大きなリターンは期待しにくいですが、価値が下がりにくいのが特徴。老後資金の「守り」を重視したい方向けです。',
+        };
+      }
+      if (age < 40) {
+        // 39歳以下：運用期間20年以上
+        return riskStance === 'aggressive'
+          ? { type: '株式100%', stocks: 100, bonds: 0, detail: '全世界・国内インデックスファンド中心。運用期間が20年以上あり、複利の恩恵を最大化できます。短期の値動きは気にせず、長期で持ち続けましょう。' }
+          : { type: '株式80%・債券20%', stocks: 80, bonds: 20, detail: '株式インデックス8割、債券2割の構成。成長を狙いながら安定性も確保。長期積立に適したバランスです。' };
+      }
+      if (age < 50) {
+        // 40〜49歳：運用期間10〜20年
+        return riskStance === 'aggressive'
+          ? { type: '株式80%・債券20%', stocks: 80, bonds: 20, detail: '株式インデックス8割、債券2割の構成。まだ十分な運用期間がありますが、60歳受取を見据えて一部を安定資産へ。50代に入ったら株式比率の見直しも検討しましょう。' }
+          : { type: '株式70%・債券30%', stocks: 70, bonds: 30, detail: '株式インデックス7割、債券3割のバランス型。安定と成長を両立しながら、受取に向けてリスクを少しずつ抑え始める時期です。' };
+      }
+      // 50歳以上：運用期間10年未満
+      return riskStance === 'aggressive'
+        ? { type: '株式70%・債券30%', stocks: 70, bonds: 30, detail: '受取まで10年前後。株式7割でまだ成長を狙いつつ、債券でダウンサイドを抑えます。60歳が近づいたら徐々に安定型へ移行しましょう。' }
+        : { type: '株式50%・債券50%', stocks: 50, bonds: 50, detail: '株式と債券を半々にして安定性を高める時期です。受取前5年を目安に、さらに債券比率を高めることも視野に入れてください。' };
+    }
+
+    function calculate() {
+      const age = parseInt(document.getElementById('age').value);
+      const prof = document.getElementById('profession').value;
+      const income = parseFloat(document.getElementById('income').value);
+      const monthly = parseFloat(document.getElementById('monthly').value);
+
+      if (!age || age < 20) return alert('年齢を入力してください');
+      if (!income || income < 0) return alert('年収を入力してください');
+      if (!monthly || monthly <= 0) return alert('月々の積立余力を入力してください');
+      if (!answers.q1) return alert('Q1に回答してください');
+      if (!answers.q2) return alert('Q2に回答してください');
+      if (!answers.q3) return alert('Q3に回答してください');
+
+      const idecoLimit = IDECO_LIMITS[prof];
+      const yearsTo60 = Math.max(60 - age, 1);
+      const taxRate = calcEffectiveTaxRate(income);
+      const effectiveMonthly = Math.min(monthly, idecoLimit);
+      const annualSavings = Math.round(effectiveMonthly * 12 * taxRate * 10) / 10;
+      const totalSavings = Math.round(annualSavings * yearsTo60 * 10) / 10;
+      const retirementDeduction = calcRetirementDeduction(yearsTo60);
+
+      // 判定ロジック
+      const taxMeaningful = taxRate >= 0.20;
+      const liquidityOk = answers.q1 === 'ok' && answers.q2 === 'ok';
+
+      let verdictKey, verdictBadgeText, verdictTitle, verdictDesc;
+
+      if (answers.q1 === 'ng') {
+        verdictKey = 'ng';
+        verdictBadgeText = 'iDeCo：今は見送りを推奨';
+        verdictTitle = 'まずは貯金を優先しましょう';
+        verdictDesc = `iDeCoやNISAを始める前に、生活防衛資金（生活費3〜6ヶ月分）の確保が最優先です。万が一の備えがない状態で投資を始めると、緊急時に動かせるお金がなくなります。まず貯金を整えてから、投資のステップへ進みましょう。`;
+      } else if (taxMeaningful && liquidityOk) {
+        verdictKey = 'strong';
+        verdictBadgeText = 'iDeCo：強くおすすめ';
+        verdictTitle = 'iDeCoをぜひ始めましょう';
+        verdictDesc = `年収${income}万円の場合、実効税率${Math.round(taxRate * 100)}%。iDeCoで年間${annualSavings.toFixed(1)}万円の節税になります。60歳までの累計では${totalSavings.toFixed(0)}万円お得になる計算です。条件もそろっているので、まずiDeCoを上限まで使い、残りをNISAへ回す二刀流が最適です。`;
+      } else {
+        verdictKey = 'limited';
+        verdictBadgeText = 'iDeCo：条件付きでおすすめ';
+        verdictTitle = '状況に合わせて検討しましょう';
+        if (!taxMeaningful && liquidityOk) {
+          verdictDesc = `年収${income}万円の場合、節税メリットは年間${annualSavings.toFixed(1)}万円と限定的です。NISAの方が流動性も高く使いやすいので、まずNISAを優先し、iDeCoは余力で検討するのがよいでしょう。`;
+        } else {
+          verdictDesc = `節税メリットはあります（年間${annualSavings.toFixed(1)}万円）が、生活防衛資金の確保または引き出し制限への準備を先に整えることをおすすめします。準備が整えば、iDeCoは強力な節税手段になります。`;
+        }
+      }
+
+      // 配分提案
+      let idecoAlloc, nisaAlloc, allocNote;
+      if (verdictKey === 'ng') {
+        idecoAlloc = 0;
+        nisaAlloc = 0;
+        allocNote = '';
+      } else {
+        idecoAlloc = effectiveMonthly;
+        nisaAlloc = Math.max(monthly - idecoLimit, 0);
+        if (monthly <= idecoLimit) {
+          allocNote = verdictKey === 'strong'
+            ? `全額iDeCoへ。積立余力が上限以内なのでiDeCoに集中できます。`
+            : `条件が整えばiDeCoへ全額。まずは準備を整えましょう。`;
+        } else {
+          allocNote = `iDeCoを上限（月${idecoLimit}万円）まで使い、残りの月${nisaAlloc.toFixed(1)}万円はNISAへ。二刀流が最適です。`;
+        }
+      }
+
+      const idecoPercent = monthly > 0 ? Math.round((idecoAlloc / monthly) * 100) : 0;
+      const nisaPercent = 100 - idecoPercent;
+
+      // ポートフォリオ
+      const portfolio = getPortfolio(age, answers.q3);
+
+      // --- 表示 ---
+      const badge = document.getElementById('verdict-badge');
+      badge.textContent = verdictBadgeText;
+      badge.className = `verdict-badge ${verdictKey}`;
+      document.getElementById('verdict-title').textContent = verdictTitle;
+      document.getElementById('verdict-desc').textContent = verdictDesc;
+
+      document.getElementById('tax-rate-text').textContent = `${Math.round(taxRate * 100)}%`;
+      document.getElementById('effective-contribution').textContent = `月${effectiveMonthly}万円`;
+      document.getElementById('annual-savings').textContent = `${annualSavings.toFixed(1)}万円`;
+      document.getElementById('total-savings').textContent = `${totalSavings.toFixed(0)}万円`;
+
+      document.getElementById('bar-ideco').style.width = `${idecoPercent}%`;
+      document.getElementById('bar-nisa').style.width = `${nisaPercent}%`;
+      document.getElementById('alloc-ideco').textContent = `月${idecoAlloc.toFixed(1)}万円`;
+      document.getElementById('alloc-nisa').textContent = `月${nisaAlloc.toFixed(1)}万円`;
+      document.getElementById('allocation-note').textContent = allocNote;
+
+      document.getElementById('portfolio-type').textContent = portfolio.type;
+      document.getElementById('pbar-stocks').style.width = `${portfolio.stocks}%`;
+      document.getElementById('pbar-bonds').style.width = `${portfolio.bonds}%`;
+      document.getElementById('pbar-stocks').textContent = portfolio.stocks > 15 ? `株式${portfolio.stocks}%` : '';
+      document.getElementById('pbar-bonds').textContent = portfolio.bonds > 15 ? `債券${portfolio.bonds}%` : '';
+      document.getElementById('portfolio-detail').textContent = portfolio.detail;
+
+      // 見送り/通常の表示切り替え
+      const isNg = verdictKey === 'ng';
+      document.getElementById('ng-card').style.display = isNg ? 'block' : 'none';
+      document.getElementById('allocation-card').style.display = isNg ? 'none' : 'block';
+      document.getElementById('portfolio-card').style.display = isNg ? 'none' : 'block';
+
+      if (isNg) {
+        document.getElementById('ng-detail').textContent = `毎月の積立余力（月${monthly}万円）は、まず生活費3〜6ヶ月分の貯金に充てましょう。目安は生活費×3〜6ヶ月分。貯金が整ったら、NISAやiDeCoを始める準備が整います。`;
+      }
+
+      // DC注意
+      document.getElementById('dc-caution').style.display = prof === 'employee_dc' ? 'list-item' : 'none';
+
+      // Xシェア
+      const verdictShort = verdictKey === 'strong' ? '強くおすすめ' : verdictKey === 'limited' ? '条件付きでおすすめ' : '今は見送りを推奨';
+      const shareText = `iDeCo診断やってみた📊\n結果：${verdictShort}\n年収${income}万円なら年間${annualSavings.toFixed(1)}万円の節税💡\n60歳まで累計${totalSavings.toFixed(0)}万円お得になる計算\n\n#iDeCo #NISA #資産形成 #らくらく夫婦\nhttps://life-works.net/ideco-nisa/`;
+      document.getElementById('share-btn').href = `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}`;
+
+      const resultArea = document.getElementById('result-area');
+      resultArea.classList.add('show');
+      setTimeout(() => resultArea.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
+    }
+  </script>
+
+</body>
+</html>
