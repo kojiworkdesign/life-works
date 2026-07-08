@@ -122,8 +122,9 @@ input[type=range]{flex:1;accent-color:var(--sage);height:6px}
 /* goal design (STEP4) */
 .child-card{border:1px solid var(--line);border-radius:14px;padding:16px 18px;margin-top:12px;background:#fcfcfb}
 .child-card h4{font-size:14px;font-weight:800;margin-bottom:10px}
-.policy-row{display:grid;grid-template-columns:80px 1fr;gap:10px;align-items:center;margin-bottom:8px}
-.policy-row .pl{font-size:13px;font-weight:700;color:var(--ink-2)}
+.policy-row{display:grid;grid-template-columns:64px 1fr;gap:10px;align-items:start;padding:9px 0;border-bottom:1px solid var(--line)}
+.policy-row:last-of-type{border-bottom:0}
+.policy-row .pl{font-size:13px;font-weight:700;color:var(--ink-2);padding-top:7px}
 .pills{display:flex;gap:6px;flex-wrap:wrap}
 .pills button{border:1px solid var(--line-2);background:var(--surface);border-radius:9px;padding:7px 12px;font-size:13px;font-weight:700;color:var(--ink-2);cursor:pointer}
 .pills button[aria-pressed=true]{border-color:var(--sage);background:var(--sage-l);color:var(--sage-d);box-shadow:inset 0 0 0 1px var(--sage)}
@@ -132,9 +133,13 @@ input[type=range]{flex:1;accent-color:var(--sage);height:6px}
 
 /* invest split */
 .split-list{display:flex;flex-direction:column;gap:10px;margin-top:8px}
-.split-row{display:flex;align-items:center;gap:12px}
-.split-row .snm{flex:1;font-size:13px;font-weight:700}
-.split-row .inline-unit{width:130px;flex:0 0 auto}
+.split-row{display:flex;align-items:center;gap:10px}
+.split-row .sw{width:12px;height:12px;border-radius:3px;flex:0 0 auto}
+.split-row .snm{flex:1;font-size:13px;font-weight:700;min-width:0}
+.split-row .inline-unit{width:132px;flex:0 0 auto}
+/* reserve/split/inline inputs を .field と同じ見た目に統一 */
+.reserve-item input,.split-row input,.inline-unit input{padding:10px 12px;border:1px solid var(--line-2);border-radius:10px;font:inherit;background:#fcfcfb;color:var(--ink);width:100%}
+.reserve-item input:focus,.split-row input:focus,.inline-unit input:focus{outline:2px solid var(--sage);outline-offset:0;border-color:var(--sage)}
 .split-bar{display:flex;height:8px;border-radius:5px;overflow:hidden;margin-top:12px;border:1px solid var(--line);background:var(--sage-l)}
 .split-meta{display:flex;justify-content:space-between;font-size:12px;color:var(--muted);margin-top:6px}
 
@@ -168,6 +173,8 @@ input[type=range]{flex:1;accent-color:var(--sage);height:6px}
 .goal-out .ov{font-size:22px;font-weight:800;color:var(--sage-d)}
 .goal-out .ov.zero{color:var(--good)}
 .mini-mix{display:flex;height:8px;border-radius:5px;overflow:hidden;margin-top:8px;border:1px solid var(--line)}
+.fv-line{font-size:12px;color:var(--ink-2);margin-top:8px;background:var(--sage-ll);border-radius:8px;padding:7px 10px}
+.fv-line b{color:var(--sage-d)}
 details.basis{margin-top:10px}
 details.basis summary{cursor:pointer;font-weight:700;font-size:12px;color:var(--sage-d)}
 details.basis .bd{font-size:12px;color:var(--ink-2);margin-top:8px;background:var(--surface);border:1px solid var(--line);border-radius:9px;padding:10px 12px;line-height:1.7}
@@ -282,7 +289,9 @@ footer{text-align:center;color:var(--muted);font-size:12px;padding:28px 20px 46p
         </div>
       </div>
       <div class="field"><label>毎月の生活費 <span class="unit">万円/月</span></label><input type="number" id="expense" min="5" max="200" placeholder="例：30"></div>
+      <div class="field"><label>世帯の手取り月収 <span class="unit">万円/月</span></label><input type="number" id="income" min="0" max="500" placeholder="例：45"></div>
     </div>
+    <p class="hint" style="margin-top:10px">手取り月収 −  生活費 ＝ 毎月投資に回せる余力。この余力と、目的別に必要な積立額を最後に見比べて、無理のない設計になっているか判定します。</p>
     <div class="field" style="margin-top:16px">
       <label>お子さんの人数</label>
       <div class="kidcount" id="kidCount"></div>
@@ -347,18 +356,18 @@ footer{text-align:center;color:var(--muted);font-size:12px;padding:28px 20px 46p
 
     <div class="child-card">
       <h4>🌅 老後資金</h4>
-      <div class="field" style="max-width:260px">
-        <label>目標額 <span class="unit">万円（年長側が65歳になるまでに）</span></label>
-        <input type="number" id="retireTarget" min="0" step="100" placeholder="例：5000">
+      <div class="field" style="max-width:320px">
+        <label>目標額 <span class="unit">万円（公的年金とは別に準備したい額）</span></label>
+        <input type="number" id="retireTarget" min="0" step="100" placeholder="例：2000">
       </div>
-      <p class="hint">迷ったら、生活費 × 12ヶ月 × 25年 くらいが一つの目安（公的年金とは別に用意したい額）。</p>
+      <p class="hint">ここで入れるのは「公的年金では足りない分」を補う自助分です（生活費の全額ではありません）。目安は2,000〜3,000万円（いわゆる老後2,000万円問題）。ゆとりある暮らしを望むなら多めに。年長側が65歳になるまでに用意する想定で計算します。</p>
     </div>
 
     <div id="eduDesign"></div>
 
     <div class="child-card" id="splitCard" style="display:none">
-      <h4>💼 すでに投資している資金の振り分け</h4>
-      <p class="hint" style="margin-top:0">投資済み <b id="splitTotal" class="tnum">—</b> を、どの目的の元本にするか決めます（残りは自動でゆとり枠へ）。すでに元本があるほど、毎月の積立は軽くなります。</p>
+      <h4>💼 すでに投資している資金の目的は決まっていますか？</h4>
+      <p class="hint" style="margin-top:0">投資済み <b id="splitTotal" class="tnum">—</b> について、目的が決まっている場合は入力してください。決まっていない場合も、今ざっくりで良いので「これは老後用」「これは教育用」と割り振ってみましょう。<b>すでに元本があるほど、毎月の積立は軽くなります。</b>入れた残りは自動でゆとり枠の原資になります。</p>
       <div class="split-list" id="splitList"></div>
       <div class="split-bar" id="splitBar"></div>
       <div class="split-meta"><span id="splitAssigned">割当 0万円</span><span id="splitRemain">残り（ゆとり枠）0万円</span></div>
@@ -482,6 +491,9 @@ const EDU = {
     skip:{label:'進学しない', entrance:0, annual:0, years:0},
   }
 };
+// 塾・受験準備費（万円）※既存シミュレーターと同じ。jr=中学受験(私立中のみ)/high=高校受験/uni=大学受験
+const JUKU={ none:{jr:0,high:0,uni:0}, standard:{jr:80,high:45,uni:75}, full:{jr:200,high:90,uni:120} };
+const JUKU_LBL={none:'なし',standard:'標準',full:'手厚く'};
 // ポートフォリオ候補（株式比率→想定年利 保守テーブル）
 const R_BY_STOCK = {100:5.0, 70:4.0, 50:3.0, 30:2.0, 0:1.0};
 function cand(name, stock, bond){ return {name, stock, bond, r:R_BY_STOCK[stock]}; }
@@ -508,7 +520,7 @@ const COL={stock:gv('--c-stock'),bond:gv('--c-bond'),alt:gv('--c-alt'),hobby:gv(
 
 /* ============ 状態 ============ */
 const S = {
-  ageH:null, ageW:null, workStyle:'dual', expense:null,
+  ageH:null, ageW:null, workStyle:'dual', expense:null, income:null,
   assets:null, cash:null, mix:{stock:null,bond:null,alt:null},
   dfMonths:6, reserves:[],
   kids:[], // {age, mid:'public'|'private', high:'public'|'private', univ:'national'..., scholarship:bool}
@@ -539,14 +551,22 @@ function reqMonthly(T, y, rPct, B){
 
 /* ============ 集計 ============ */
 function eduTargets(kid){
-  // 中高バケツ（12歳締切）＝中学総額＋高校総額。大学バケツ（18歳締切）＝大学総額（奨学金なら入学金＋初年度）
-  const mid = EDU.middle[kid.mid]*EDU.middle.years;
-  const high = EDU.high[kid.high]*EDU.high.years;
-  const midHigh = mid+high;
+  // 中高バケツ（12歳締切）＝中学＋高校の学校費＋受験準備。大学バケツ（18歳締切）＝大学費＋大学受験準備（奨学金なら学費は入学金＋初年度のみ）
+  const j=JUKU[kid.juku||'standard'];
+  const midSchool = EDU.middle[kid.mid]*EDU.middle.years;
+  const highSchool = EDU.high[kid.high]*EDU.high.years;
+  const jrExam = (kid.mid==='private') ? j.jr : 0;   // 中学受験は私立中のみ
+  const highExam = j.high;
+  const midHigh = midSchool + highSchool + jrExam + highExam;
   const u = EDU.univ[kid.univ];
-  const univFull = u.entrance + u.annual*u.years;
-  const univOut = kid.scholarship ? (u.entrance + u.annual*(u.years>0?1:0)) : univFull;
-  return {midHigh, univFull, univOut, uLabel:u.label};
+  const uniExam = (kid.univ!=='skip') ? j.uni : 0;
+  const univSchool = u.entrance + u.annual*u.years;
+  const univSchoolOut = kid.scholarship ? (u.entrance + u.annual*(u.years>0?1:0)) : univSchool;
+  const univFull = univSchool + uniExam;
+  const univOut = univSchoolOut + uniExam;
+  return {midHigh, univFull, univOut, uLabel:u.label,
+    parts:{midSchool,highSchool,jrExam,highExam,univSchool,univSchoolOut,uniExam,
+      midLbl:kid.mid==='public'?'公立':'私立', highLbl:kid.high==='public'?'公立':'私立'}};
 }
 function buckets(){ // 目的バケツ一覧（順序＝序列）
   const list=[];
@@ -586,9 +606,17 @@ function compute(){
     const pi = S.picks[b.id]!=null ? S.picks[b.id] : recIndex(b.cands, b.years);
     const c=b.cands[pi];
     const calc=reqMonthly(b.target, b.years, c.r, B);
-    return {...b, B, pickIdx:pi, cand:c, recIdx:recIndex(b.cands,b.years), calc};
+    // 目標時期の到達見込額（必要積立を続けた場合）
+    let fv;
+    if(calc.immediate) fv=b.target;                    // 期限到来＝目標額（不足分は一括前提）
+    else if(calc.covered) fv=calc.grown;               // 元本の成長だけで到達
+    else fv=calc.grown + calc.monthly*calc.factor;     // 元本成長＋積立成長 ≒ 目標
+    return {...b, B, pickIdx:pi, cand:c, recIdx:recIndex(b.cands,b.years), calc, fv};
   });
   const totalMonthly=goals.reduce((t,g)=>t+g.calc.monthly,0);
+  // 収支：毎月投資に回せる余力
+  const capacity = (S.income!=null && S.expense!=null) ? Math.max(0, S.income - S.expense) : null;
+  const affordGap = capacity!=null ? (totalMonthly - capacity) : null; // >0なら不足
 
   // ゆとり配分
   const y=YUTORI[S.risk][S.hobby];
@@ -606,7 +634,8 @@ function compute(){
   res.alt+=yutPool*yutMix.alt/100; res.hobby+=yutPool*yutMix.hobby/100;
 
   return {df,reserveSum,reserveTarget,cash,assets,investable,cashShort,invested,
-    assigned,yutFromInvested,yutPool,goals,totalMonthly,yutMix,now,res,nowTotal:cash+invested,resTotal:assets};
+    assigned,yutFromInvested,yutPool,goals,totalMonthly,capacity,affordGap,income:S.income,expense:S.expense,
+    yutMix,now,res,nowTotal:cash+invested,resTotal:assets};
 }
 
 /* ============ 描画 ============ */
@@ -656,18 +685,30 @@ function renderEduDesign(){
   if(S.kids.length===0){ box.innerHTML=''; return; }
   box.innerHTML=S.kids.map((k,i)=>{
     if(k.age==null) return `<div class="child-card"><h4>🎓 第${i+1}子の教育資金</h4><p class="hint" style="margin:0">STEP①で年齢を入力すると、教育方針を設計できます。</p></div>`;
-    const t=eduTargets(k);
-    const seg=(field,opts)=>`<div class="pills">${opts.map(o=>`<button data-edu="${i}" data-field="${field}" data-val="${o.v}" aria-pressed="${k[field]===o.v}">${o.l}</button>`).join('')}</div>`;
+    const t=eduTargets(k), p=t.parts;
+    const seg=(field,opts)=>`<div class="pills">${opts.map(o=>`<button data-edu="${i}" data-field="${field}" data-val="${o.v}" aria-pressed="${String(k[field])===String(o.v)}">${o.l}</button>`).join('')}</div>`;
+    const basis=`
+      <div class="r"><span>中学（${p.midLbl}）${EDU.middle[k.mid]}万/年 × 3年</span><span class="tnum">${yen(p.midSchool)}</span></div>
+      <div class="r"><span>高校（${p.highLbl}）${EDU.high[k.high]}万/年 × 3年</span><span class="tnum">${yen(p.highSchool)}</span></div>
+      ${p.jrExam>0?`<div class="r"><span>中学受験の準備（塾）</span><span class="tnum">${yen(p.jrExam)}</span></div>`:''}
+      ${p.highExam>0?`<div class="r"><span>高校受験の準備（塾）</span><span class="tnum">${yen(p.highExam)}</span></div>`:''}
+      <div class="r" style="border-top:1px solid var(--line);padding-top:5px;margin-top:2px"><span>→ 中高資金 目標</span><span class="tnum" style="font-weight:800;color:var(--sage-d)">${yen(t.midHigh)}</span></div>
+      <div class="r" style="margin-top:8px"><span>大学（${t.uLabel}）入学金＋授業料</span><span class="tnum">${yen(k.scholarship?p.univSchoolOut:p.univSchool)}${k.scholarship?'（奨学金で減額）':''}</span></div>
+      ${p.uniExam>0?`<div class="r"><span>大学受験の準備（塾）</span><span class="tnum">${yen(p.uniExam)}</span></div>`:''}
+      <div class="r" style="border-top:1px solid var(--line);padding-top:5px;margin-top:2px"><span>→ 大学資金 目標</span><span class="tnum" style="font-weight:800;color:var(--sage-d)">${yen(t.univOut)}</span></div>`;
     return `<div class="child-card">
       <h4>🎓 第${i+1}子（${k.age}歳）の教育資金</h4>
       <div class="policy-row"><span class="pl">中学</span>${seg('mid',[{v:'public',l:'公立'},{v:'private',l:'私立'}])}</div>
       <div class="policy-row"><span class="pl">高校</span>${seg('high',[{v:'public',l:'公立'},{v:'private',l:'私立'}])}</div>
       <div class="policy-row"><span class="pl">大学</span>${seg('univ',[{v:'national',l:'国公立'},{v:'liberal',l:'私立文系'},{v:'science',l:'私立理系'},{v:'vocational',l:'専門・短大'},{v:'skip',l:'進学しない'}])}</div>
-      <div class="policy-row"><span class="pl">奨学金</span>${seg('scholarship',[{v:false,l:'使わない'},{v:true,l:'使う（手出しは入学金＋初年度）'}])}</div>
+      <div class="policy-row"><span class="pl">塾・受験</span>${seg('juku',[{v:'none',l:'なし'},{v:'standard',l:'標準'},{v:'full',l:'手厚く'}])}</div>
+      <div class="policy-row"><span class="pl">奨学金</span>${seg('scholarship',[{v:false,l:'使わない'},{v:true,l:'使う'}])}</div>
+      ${k.scholarship?'<p class="hint" style="margin:2px 0 0">奨学金あり＝大学の授業料は奨学金でまかない、親の手出しは入学金＋初年度のみで計算します。</p>':''}
       <div class="edu-result">
         <span>中高資金 目標 <b class="tnum">${yen(t.midHigh)}</b></span>
-        <span>大学資金 目標 <b class="tnum">${yen(t.univOut)}</b>${k.scholarship&&t.univFull>t.univOut?`<span style="color:var(--muted);font-size:11px">（総額${yen(t.univFull)}のうち手出し）</span>`:''}</span>
+        <span>大学資金 目標 <b class="tnum">${yen(t.univOut)}</b></span>
       </div>
+      <details class="basis" style="margin-top:6px"><summary>計算根拠を見る</summary><div class="bd">${basis}</div></details>
     </div>`;
   }).join('');
   box.querySelectorAll('button[data-edu]').forEach(b=>b.onclick=()=>{
@@ -678,22 +719,30 @@ function renderEduDesign(){
 }
 
 /* ---- STEP4 投資済み振り分け ---- */
+let splitSig='';
+const SPLIT_COLORS=['#5B7C5F','#7BA7BC','#E8B84B','#C27B7B','#9085e9','#6fa38a'];
 function renderSplit(R){
   const card=document.getElementById('splitCard');
-  if(R.invested<=0){ card.style.display='none'; return; }
+  if(R.invested<=0){ card.style.display='none'; splitSig=''; return; }
   card.style.display='block';
   document.getElementById('splitTotal').textContent=yen(R.invested);
   const bks=buckets();
-  document.getElementById('splitList').innerHTML=bks.map(b=>`
-    <div class="split-row"><span class="snm">${b.icon} ${b.title}</span>
-      <div class="inline-unit"><input type="number" min="0" step="10" data-split="${b.id}" value="${S.splits[b.id]!=null?S.splits[b.id]:''}" placeholder="0"><span class="u">万円</span></div>
-    </div>`).join('');
-  document.getElementById('splitList').querySelectorAll('input[data-split]').forEach(inp=>{
-    inp.addEventListener('input',e=>{ S.splits[e.target.dataset.split]=num(e.target.value)||0; render(); });
-  });
-  // bar
-  const colors=[COL.cash,'#c9b98f',gv('--sage'),gv('--sage-d')];
-  const segs=bks.map((b,i)=>({amt:Math.min(num(S.splits[b.id])||0,R.invested),col:['#5B7C5F','#7BA7BC','#E8B84B','#C27B7B','#9085e9','#98938a'][i%6]}));
+  const sig=bks.map(b=>b.id+'|'+b.title).join('/');
+  // 入力欄はバケツ構成が変わったときだけ作り直す（＝入力中にフォーカスが飛ぶのを防ぐ）
+  if(sig!==splitSig){
+    splitSig=sig;
+    document.getElementById('splitList').innerHTML=bks.map((b,i)=>`
+      <div class="split-row">
+        <span class="sw" style="background:${SPLIT_COLORS[i%SPLIT_COLORS.length]}"></span>
+        <span class="snm">${b.icon} ${b.title}</span>
+        <div class="inline-unit"><input type="number" inputmode="numeric" min="0" step="10" data-split="${b.id}" value="${S.splits[b.id]!=null?S.splits[b.id]:''}" placeholder="0"><span class="u">万円</span></div>
+      </div>`).join('');
+    document.getElementById('splitList').querySelectorAll('input[data-split]').forEach(inp=>{
+      inp.addEventListener('input',e=>{ S.splits[e.target.dataset.split]=num(e.target.value)||0; render(); });
+    });
+  }
+  // バーとメタは毎回更新
+  const segs=bks.map((b,i)=>({amt:Math.min(num(S.splits[b.id])||0,R.invested),col:SPLIT_COLORS[i%SPLIT_COLORS.length]}));
   segs.push({amt:R.yutFromInvested,col:COL.alt});
   const bar=document.getElementById('splitBar'); bar.innerHTML='';
   segs.forEach(s=>{const d=document.createElement('span');d.style.flexBasis=(s.amt/Math.max(R.invested,1)*100)+'%';d.style.background=s.col;d.style.display='block';bar.appendChild(d);});
@@ -737,16 +786,21 @@ function renderResults(R){
       <div class="cands">${cands}</div>
       <div class="mini-mix"><span style="width:${g.cand.stock}%;background:${COL.stock}"></span><span style="width:${g.cand.bond}%;background:${COL.bond}"></span></div>
       <div class="goal-out">${outHtml}</div>
+      ${g.target>0&&!g.calc.immediate?`<div class="fv-line">📈 この積立を続けると <b class="tnum">${g.years}年後 約${yen(g.fv)}</b>（目標 ${yen(g.target)}／想定年利${g.cand.r}%）</div>`:''}
       ${basis?`<details class="basis"><summary>計算根拠を見る</summary><div class="bd">${basis}</div></details>`:''}`;
     gc.appendChild(el);
   });
   gc.querySelectorAll('button[data-goal]').forEach(b=>b.onclick=()=>{ S.picks[b.dataset.goal]=+b.dataset.idx; render(); });
   document.getElementById('totalContrib').textContent=yen1(R.totalMonthly);
   const cc=document.getElementById('contribCallout');
-  const monthlyIncome = S.expense? null : null;
-  if(R.totalMonthly>0){
-    cc.innerHTML=`<div class="callout info" style="margin-top:12px">毎月 <b>${yen1(R.totalMonthly)}</b> を目的別に積み立てる設計です。これが家計に対して大きすぎると感じたら、目標額・教育方針の見直し、支出の削減、収入アップのいずれかが必要というサインです。無理な積立を前提にしないのが、続く設計のコツです。</div>`;
-  } else { cc.innerHTML=''; }
+  if(R.capacity==null){
+    cc.innerHTML=`<div class="callout info" style="margin-top:12px">STEP①で「手取り月収」を入れると、今の家計でこの積立に届くか（毎月いくらまで投資に回してよいか）を判定します。</div>`;
+  } else if(R.affordGap<=0){
+    const rest=Math.abs(R.affordGap);
+    cc.innerHTML=`<div class="callout info" style="margin-top:12px">✓ 今の家計（手取り <b>${yen(R.income)}</b> − 生活費 <b>${yen(R.expense)}</b> ＝ 余力 <b>${yen(R.capacity)}</b>/月）なら、目的別に必要な <b>${yen1(R.totalMonthly)}</b>/月をまかなえます。余った <b>${yen1(rest)}</b>/月は、ゆとり枠への上乗せ積立に回せます。<br>→ <b>毎月${yen1(R.totalMonthly)}を目的別に、加えて余力${yen1(rest)}まで投資に回してOK</b>という判断ができます。</div>`;
+  } else {
+    cc.innerHTML=`<div class="callout warn" style="margin-top:12px">⚠ 今の家計で投資に回せる余力は <b>${yen(R.capacity)}</b>/月（手取り${yen(R.income)}−生活費${yen(R.expense)}）。目標達成に必要な <b>${yen1(R.totalMonthly)}</b>/月には <b>${yen1(R.affordGap)}</b>/月 足りません。<br>目標額を下げる／教育方針を見直す／支出を減らす／収入を増やす、のいずれかが必要です。まずは回せる範囲（月${yen(R.capacity)}）から始め、足りない分は時期をずらすか一時金で補う前提で考えましょう。</div>`;
+  }
 
   // ⑥ ゆとり
   document.getElementById('riskCur').textContent=RISK_LBL[S.risk];
@@ -796,37 +850,57 @@ function syncOpts(id,v){document.querySelectorAll(`#${id} button`).forEach(b=>b.
 
 /* ---- レポート（印刷） ---- */
 function renderReport(R){
+  const cellL='padding:4px 6px;text-align:left', cellR='padding:4px 6px;text-align:right', cellC='padding:4px 6px;text-align:center';
   const rows=R.goals.map(g=>{
-    let need = g.target<=0?'—':(g.calc.covered?'0万円':(g.calc.immediate?yen(g.calc.monthly)+'（不足）':yen1(g.calc.monthly)));
-    return `<tr><td>${g.title}</td><td class="tnum">${g.target>0?yen(g.target):'—'}</td><td>${g.timeLabel}</td><td>${g.cand.name}（株${g.cand.stock}%）</td><td class="tnum">${need}</td></tr>`;
+    const need = g.target<=0?'—':(g.calc.covered?'0万円':(g.calc.immediate?yen(g.calc.monthly)+'（不足）':yen1(g.calc.monthly)));
+    const fv = g.target<=0?'—':(g.calc.immediate?'—':yen(g.fv));
+    return `<tr>
+      <td style="${cellL}">${g.title}</td>
+      <td style="${cellR}" class="tnum">${g.target>0?yen(g.target):'—'}</td>
+      <td style="${cellR}" class="tnum">${yen(g.B)}</td>
+      <td style="${cellL}">${g.timeLabel}</td>
+      <td style="${cellL}">${g.cand.name}（株${g.cand.stock}%・年利${g.cand.r}%）</td>
+      <td style="${cellR};font-weight:700" class="tnum">${need}</td>
+      <td style="${cellR}" class="tnum">${fv}</td></tr>`;
   }).join('');
   const ym=R.yutMix;
   const family=`夫${S.ageH||'—'}歳・妻${S.ageW||'—'}歳／${S.workStyle==='dual'?'共働き':'片働き'}${S.kids.filter(k=>k.age!=null).length?'・子'+S.kids.filter(k=>k.age!=null).length+'人':''}`;
   const pc=(v,t)=>t>0?Math.round(v/t*100):0;
+  // 収支判定
+  let afford='';
+  if(R.capacity!=null){
+    if(R.affordGap<=0){
+      afford=`<div style="background:#eaf6ee;border-radius:8px;padding:7px 10px;font-size:10px;color:#0a7a3d">✓ 家計判定：手取り${yen(R.income)} − 生活費${yen(R.expense)} ＝ 余力 ${yen(R.capacity)}/月。必要な積立 ${yen1(R.totalMonthly)}/月をまかなえます（余力 ${yen1(Math.abs(R.affordGap))}/月）。</div>`;
+    } else {
+      afford=`<div style="background:#fdf3e3;border-radius:8px;padding:7px 10px;font-size:10px;color:#c47a12">⚠ 家計判定：余力 ${yen(R.capacity)}/月に対し、必要な積立 ${yen1(R.totalMonthly)}/月。<b>${yen1(R.affordGap)}/月 不足</b>。目標額・教育方針・支出・収入の見直しが必要です。</div>`;
+    }
+  }
   document.getElementById('report').innerHTML=`
-    <div style="text-align:center;border-bottom:2px solid #5B7C5F;padding-bottom:8px;margin-bottom:12px">
+    <div style="text-align:center;border-bottom:2px solid #5B7C5F;padding-bottom:8px;margin-bottom:10px">
       <div style="font-size:16px;font-weight:800;color:#47664b">我が家の資産配分プラン</div>
       <div style="font-size:10px;color:#666">${family}　／　作成日 ${new Date().toLocaleDateString('ja-JP')}　／　らくらく夫婦式</div>
     </div>
-    <table style="width:100%;border-collapse:collapse;margin-bottom:12px;font-size:10px">
+    <table style="width:100%;border-collapse:collapse;margin-bottom:10px;font-size:10px">
       <tr><td style="padding:3px 6px;background:#eaf0ea;font-weight:700">総資産</td><td style="padding:3px 6px" class="tnum">${yen(R.assets)}</td>
           <td style="padding:3px 6px;background:#eaf0ea;font-weight:700">守りの現金</td><td style="padding:3px 6px" class="tnum">${yen(R.reserveTarget)}</td>
-          <td style="padding:3px 6px;background:#eaf0ea;font-weight:700">投資に回せる現金</td><td style="padding:3px 6px" class="tnum">${yen(R.investable)}</td></tr>
+          <td style="padding:3px 6px;background:#eaf0ea;font-weight:700">投資に回せる現金</td><td style="padding:3px 6px" class="tnum">${yen(R.investable)}</td>
+          <td style="padding:3px 6px;background:#eaf0ea;font-weight:700">運用中</td><td style="padding:3px 6px" class="tnum">${yen(R.invested)}</td></tr>
     </table>
-    <div style="font-weight:800;color:#47664b;margin:8px 0 4px;font-size:11px">■ 目的別プラン</div>
-    <table style="width:100%;border-collapse:collapse;font-size:10px">
-      <thead><tr style="background:#eaf0ea"><th style="padding:4px 6px;text-align:left">目的</th><th style="padding:4px 6px;text-align:right">目標額</th><th style="padding:4px 6px;text-align:left">時期</th><th style="padding:4px 6px;text-align:left">ポートフォリオ</th><th style="padding:4px 6px;text-align:right">毎月積立</th></tr></thead>
-      <tbody>${rows}<tr style="border-top:2px solid #5B7C5F"><td colspan="4" style="padding:4px 6px;font-weight:700;text-align:right">毎月の積立合計</td><td style="padding:4px 6px;text-align:right;font-weight:800" class="tnum">${yen1(R.totalMonthly)}</td></tr></tbody>
+    <div style="font-weight:800;color:#47664b;margin:8px 0 4px;font-size:11px">■ 目的別プラン（何のために・毎月いくら・目標時期にいくらになる想定か）</div>
+    <table style="width:100%;border-collapse:collapse;font-size:9.5px">
+      <thead><tr style="background:#eaf0ea"><th style="${cellL}">目的</th><th style="${cellR}">目標額</th><th style="${cellR}">現在の元本</th><th style="${cellL}">時期</th><th style="${cellL}">ポートフォリオ</th><th style="${cellR}">毎月積立</th><th style="${cellR}">到達見込</th></tr></thead>
+      <tbody>${rows}<tr style="border-top:2px solid #5B7C5F"><td colspan="5" style="${cellR};font-weight:700">毎月の積立合計</td><td style="${cellR};font-weight:800" class="tnum">${yen1(R.totalMonthly)}</td><td></td></tr></tbody>
     </table>
+    <div style="margin-top:8px">${afford}</div>
     <div style="font-weight:800;color:#47664b;margin:12px 0 4px;font-size:11px">■ ゆとり枠（原資 ${yen(R.yutPool)}）</div>
     <div style="font-size:10px">リスク度：${RISK_LBL[S.risk]}／趣味枠：${HOBBY_LBL[S.hobby]}　→　株式${ym.stock}% ・ 債券${ym.bond}% ・ オルタナ${ym.alt}% ・ 趣味${ym.hobby}%</div>
-    <div style="font-weight:800;color:#47664b;margin:12px 0 4px;font-size:11px">■ 世帯合算（今 → 設計後）</div>
+    <div style="font-weight:800;color:#47664b;margin:12px 0 4px;font-size:11px">■ 世帯合算（今の配分 → この設計に沿った配分）</div>
     <table style="width:100%;border-collapse:collapse;font-size:10px">
-      <tr style="background:#eaf0ea"><th style="padding:4px 6px;text-align:left"></th><th style="padding:4px 6px">現金</th><th style="padding:4px 6px">株式</th><th style="padding:4px 6px">債券</th><th style="padding:4px 6px">オルタナ</th><th style="padding:4px 6px">趣味</th></tr>
-      <tr><td style="padding:4px 6px;font-weight:700">今</td><td style="padding:4px 6px;text-align:center">${pc(R.now.cash,R.nowTotal)}%</td><td style="padding:4px 6px;text-align:center">${pc(R.now.stock,R.nowTotal)}%</td><td style="padding:4px 6px;text-align:center">${pc(R.now.bond,R.nowTotal)}%</td><td style="padding:4px 6px;text-align:center">${pc(R.now.alt,R.nowTotal)}%</td><td style="padding:4px 6px;text-align:center">0%</td></tr>
-      <tr><td style="padding:4px 6px;font-weight:700;color:#47664b">設計後</td><td style="padding:4px 6px;text-align:center">${pc(R.res.cash,R.resTotal)}%</td><td style="padding:4px 6px;text-align:center">${pc(R.res.stock,R.resTotal)}%</td><td style="padding:4px 6px;text-align:center">${pc(R.res.bond,R.resTotal)}%</td><td style="padding:4px 6px;text-align:center">${pc(R.res.alt,R.resTotal)}%</td><td style="padding:4px 6px;text-align:center">${pc(R.res.hobby,R.resTotal)}%</td></tr>
+      <tr style="background:#eaf0ea"><th style="${cellL}"></th><th style="${cellC}">現金</th><th style="${cellC}">株式</th><th style="${cellC}">債券</th><th style="${cellC}">オルタナ</th><th style="${cellC}">趣味</th></tr>
+      <tr><td style="padding:4px 6px;font-weight:700">今</td><td style="${cellC}">${pc(R.now.cash,R.nowTotal)}%</td><td style="${cellC}">${pc(R.now.stock,R.nowTotal)}%</td><td style="${cellC}">${pc(R.now.bond,R.nowTotal)}%</td><td style="${cellC}">${pc(R.now.alt,R.nowTotal)}%</td><td style="${cellC}">0%</td></tr>
+      <tr><td style="padding:4px 6px;font-weight:700;color:#47664b">設計後</td><td style="${cellC}">${pc(R.res.cash,R.resTotal)}%</td><td style="${cellC}">${pc(R.res.stock,R.resTotal)}%</td><td style="${cellC}">${pc(R.res.bond,R.resTotal)}%</td><td style="${cellC}">${pc(R.res.alt,R.resTotal)}%</td><td style="${cellC}">${pc(R.res.hobby,R.resTotal)}%</td></tr>
     </table>
-    <div style="font-size:8.5px;color:#888;margin-top:12px;border-top:1px solid #ccc;padding-top:6px">本レポートは情報提供であり投資助言ではありません。想定年利・将来リターンは不確実です。投資判断は自己責任でお願いします。／ らくらく夫婦 life-works.net</div>`;
+    <div style="font-size:8.5px;color:#888;margin-top:12px;border-top:1px solid #ccc;padding-top:6px">「到達見込」は各ポートフォリオの想定年利（保守的な仮定）で、必要な積立を続けた場合の目標時期の残高見込みです。本レポートは情報提供であり投資助言ではありません。想定年利・将来リターンは不確実で、結果を保証しません。投資判断は自己責任でお願いします。／ らくらく夫婦 life-works.net</div>`;
 }
 
 /* ---- ステッパー ---- */
@@ -849,7 +923,7 @@ function renderKidCount(){
   box.innerHTML=[0,1,2,3].map(n=>`<button data-kc="${n}" aria-pressed="${S.kids.length===n}">${n}人</button>`).join('');
   box.querySelectorAll('button').forEach(b=>b.onclick=()=>{
     const n=+b.dataset.kc;
-    while(S.kids.length<n) S.kids.push({age:null,mid:'public',high:'public',univ:'national',scholarship:false});
+    while(S.kids.length<n) S.kids.push({age:null,mid:'public',high:'public',univ:'national',scholarship:false,juku:'standard'});
     S.kids.length=n; renderKidCount(); renderKidAges(); render();
   });
 }
@@ -878,7 +952,7 @@ function renderReserves(){
 
 /* ============ 配線 ============ */
 function bindNum(id,setter){document.getElementById(id).addEventListener('input',e=>{setter(num(e.target.value));render();});}
-bindNum('ageH',v=>S.ageH=v); bindNum('ageW',v=>S.ageW=v); bindNum('expense',v=>S.expense=v);
+bindNum('ageH',v=>S.ageH=v); bindNum('ageW',v=>S.ageW=v); bindNum('expense',v=>S.expense=v); bindNum('income',v=>S.income=v);
 bindNum('assets',v=>S.assets=v); bindNum('cash',v=>S.cash=v);
 bindNum('mixStock',v=>S.mix.stock=v); bindNum('mixBond',v=>S.mix.bond=v); bindNum('mixAlt',v=>S.mix.alt=v);
 bindNum('retireTarget',v=>S.retireTarget=v);
