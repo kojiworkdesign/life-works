@@ -151,6 +151,17 @@ input[type=range]{flex:1;accent-color:var(--sage);height:6px}
 .btn-ghost{background:var(--surface);border:1px solid var(--line-2);color:var(--ink)}
 .sim-note{font-size:12px;color:var(--muted);margin-top:8px}
 
+/* 家計の健康診断 */
+.advice{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:18px 20px;margin-bottom:16px}
+.advice-h{font-weight:800;font-size:14px;margin-bottom:10px}
+.advice-item{display:flex;flex-direction:column;gap:2px;border-radius:10px;padding:11px 14px;font-size:13px;margin-top:8px}
+.advice-item b{font-weight:800}
+.advice-item span{color:var(--ink-2)}
+.advice-item.warn{background:#fdf3e3}
+.advice-item.warn b{color:var(--warn)}
+.advice-item.ok{background:var(--sage-ll)}
+.advice-item.ok b{color:var(--good)}
+
 /* results gate */
 #results{display:none}
 #results.on{display:block;animation:fade .4s ease}
@@ -349,6 +360,9 @@ footer{text-align:center;color:var(--muted);font-size:12px;padding:28px 20px 46p
     <div id="wfCallout"></div>
   </section>
 
+  <!-- 家計の健康診断（①②③の後のアドバイス） -->
+  <div id="adviceBlock"></div>
+
   <!-- ④ 目標設計 -->
   <section class="sec" id="s4" data-step="4">
     <div class="sec-h"><span class="sec-n">4</span><h2>目標を設計する</h2></div>
@@ -394,8 +408,13 @@ footer{text-align:center;color:var(--muted);font-size:12px;padding:28px 20px 46p
         <span class="big tnum" id="totalContrib">—</span>
       </div>
       <div id="contribCallout"></div>
+      <div class="sim-wrap" id="gate6" style="margin-top:18px;margin-bottom:0">
+        <button class="btn btn-primary" id="proceed6">この積立で決定 → ゆとり枠の設計へ</button>
+        <p class="sim-note">毎月の積立が決まりました。次は、余ったお金（ゆとり枠）の運用方針を決めます。</p>
+      </div>
     </section>
 
+    <div id="step6wrap" style="display:none">
     <div class="nav-flow"><span class="ar">↓</span><div>毎月の積立が決まったら、<b>余ったお金（ゆとり枠）の運用方針</b>を設計しましょう。積立を設定する余裕がない場合は、目標を見直すか、支出を減らすか、収入を増やす必要があります。</div></div>
 
     <!-- ⑥ ゆとり枠 -->
@@ -436,35 +455,31 @@ footer{text-align:center;color:var(--muted);font-size:12px;padding:28px 20px 46p
         </div>
       </details>
       <div class="yut-close" id="yutClose"></div>
+
+      <div class="sim-wrap" id="confirmGate" style="margin-top:22px;margin-bottom:0">
+        <p style="font-weight:800;font-size:16px;margin:0 0 12px">これで、資産配分プランを確定しますか？</p>
+        <button class="btn btn-primary" id="confirmBtn">資産配分プランを確定する ✓</button>
+        <p class="sim-note">確定すると、印刷できる「資産配分プラン」レポートを作成します。</p>
+      </div>
     </section>
+    </div><!-- /step6wrap -->
 
-    <div class="nav-flow"><span class="ar">↓</span><div>ここまでの設計を合算すると、<b>資産全体の配分</b>が見えます。「今の配分」と「この設計に沿った配分」を並べて確認しましょう。</div></div>
-
-    <!-- ⑦ 世帯合算 -->
+    <div id="step7wrap" style="display:none">
+    <!-- ⑦ 完成・レポート -->
     <section class="sec" id="s7" data-step="7">
-      <div class="sec-h"><span class="sec-n">7</span><h2>世帯合算：今 と 設計後</h2></div>
-      <p class="sec-sub">今の総資産を分母に、「現在の配分」と「この設計に沿った配分」を同じ基準で並べます。</p>
-      <div class="compare">
-        <div class="panel"><div class="ptitle">今の配分</div><div class="dwrap"><div id="nowDonut"></div></div><div class="legend" id="nowLegend"></div></div>
-        <div class="panel res"><div class="ptitle">この設計に沿った配分</div><div class="dwrap"><div id="resDonut"></div></div><div class="legend" id="resLegend"></div></div>
-      </div>
-      <p class="house-caption" id="houseCaption"></p>
-    </section>
-
-    <!-- ⑧ 出力 -->
-    <section class="sec" id="s8" data-step="8">
       <div class="done-banner">
-        <div class="em">🎉</div>
-        <h3>資産配分プランが完成しました</h3>
-        <p>らくらく夫婦式の「守り→目的別→ゆとり」の設計が、あなたの数字で1つにまとまりました。</p>
+        <div class="em" id="doneEm">🎉</div>
+        <h3 id="doneTitle">資産配分プランが完成しました</h3>
+        <p id="doneMsg">らくらく夫婦式の「守り → 目的別 → ゆとり」の設計が、あなたの数字で1つにまとまりました。</p>
       </div>
-      <p class="sec-sub" style="margin-top:0">A4のレポートとして印刷・PDF保存できます。夫婦で見せ合い、来年「去年はこうだった」と振り返る記録に。</p>
+      <p class="sec-sub" style="margin-top:0">A4のレポートとして印刷・PDF保存できます。「今ある資金の配分」「今後の積立」「ゆとり枠の目標バランス」が1枚にまとまります（参考として、設計後の資産全体のバランスも掲載）。夫婦で見せ合い、来年の振り返りにも。</p>
       <div class="out-row">
-        <button class="btn btn-primary" onclick="window.print()">🖨 レポートを印刷 / PDF保存</button>
+        <button class="btn btn-primary" onclick="window.print()">🖨 レポートを表示（印刷 / PDF保存）</button>
         <span class="plan-date" id="planDate"></span>
       </div>
       <p class="disc">本ツールは情報提供であり、特定の金融商品の勧誘・投資助言ではありません。表示される銘柄は「らくらく夫婦が実際に使っている型の開示」であって購入の推奨ではなく、想定年利・将来リターン・税制は不確実です。最終的な投資判断はご自身の責任でお願いします。</p>
     </section>
+    </div><!-- /step7wrap -->
 
   </div><!-- /results -->
 </div><!-- /app -->
@@ -529,7 +544,7 @@ const S = {
   picks:{},  // bucketId -> candidate index
   risk:1, hobby:1,
   contribMode:'required', // 'required' | 'capped'（余力に収める）
-  simulated:false, RETIRE:65,
+  simulated:false, step6:false, confirmed:false, RETIRE:65,
 };
 
 /* ============ ユーティリティ ============ */
@@ -678,13 +693,41 @@ function render(){
   else if(R.investable<=0){ wc.innerHTML=`<div class="callout warn">現金はほぼ守りで埋まっています。まずは守りを保ちつつ、毎月の積立から少しずつ運用を。</div>`; }
   else { wc.innerHTML=`<div class="callout info">この投資に回せる現金 ${yen(R.investable)} は、次のステップで まず老後・教育などの目的に充てます${R.invested>0?`（すでに運用中の ${yen(R.invested)} と合わせて配分）`:''}。目的に充てて余った分が「ゆとり枠」になります。</div>`; }
 
+  // 家計の健康診断（①②③の後のアドバイス）
+  renderAdvice(R);
   // STEP4 教育設計
   renderEduDesign();
   // STEP4 投資済み振り分け
   renderSplit(R);
 
   if(S.simulated){ renderResults(R); }
+  // 段階表示ゲート
+  document.getElementById('step6wrap').style.display = (S.simulated&&S.step6)?'block':'none';
+  document.getElementById('step7wrap').style.display = (S.simulated&&S.step6&&S.confirmed)?'block':'none';
+  const g6=document.getElementById('gate6'); if(g6) g6.style.display = (S.simulated&&!S.step6)?'block':'none';
+  const cg=document.getElementById('confirmGate'); if(cg) cg.style.display = (S.step6&&!S.confirmed)?'block':'none';
   renderStepper();
+}
+
+/* ---- 家計の健康診断（①②③の後） ---- */
+function renderAdvice(R){
+  const box=document.getElementById('adviceBlock');
+  const items=[];
+  if(S.income!=null && S.expense!=null && S.income < S.expense){
+    items.push({t:'warn', h:'毎月が赤字です', b:`手取り月収 ${yen(S.income)} < 生活費 ${yen(S.expense)}。この状態では積立を続けられません。<b>まず固定費（保険・通信・サブスク等）の見直しで、毎月の黒字化を最優先に。</b>投資はそのあとで大丈夫です。`});
+  }
+  if(R.cashShort>0){
+    items.push({t:'warn', h:'守りの現金が不足しています', b:`生活防衛＋確保枠に ${yen(R.cashShort)} 足りません。<b>投資より先に、まずこの現金を確保しましょう。</b>守りができてから、余った分を投資に回します。`});
+  }
+  // 収支も現金もOKなら前向きメッセージ（必要な入力が揃っているときだけ）
+  if(items.length===0 && S.income!=null && S.expense!=null && S.cash!=null && S.assets!=null){
+    items.push({t:'ok', h:'土台はできています', b:`収支は黒字、守りの現金も確保できています。この調子で、次のステップ「目標の設計」に進みましょう。積立が家計に対して大きすぎないかは、シミュレーション後にあらためて判定します。`});
+  }
+  if(items.length===0){ box.innerHTML=''; return; }
+  box.innerHTML=`<div class="advice">
+    <div class="advice-h">🩺 家計の健康診断（ここまでの入力から）</div>
+    ${items.map(i=>`<div class="advice-item ${i.t}"><b>${i.t==='ok'?'✓':'⚠'} ${i.h}</b><span>${i.b}</span></div>`).join('')}
+  </div>`;
 }
 
 /* ---- STEP4 教育方針UI ---- */
@@ -836,16 +879,7 @@ function renderResults(R){
   document.getElementById('yutAmt').textContent=yen(R.yutPool);
   document.getElementById('yutClose').innerHTML=`✓ このリスク度「${RISK_LBL[S.risk]}」×趣味枠「${HOBBY_LBL[S.hobby]}」で出た配分を目安に、ゆとり枠の ${yen(R.yutPool)} を運用していきましょう。`;
 
-  // ⑦ 現状 vs 結果
-  const nowS=[{nm:'現金',val:R.now.cash,col:COL.cash},{nm:'株式',val:R.now.stock,col:COL.stock},{nm:'債券',val:R.now.bond,col:COL.bond},{nm:'オルタナ',val:R.now.alt,col:COL.alt}].filter(s=>s.val>0.5);
-  const resS=[{nm:'現金',val:R.res.cash,col:COL.cash},{nm:'株式',val:R.res.stock,col:COL.stock},{nm:'債券',val:R.res.bond,col:COL.bond},{nm:'オルタナ',val:R.res.alt,col:COL.alt},{nm:'趣味枠',val:R.res.hobby,col:COL.hobby}].filter(s=>s.val>0.5);
-  drawDonut('nowDonut',nowS,'総資産',yen(R.nowTotal).replace('万円',''));
-  drawDonut('resDonut',resS,'総資産',yen(R.resTotal).replace('万円',''));
-  document.getElementById('nowLegend').innerHTML=legendHtml(nowS,R.nowTotal);
-  document.getElementById('resLegend').innerHTML=legendHtml(resS,R.resTotal);
-  const rStock=R.resTotal>0?Math.round(R.res.stock/R.resTotal*100):0, rCash=R.resTotal>0?Math.round(R.res.cash/R.resTotal*100):0;
-  document.getElementById('houseCaption').innerHTML=`この設計に沿うと、資産全体は<b>株式 約${rStock}%・現金 約${rCash}%</b>になります。守りの現金を土台に、目的別は時間軸に応じた配分、ゆとり枠は「株と違う動きの分散」を効かせた形です。※どちらも今の総資産を分母にした比較で、実際の移し替えは無理のない範囲で少しずつ進めてかまいません。`;
-
+  // ⑦（画面表示なし・世帯合算はレポートのみ）
   document.getElementById('planDate').textContent='作成日：'+new Date().toLocaleDateString('ja-JP',{year:'numeric',month:'long',day:'numeric'});
   renderReport(R);
 }
@@ -920,7 +954,9 @@ function renderReport(R){
     ${sec('STEP 3　それでも余ったゆとり枠は、このバランスを目指しましょう')}
     <div style="font-size:10px">原資 ${yen(R.yutPool)}　／　リスク度：${RISK_LBL[S.risk]}・趣味枠：${HOBBY_LBL[S.hobby]}　→　<b>株式${ym.stock}% ・ 債券${ym.bond}% ・ オルタナ${ym.alt}% ・ 趣味${ym.hobby}%</b></div>
 
-    <div style="font-weight:800;color:#47664b;margin:12px 0 4px;font-size:11px">■ 世帯合算（今の配分 → この設計に沿った配分）</div>
+    <hr style="border:none;border-top:1px dashed #bbb;margin:16px 0 8px">
+    <div style="font-weight:800;color:#666;font-size:11px">【参考】STEP1〜3をすべて反映した後の、資産全体のバランス</div>
+    <div style="font-size:8.5px;color:#888;margin:2px 0 5px">上のSTEP1〜3を実行した結果、いまの総資産が資産クラス別にどう分かれるか（今の配分との比較）。あくまで参考値です。</div>
     <table style="width:100%;border-collapse:collapse;font-size:10px">
       <tr style="background:#eaf0ea"><th style="${cL}"></th><th style="${cC}">現金</th><th style="${cC}">株式</th><th style="${cC}">債券</th><th style="${cC}">オルタナ</th><th style="${cC}">趣味</th></tr>
       <tr><td style="padding:4px 6px;font-weight:700">今</td><td style="${cC}">${pc(R.now.cash,R.nowTotal)}%</td><td style="${cC}">${pc(R.now.stock,R.nowTotal)}%</td><td style="${cC}">${pc(R.now.bond,R.nowTotal)}%</td><td style="${cC}">${pc(R.now.alt,R.nowTotal)}%</td><td style="${cC}">0%</td></tr>
@@ -930,15 +966,16 @@ function renderReport(R){
 }
 
 /* ---- ステッパー ---- */
-const STEPS=[['1','家族'],['2','資産'],['3','守り'],['4','目標'],['5','配分'],['6','ゆとり'],['7','全体'],['8','完成']];
+const STEPS=[['1','家族'],['2','資産'],['3','守り'],['4','目標'],['5','配分'],['6','ゆとり'],['7','完成']];
 function renderStepper(){
   const el=document.getElementById('stepper');
+  const lockMap={'5':!S.simulated, '6':!S.step6, '7':!S.confirmed};
   el.innerHTML=`<div class="stepper-in">`+STEPS.map(([n,l])=>{
-    const locked=(+n>=5)&&!S.simulated;
+    const locked=!!lockMap[n];
     return `<button class="stp${locked?' locked':' done'}" data-goto="${n}"><span class="dot">${n}</span>${l}</button>`;
   }).join('')+`</div>`;
   el.querySelectorAll('button[data-goto]').forEach(b=>b.onclick=()=>{
-    const n=b.dataset.goto; if(+n>=5&&!S.simulated) return;
+    const n=b.dataset.goto; if(lockMap[n]) return;
     document.getElementById('s'+n)?.scrollIntoView({behavior:'smooth',block:'start'});
   });
 }
@@ -998,6 +1035,18 @@ document.getElementById('simBtn').onclick=()=>{
   document.getElementById('results').classList.add('on');
   render();
   setTimeout(()=>document.getElementById('s5').scrollIntoView({behavior:'smooth',block:'start'}),80);
+};
+document.getElementById('proceed6').onclick=()=>{
+  S.step6=true; render();
+  setTimeout(()=>document.getElementById('s6').scrollIntoView({behavior:'smooth',block:'start'}),80);
+};
+document.getElementById('confirmBtn').onclick=()=>{
+  const btn=document.getElementById('confirmBtn');
+  btn.disabled=true; btn.textContent='プランを作成しています…';
+  setTimeout(()=>{
+    S.confirmed=true; render();
+    setTimeout(()=>document.getElementById('s7').scrollIntoView({behavior:'smooth',block:'start'}),80);
+  },950);
 };
 
 /* ============ 起動 ============ */
