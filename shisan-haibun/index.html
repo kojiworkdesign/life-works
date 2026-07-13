@@ -3,12 +3,12 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>夫婦の資産配分シミュレーター | らくらく夫婦</title>
+<title>家計と投資の健康診断 | らくらく夫婦</title>
 <meta name="robots" content="noindex">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="らくらく夫婦ツール">
-<meta property="og:title" content="夫婦の資産配分シミュレーター | らくらく夫婦">
-<meta property="og:description" content="入力していくだけで、らくらく夫婦式の「目的別・資産配分プラン」が完成する設計ツール。有料note購入者向け。">
+<meta property="og:title" content="家計と投資の健康診断 | らくらく夫婦">
+<meta property="og:description" content="夫婦で入力するだけで、いま投資にいくら回せて、老後・教育のお金が足りるかを無料で診断。もっと詳しく設計したい方には、守りと攻めを分けた目的別プランも。">
 <meta property="og:url" content="https://life-works.net/shisan-haibun/">
 <meta property="og:image" content="https://life-works.net/images/ogp-shisan-haibun.png">
 <meta name="twitter:card" content="summary_large_image">
@@ -33,12 +33,12 @@ a{color:var(--sage-d)}
 .tnum{font-variant-numeric:tabular-nums}
 button{font-family:inherit}
 
-/* ===== パスワードゲート ===== */
+/* ===== パスワードゲート（有料プラン解錠モーダル） ===== */
 #gate{display:none}
-body.locked{overflow:hidden}
-body.locked .top,body.locked .hero,body.locked .stepper,body.locked main,body.locked footer{display:none!important}
-body.locked #gate{display:flex;position:fixed;inset:0;z-index:100;overflow-y:auto;padding:32px 18px;background:var(--plane);align-items:flex-start;justify-content:center}
-.gate-card{background:var(--surface);border:1px solid var(--line);border-radius:20px;box-shadow:var(--shadow);max-width:460px;width:100%;padding:30px 26px;margin:auto}
+body.gate-open{overflow:hidden}
+body.gate-open #gate{display:flex;position:fixed;inset:0;z-index:100;overflow-y:auto;padding:32px 18px;background:rgba(31,38,34,.55);align-items:flex-start;justify-content:center}
+.gate-card{position:relative;background:var(--surface);border:1px solid var(--line);border-radius:20px;box-shadow:var(--shadow);max-width:460px;width:100%;padding:30px 26px;margin:auto}
+.gate-close{position:absolute;top:12px;right:14px;border:0;background:rgba(0,0,0,.06);width:32px;height:32px;border-radius:50%;cursor:pointer;font-size:16px;font-weight:800;color:var(--ink-2);line-height:1}
 .gate-badge{display:inline-block;background:#fde9e6;color:var(--alert);font-weight:800;font-size:12px;padding:5px 12px;border-radius:999px}
 .gate-title{font-size:21px;font-weight:800;margin:14px 0 8px}
 .gate-lead{color:var(--ink-2);font-size:14px;margin:0 0 16px}
@@ -187,6 +187,20 @@ input[type=range]{flex:1;accent-color:var(--sage);height:6px}
 .advice-item.ok{background:var(--sage-ll)}
 .advice-item.ok b{color:var(--good)}
 
+/* 無料診断：数値タイル */
+.fstats{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;margin:4px 0 12px}
+.fstat{background:var(--sage-ll);border:1px solid var(--line);border-radius:12px;padding:12px 14px}
+.fstat .k{font-size:11px;color:var(--ink-2);font-weight:700}
+.fstat .v{font-size:19px;font-weight:800;color:var(--ink);margin-top:3px}
+.fstat.accent{background:var(--sage-l)}.fstat.accent .v{color:var(--sage-d)}
+.fstat.warn{background:#fdf3e3}.fstat.warn .v{color:var(--warn)}
+.fstat.good{background:var(--sage-ll)}.fstat.good .v{color:var(--good)}
+.fmeta{font-size:12px;color:var(--ink-2);margin:0 0 14px}
+.fmeta b{color:var(--sage-d)}
+.mismatch{display:grid;gap:8px;margin-top:12px}
+.cta-line{font-size:13px;color:var(--ink-2);margin:10px 0 0;line-height:1.7}
+.cta-line b{color:var(--sage-d)}
+
 /* results gate */
 #results{display:none}
 #results.on{display:block;animation:fade .4s ease}
@@ -284,18 +298,19 @@ footer{text-align:center;color:var(--muted);font-size:12px;padding:28px 20px 46p
 }
 </style>
 </head>
-<body class="locked" data-palette="#008300,#2a78d6,#eda100,#4a3aa7,#98938a">
+<body data-palette="#008300,#2a78d6,#eda100,#4a3aa7,#98938a">
 
-<!-- ===== パスワードゲート（有料note購入者向け） ===== -->
+<!-- ===== パスワードゲート（有料・目的別プラン解錠モーダル） ===== -->
 <div id="gate">
   <div class="gate-card">
-    <span class="gate-badge">🔒 有料ツール</span>
-    <h1 class="gate-title">夫婦の資産配分シミュレーター</h1>
-    <p class="gate-lead">入力していくだけで、らくらく夫婦式の「目的別・資産配分プラン」が完成する設計ツールです。</p>
+    <button class="gate-close" id="gateClose" aria-label="閉じる">×</button>
+    <span class="gate-badge">🔒 目的別プラン（有料）</span>
+    <h2 class="gate-title">らくらく夫婦式・目的別プラン</h2>
+    <p class="gate-lead">診断おつかれさまでした。ここから先は「守り」と「攻め」を目的ごとに分けた詳細設計です。</p>
     <ul class="gate-points">
-      <li>お金の序列（守り→老後→教育→ゆとり）で配分</li>
-      <li>教育方針から目標額を自動計算し、必要な毎月積立を逆算</li>
-      <li>家計の余力と見比べて「いくら投資に回せるか」を判定</li>
+      <li>老後・中高・大学ごとに最適な配分と実銘柄比率を処方</li>
+      <li>目標に届く毎月の積立額を、目的別に逆算</li>
+      <li>余ったお金（ゆとり枠）の運用方針まで設計</li>
       <li>A4レポート（PDF）に出力して夫婦で共有</li>
     </ul>
     <div class="gate-form">
@@ -306,7 +321,6 @@ footer{text-align:center;color:var(--muted);font-size:12px;padding:28px 20px 46p
     <p class="gate-note">パスワードは<b>有料note</b>の中でお渡ししています。<a href="https://note.com/rakufu_log" target="_blank" rel="noopener">noteで見る →</a><br>一度解錠すると、この端末では次回から自動で開きます。</p>
   </div>
 </div>
-<script>if(localStorage.getItem('shisan_unlocked')==='1')document.body.classList.remove('locked');</script>
 
 <header class="top no-print">
   <div class="top-in">
@@ -316,9 +330,9 @@ footer{text-align:center;color:var(--muted);font-size:12px;padding:28px 20px 46p
 </header>
 
 <section class="hero no-print">
-  <span class="eyebrow">らくらく夫婦式・資産配分</span>
-  <h1>夫婦の資産配分シミュレーター</h1>
-  <p>順番に入力していくだけで、らくらく夫婦式の「目的別・資産配分プラン」が完成します。</p>
+  <span class="eyebrow">らくらく夫婦式・無料診断</span>
+  <h1>家計と投資の健康診断</h1>
+  <p>夫婦で順番に入力していくだけで、いま投資にいくら回せて、老後・教育のお金が足りるかが分かります。</p>
   <details>
     <summary>このツールが大切にする2つの考え方</summary>
     <div class="creed">
@@ -365,21 +379,12 @@ footer{text-align:center;color:var(--muted);font-size:12px;padding:28px 20px 46p
       <div class="field"><label>総資産 <span class="unit">万円</span></label><input type="number" id="assets" min="0" step="10" placeholder="例：2000"></div>
       <div class="field"><label>うち現金・預金 <span class="unit">万円</span></label><input type="number" id="cash" min="0" step="10" placeholder="例：800"></div>
     </div>
-    <div id="investMixWrap" style="margin-top:16px;display:none">
-      <label style="font-weight:700;font-size:13px">投資済み <b id="investedAmt" class="tnum">—</b> の、今のざっくり配分 <span class="unit" style="color:var(--muted);font-weight:600;font-size:12px">合計100%でなくてもOK（自動調整します）</span></label>
-      <div class="grid" style="margin-top:8px;grid-template-columns:repeat(3,1fr)">
-        <div class="field"><label style="color:var(--c-stock)">株式 <span class="unit">%</span></label><input type="number" id="mixStock" min="0" max="100" placeholder="例：70"></div>
-        <div class="field"><label style="color:var(--c-bond)">債券 <span class="unit">%</span></label><input type="number" id="mixBond" min="0" max="100" placeholder="例：15"></div>
-        <div class="field"><label style="color:var(--c-alt)">オルタナ <span class="unit">%</span></label><input type="number" id="mixAlt" min="0" max="100" placeholder="例：15"></div>
-      </div>
-      <p class="hint">オルタナ＝金・REIT・ヘッジファンド・仮想通貨など、株でも債券でもないもの。</p>
-    </div>
   </section>
 
   <!-- ③ 守り -->
   <section class="sec" id="s3" data-step="3">
     <div class="sec-h"><span class="sec-n">3</span><h2>守りを固める</h2></div>
-    <p class="sec-sub">総資産からまず「守るお金」を確保します。残りが投資に回せる現金です。</p>
+    <p class="sec-sub">総資産からまず「守るお金」を確保します。残りが、すぐに投資に回せる現金です。</p>
 
     <div class="field" style="margin-bottom:16px">
       <label>生活防衛資金：生活費の <span id="dfMonthsLbl" class="tnum">6</span> ヶ月分</label>
@@ -401,46 +406,46 @@ footer{text-align:center;color:var(--muted);font-size:12px;padding:28px 20px 46p
     <div class="wf-bar" id="wfBar"></div>
     <div class="wf-legend" id="wfLegend"></div>
     <div class="wf-result">
-      <span class="lbl">＝ 投資に回せる現金</span>
+      <span class="lbl">＝ すぐに投資に回せる現金</span>
       <span class="big tnum" id="investable">—</span>
     </div>
     <div id="wfCallout"></div>
   </section>
 
-  <!-- 家計の健康診断（①②③の後のアドバイス） -->
+  <div class="sim-wrap" id="baseCheckWrap">
+    <button class="btn btn-primary" id="baseCheckBtn">診断する →</button>
+    <p class="sim-note">まず「毎月が黒字か」「生活防衛資金の下限（生活費×3ヶ月）を超えているか」をチェックします。</p>
+  </div>
+
+  <!-- 家計の健康診断（土台チェック） -->
   <div id="adviceBlock"></div>
 
   <!-- ④ 目標設計 -->
   <section class="sec" id="s4" data-step="4">
     <div class="sec-h"><span class="sec-n">4</span><h2>目標を設計する</h2></div>
-    <p class="sec-sub">老後と教育の「目標額」を決めます。教育は方針を選ぶと自動で計算します。最後に、すでに投資している資金を目的ごとに振り分けます。</p>
+    <p class="sec-sub">老後と教育の「目標額」を決めます。教育は方針を選ぶと自動で計算します。</p>
 
-    <div class="child-card">
+    <div class="child-card" id="retireCard">
       <h4>🌅 老後資金</h4>
-      <div class="field" style="max-width:320px">
-        <label>目標額 <span class="unit">万円（公的年金とは別に準備したい額）</span></label>
-        <input type="number" id="retireTarget" min="0" step="100" placeholder="例：2000">
-      </div>
-      <p class="hint">ここで入れるのは「公的年金では足りない分」を補う自助分です（生活費の全額ではありません）。目安は2,000〜3,000万円（いわゆる老後2,000万円問題）。ゆとりある暮らしを望むなら多めに。年長側が65歳になるまでに用意する想定で計算します。</p>
+      <p class="hint" style="margin-top:0">公的年金とは別に、自分で用意したい老後資金の<b>水準</b>を選びます。数字がしっくりこない方は「自分で入力」もできます。</p>
+      <div id="retireDesign"></div>
     </div>
 
     <div id="eduDesign"></div>
 
-    <div class="child-card" id="splitCard" style="display:none">
-      <h4>💼 いまある資金を、まず目的に充てましょう</h4>
-      <p class="hint" style="margin-top:0">投資に回せる現金 <b id="splitPoolInvestable" class="tnum">—</b> ＋ すでに運用中 <b id="splitPoolInvested" class="tnum">—</b> ＝ <b id="splitTotal" class="tnum">—</b> を、どの目的の元本にするか決めます。目的が決まっていれば入力を、決まっていなければ今ざっくりで「これは老後用」「これは教育用」と割り振ってみましょう。<b>先に元本を充てるほど、毎月の積立は軽くなります。</b>どこにも割り当てなかった残りが、自由に使える「ゆとり枠」になります。</p>
-      <div class="split-list" id="splitList"></div>
-      <div class="split-bar" id="splitBar"></div>
-      <div class="split-meta"><span id="splitAssigned">目的に割当 0万円</span><span id="splitRemain">残り（ゆとり枠）0万円</span></div>
-    </div>
+    <div id="riskTolBox" style="border-top:1px solid var(--line);margin-top:18px;padding-top:16px"></div>
+
   </section>
 
-  <div class="sim-wrap">
-    <button class="btn btn-primary" id="simBtn">この内容でシミュレーションする →</button>
-    <p class="sim-note">①〜④の入力をもとに、目的別のポートフォリオと必要な積立額を計算します。</p>
+  <div class="sim-wrap" id="diagWrap">
+    <button class="btn btn-primary" id="simBtn">この内容で投資を診断する →</button>
+    <p class="sim-note">目標とリスク許容度をもとに、いま投資にいくら回せて、目標に届くかを無料で診断します。</p>
   </div>
 
-  <!-- ===== results ===== -->
+  <!-- ===== 無料の診断結果 ===== -->
+  <div id="freeResult"></div>
+
+  <!-- ===== results（有料・目的別プラン。解錠後に表示） ===== -->
   <div id="results">
 
     <div class="nav-flow"><span class="ar">↓</span><div>設計した目標に向けて、<b>目的ごとにポートフォリオを選ぶ</b>と、必要な毎月の積立額が決まります。積立が家計に対して大きすぎるときは、目標や支出の見直しサインです。</div></div>
@@ -448,7 +453,16 @@ footer{text-align:center;color:var(--muted);font-size:12px;padding:28px 20px 46p
     <!-- ⑤ 目的別配分 -->
     <section class="sec" id="s5" data-step="5">
       <div class="sec-h"><span class="sec-n">5</span><h2>目的別の配分と、必要な積立額</h2></div>
-      <p class="sec-sub">残り年数から推奨候補（<span style="color:var(--sage-d);font-weight:700">おすすめ</span>）を表示します。候補から選ぶと、目標に届くために必要な毎月の積立額が自動で計算されます。</p>
+      <p class="sec-sub">目的（老後・中高・大学）ごとに、残り年数から推奨候補（<span style="color:var(--sage-d);font-weight:700">おすすめ</span>）を表示します。<b>各目的で、下の候補から1つずつ選んでください。</b>選ぶと、目標に届く毎月の積立額が自動で計算されます。</p>
+
+      <div class="child-card" id="splitCard" style="display:none;margin-top:0;margin-bottom:16px">
+        <h4>💼 いまある資金を、まず目的に充てましょう</h4>
+        <p class="hint" style="margin-top:0">投資に回せる現金 <b id="splitPoolInvestable" class="tnum">—</b> ＋ すでに運用中 <b id="splitPoolInvested" class="tnum">—</b> ＝ <b id="splitTotal" class="tnum">—</b> を、どの目的の元本にするか決めます。目的が決まっていれば入力を、決まっていなければ今ざっくりで「これは老後用」「これは教育用」と割り振ってみましょう。<b>先に元本を充てるほど、毎月の積立は軽くなります。</b>どこにも割り当てなかった残りが、自由に使える「ゆとり枠」になります。</p>
+        <div class="split-list" id="splitList"></div>
+        <div class="split-bar" id="splitBar"></div>
+        <div class="split-meta"><span id="splitAssigned">目的に割当 0万円</span><span id="splitRemain">残り（ゆとり枠）0万円</span></div>
+      </div>
+
       <div id="goals"></div>
       <div class="total-contrib">
         <span class="lbl">毎月の積立合計</span>
@@ -577,6 +591,18 @@ const YUTORI = [
   [{s:70,b:10,a:20,h:0},{s:70,b:5,a:15,h:10},{s:70,b:5,a:5,h:20}],
 ];
 const RISK_LBL=['堅実','バランス','積極'], HOBBY_LBL=['0%','10%','20%'];
+// 老後：自助額プリセット（公的年金とは別に用意する額・水準ラベル付き。インフレ織り込み済みの目安）
+const RETIRE_PRESETS=[
+  {lbl:'ひかえめ', sub:'月約27万の暮らし', amt:2000},
+  {lbl:'標準',     sub:'月約32万',         amt:3500},
+  {lbl:'ゆとり',   sub:'月約36万・旅行や趣味も', amt:5000},
+  {lbl:'たっぷり', sub:'月約40万〜',       amt:6500},
+];
+// リスク許容度3択（無料の単一バケツ比率）。標準＝100−年齢（動的）
+const RISKTOL=[{lbl:'保守',stock:50},{lbl:'標準',stock:null},{lbl:'積極',stock:90}];
+function rFromStock(s){ return Math.round((1 + s*0.04)*10)/10; } // 株式比率→保守的想定年利%（0%=1,50%=3,100%=5）
+function stdStock(){ const eldest=Math.max(S.ageH||0,S.ageW||0)||40; return clamp(100-eldest,0,100); }
+function riskStock(){ const t=RISKTOL[S.riskTol]; return t.stock!=null?t.stock:stdStock(); }
 function gv(n){return getComputedStyle(document.documentElement).getPropertyValue(n).trim();}
 const COL={stock:gv('--c-stock'),bond:gv('--c-bond'),alt:gv('--c-alt'),hobby:gv('--c-hobby'),cash:gv('--c-cash')};
 
@@ -586,12 +612,13 @@ const S = {
   assets:null, cash:null, mix:{stock:null,bond:null,alt:null},
   dfMonths:6, reserves:[],
   kids:[], // {age, mid:'public'|'private', high:'public'|'private', univ:'national'..., scholarship:bool}
-  retireTarget:null,
-  splits:{}, // bucketId -> 万円（目的別の元本割当）
+  retireLevel:1, retireManual:null, retireAge:65, // 老後：自助額プリセット（1=標準3500万）／manual時はretireManual
+  riskTol:1, // リスク許容度（0保守/1標準/2積極）＝無料の単一バケツ比率
+  splits:{}, // bucketId -> 万円（目的別の元本割当）※有料STEP5
   picks:{},  // bucketId -> candidate index
   risk:1, hobby:1,
   contribMode:'required', // 'required' | 'capped'（余力に収める）
-  simulated:false, step6:false, confirmed:false, RETIRE:65,
+  baseChecked:false, simulated:false, step6:false, confirmed:false, unlocked:false,
 };
 
 /* ============ ユーティリティ ============ */
@@ -631,12 +658,15 @@ function eduTargets(kid){
     parts:{midSchool,highSchool,jrExam,highExam,univSchool,univSchoolOut,uniExam,
       midLbl:kid.mid==='public'?'公立':'私立', highLbl:kid.high==='public'?'公立':'私立'}};
 }
+function retireSelfAmount(){ // 老後に自分で用意する額（自助分・万円）
+  return S.retireLevel==='manual' ? (num(S.retireManual)||0) : RETIRE_PRESETS[S.retireLevel].amt;
+}
 function buckets(){ // 目的バケツ一覧（順序＝序列）
   const list=[];
   const eldest = Math.max(S.ageH||0, S.ageW||0);
-  const ry = Math.max(0, S.RETIRE - eldest);
+  const ry = Math.max(0, S.retireAge - eldest);
   list.push({id:'retire', icon:'🌅', title:'老後資金', cands:RETIRE_CANDS, years:ry,
-    target:S.retireTarget||0, timeLabel:`あと${ry}年（${S.RETIRE}歳まで）`});
+    target:retireSelfAmount(), timeLabel:`あと${ry}年（${S.retireAge}歳まで）`});
   S.kids.forEach((k,i)=>{
     if(k.age==null) return;
     const t=eduTargets(k);
@@ -689,6 +719,31 @@ function compute(){
   });
   const totalMonthly = capped ? capacity : totalRequired;
 
+  // ===== 無料ゾーン：単一バケツ（全目標に単一比率）＋セグメント＋ミスマッチ =====
+  const dfFloor=(S.expense||0)*3;                 // 生活防衛資金の下限（生活費×3ヶ月）
+  const singleStock=riskStock(), singleR=rFromStock(singleStock);
+  const totalTarget=bks.reduce((t,b)=>t+b.target,0);
+  let freeRequired=0;
+  const freeBuckets=bks.map(b=>{
+    const B = totalTarget>0 ? allocPool*b.target/totalTarget : 0;   // 元本を目標比で自動按分
+    const fc=reqMonthly(b.target,b.years,singleR,B);
+    freeRequired+=fc.monthly;
+    const rec=b.cands[recIndex(b.cands,b.years)];
+    return {...b, freeB:B, freeCalc:fc, recStock:rec.stock};
+  });
+  const freeGap = capacity!=null ? Math.max(0, freeRequired-capacity) : null;
+  let mismatchNear=false, mismatchFar=false;      // 単一比率 vs 目的別推奨のズレ
+  freeBuckets.forEach(b=>{ if(b.target<=0) return;
+    if(b.years<=6  && singleStock > b.recStock) mismatchNear=true;  // 近い目的に株式多すぎ①
+    if(b.years>=15 && singleStock < b.recStock) mismatchFar=true;   // 遠い目的に保守すぎ②
+  });
+  let segment;                                    // セグメント判定
+  if(S.income==null||S.expense==null||S.cash==null) segment='incomplete';
+  else if(S.income < S.expense) segment='deficit';
+  else if(S.cash < dfFloor) segment='belowFloor';
+  else if(S.cash < reserveTarget) segment='parallel';
+  else segment=(freeGap>0)?'gap':'reached';
+
   // ゆとり配分
   const y=YUTORI[S.risk][S.hobby];
   const yutMix={stock:y.s,bond:y.b,alt:y.a,hobby:y.h};
@@ -706,16 +761,16 @@ function compute(){
 
   return {df,reserveSum,reserveTarget,cash,assets,investable,cashShort,invested,allocPool,
     assigned,yutPool,goals,totalMonthly,totalRequired,capacity,affordGap,capped,income:S.income,expense:S.expense,
-    yutMix,now,res,nowTotal:cash+invested,resTotal:assets};
+    yutMix,now,res,nowTotal:cash+invested,resTotal:assets,
+    dfFloor,singleStock,singleR,totalTarget,freeBuckets,freeRequired,freeGap,mismatchNear,mismatchFar,segment};
 }
 
 /* ============ 描画 ============ */
 function render(){
   const R=compute();
-  // STEP2 投資内訳の表示切替
-  const invWrap=document.getElementById('investMixWrap');
-  invWrap.style.display = R.invested>0 ? 'block' : 'none';
-  document.getElementById('investedAmt').textContent = R.invested>0?yen(R.invested):'—';
+  // 「診断する」を押すまで STEP4 以降は隠す
+  document.getElementById('s4').style.display = S.baseChecked?'':'none';
+  document.getElementById('diagWrap').style.display = S.baseChecked?'':'none';
 
   // STEP3 ウォーターフォール
   document.getElementById('dfMonthsLbl').textContent=S.dfMonths;
@@ -724,7 +779,7 @@ function render(){
   const parts=[
     {nm:'生活防衛資金',amt:R.df,col:COL.cash},
     ...(R.reserveSum>0?[{nm:'確保枠',amt:R.reserveSum,col:'#c9b98f'}]:[]),
-    {nm:'投資に回せる現金',amt:R.investable,col:gv('--sage')},
+    {nm:'すぐに投資に回せる現金',amt:R.investable,col:gv('--sage')},
   ];
   const bar=document.getElementById('wfBar'); bar.innerHTML='';
   const tot=Math.max(R.cash, R.df+R.reserveSum+R.investable, 1);
@@ -738,42 +793,44 @@ function render(){
   if(!S.cash){ wc.innerHTML=''; }
   else if(R.cashShort>0){ wc.innerHTML=`<div class="callout warn">⚠ 守りの現金が目標に ${yen(R.cashShort)} 足りません。このツールは「投資できるようになったらこう配分する」という設計図です。まずは投資より現金の守りを厚くするのが先です。</div>`; }
   else if(R.investable<=0){ wc.innerHTML=`<div class="callout warn">現金はほぼ守りで埋まっています。まずは守りを保ちつつ、毎月の積立から少しずつ運用を。</div>`; }
-  else { wc.innerHTML=`<div class="callout info">この投資に回せる現金 ${yen(R.investable)} は、次のステップで まず老後・教育などの目的に充てます${R.invested>0?`（すでに運用中の ${yen(R.invested)} と合わせて配分）`:''}。目的に充てて余った分が「ゆとり枠」になります。</div>`; }
+  else { wc.innerHTML=`<div class="callout info">この すぐに投資に回せる現金 ${yen(R.investable)} は、${R.invested>0?`運用中の ${yen(R.invested)} と合わせて、`:''}STEP5で老後・教育などの目的に配分していきます（配分しきれず余った分が「ゆとり枠」）。</div>`; }
 
   // 家計の健康診断（①②③の後のアドバイス）
   renderAdvice(R);
+  // STEP4 老後（自助分の自動計算）
+  renderRetire();
   // STEP4 教育設計
   renderEduDesign();
   // STEP4 投資済み振り分け
   renderSplit(R);
 
-  if(S.simulated){ renderResults(R); }
+  // リスク許容度（診断前から表示）＋無料の診断結果
+  renderRiskTol();
+  renderFreeResult(R);
+  // 有料ゾーン（解錠後のみ表示）
+  const paidOn = S.simulated && S.unlocked;
+  document.getElementById('results').classList.toggle('on', paidOn);
+  if(paidOn){ renderResults(R); }
   // 段階表示ゲート
-  document.getElementById('step6wrap').style.display = (S.simulated&&S.step6)?'block':'none';
-  document.getElementById('step7wrap').style.display = (S.simulated&&S.step6&&S.confirmed)?'block':'none';
-  const g6=document.getElementById('gate6'); if(g6) g6.style.display = (S.simulated&&!S.step6)?'block':'none';
-  const cg=document.getElementById('confirmGate'); if(cg) cg.style.display = (S.step6&&!S.confirmed)?'block':'none';
+  document.getElementById('step6wrap').style.display = (paidOn&&S.step6)?'block':'none';
+  document.getElementById('step7wrap').style.display = (paidOn&&S.step6&&S.confirmed)?'block':'none';
+  const g6=document.getElementById('gate6'); if(g6) g6.style.display = (paidOn&&!S.step6)?'block':'none';
+  const cg=document.getElementById('confirmGate'); if(cg) cg.style.display = (paidOn&&S.step6&&!S.confirmed)?'block':'none';
   renderStepper();
 }
 
 /* ---- 家計の健康診断（①②③の後） ---- */
 function renderAdvice(R){
   const box=document.getElementById('adviceBlock');
-  const items=[];
-  if(S.income!=null && S.expense!=null && S.income < S.expense){
-    items.push({t:'warn', h:'毎月が赤字です', b:`手取り月収 ${yen(S.income)} < 生活費 ${yen(S.expense)}。この状態では積立を続けられません。<b>まず固定費（保険・通信・サブスク等）の見直しで、毎月の黒字化を最優先に。</b>投資はそのあとで大丈夫です。`});
-  }
-  if(R.cashShort>0){
-    items.push({t:'warn', h:'守りの現金が不足しています', b:`生活防衛＋確保枠に ${yen(R.cashShort)} 足りません。<b>投資より先に、まずこの現金を確保しましょう。</b>守りができてから、余った分を投資に回します。`});
-  }
-  // 収支も現金もOKなら前向きメッセージ（必要な入力が揃っているときだけ）
-  if(items.length===0 && S.income!=null && S.expense!=null && S.cash!=null && S.assets!=null){
-    items.push({t:'ok', h:'土台はできています', b:`収支は黒字、守りの現金も確保できています。この調子で、次のステップ「目標の設計」に進みましょう。積立が家計に対して大きすぎないかは、シミュレーション後にあらためて判定します。`});
-  }
-  if(items.length===0){ box.innerHTML=''; return; }
+  if(!S.baseChecked){ box.innerHTML=''; return; }
+  let item;
+  if(R.segment==='incomplete') item={t:'', ic:'…', h:'入力が足りません', b:'STEP①〜③の「生活費・手取り月収・現金」を入れると、家計の土台を診断します。'};
+  else if(R.segment==='deficit') item={t:'warn', ic:'⚠', h:'毎月が赤字です', b:`手取り月収 ${yen(S.income)} < 生活費 ${yen(S.expense)}。この状態では積立を続けられません。<b>まず固定費（保険・通信・サブスク等）の見直しで、毎月の黒字化を最優先に。</b>投資はそのあとで大丈夫です。`};
+  else if(R.segment==='belowFloor') item={t:'warn', ic:'⚠', h:`生活防衛資金の下限（${yen(R.dfFloor)}）に届いていません`, b:`現金がまだ「生活費×3ヶ月＝${yen(R.dfFloor)}」に届いていません。<b>まずはこの下限まで現金を厚くするのが先です。</b>下限を超えたら、投資と並行で増やしていけます。`};
+  else item={t:'ok', ic:'✓', h:'土台はできています', b:`毎月は黒字で、生活防衛資金の下限もクリアしています。<b>→ 続いてSTEP④で、老後・教育の目標を設計しましょう。</b>`};
   box.innerHTML=`<div class="advice">
-    <div class="advice-h">🩺 家計の健康診断（ここまでの入力から）</div>
-    ${items.map(i=>`<div class="advice-item ${i.t}"><b>${i.t==='ok'?'✓':'⚠'} ${i.h}</b><span>${i.b}</span></div>`).join('')}
+    <div class="advice-h">🩺 家計の土台チェック（STEP①〜③から）</div>
+    <div class="advice-item ${item.t}"><b>${item.ic} ${item.h}</b><span>${item.b}</span></div>
   </div>`;
 }
 
@@ -815,6 +872,36 @@ function renderEduDesign(){
     if(f==='scholarship') v=(v==='true');
     S.kids[i][f]=v; render();
   });
+}
+
+/* ---- STEP4 老後（自助額プリセット） ---- */
+function renderRetire(){
+  const box=document.getElementById('retireDesign'); if(!box) return;
+  const eldest=Math.max(S.ageH||0,S.ageW||0);
+  const ry=Math.max(0, S.retireAge-eldest);
+  const amt=retireSelfAmount();
+  const pills=RETIRE_PRESETS.map((p,i)=>`<button data-rlevel="${i}" aria-pressed="${S.retireLevel===i}" style="flex-direction:column;align-items:flex-start;min-width:118px;padding:8px 12px">
+      <span style="font-weight:800;font-size:13px">${p.lbl}　${yen(p.amt)}</span>
+      <span style="font-size:11px;color:var(--muted);font-weight:600">${p.sub}</span></button>`).join('')
+    + `<button data-rlevel="manual" aria-pressed="${S.retireLevel==='manual'}" style="min-width:92px">自分で入力</button>`;
+  box.innerHTML=`
+    <div class="pills" data-rgroup="level" style="gap:8px">${pills}</div>
+    ${S.retireLevel==='manual'?`<div class="field" style="max-width:240px;margin-top:10px"><div class="inline-unit"><input type="number" id="retireManualInp" min="0" step="100" value="${S.retireManual!=null?S.retireManual:''}" placeholder="例：4000"><span class="u">万円</span></div></div>`:''}
+    <details class="basis" style="margin-top:10px"><summary>詳しく設定（リタイア年齢）</summary>
+      <div class="bd"><label>リタイア <input type="number" id="retireAgeInp" value="${S.retireAge}" min="50" max="75" style="width:62px;padding:6px 8px;border:1px solid var(--line-2);border-radius:8px;font:inherit"> 歳（この年齢までに準備）</label></div>
+    </details>
+    <div class="edu-result" style="margin-top:10px">
+      <span>老後に自分で用意する額 <b class="tnum" style="color:var(--sage-d);font-size:15px">${yen(amt)}</b></span>
+      <span>あと ${ry}年（${S.retireAge}歳まで）に準備</span>
+    </div>
+    <p class="hint" style="margin:6px 0 0">金額は「年金＋取り崩し」でどんな暮らしになるかの目安付き。物価上昇も見込んだ概算です。</p>`;
+  box.querySelectorAll('[data-rlevel]').forEach(b=>b.onclick=()=>{
+    const v=b.dataset.rlevel; S.retireLevel = (v==='manual')?'manual':+v; render();
+  });
+  const mi=document.getElementById('retireManualInp');
+  if(mi) mi.addEventListener('change',e=>{ S.retireManual=num(e.target.value); render(); });
+  const ra=document.getElementById('retireAgeInp');
+  if(ra) ra.addEventListener('change',e=>{ const v=num(e.target.value); if(v!=null) S.retireAge=clamp(v,50,75); render(); });
 }
 
 /* ---- STEP4 投資済み振り分け ---- */
@@ -1003,20 +1090,96 @@ function renderReport(R){
 
     <hr style="border:none;border-top:1px dashed #bbb;margin:16px 0 8px">
     <div style="font-weight:800;color:#666;font-size:11px">【参考】STEP1〜3をすべて反映した後の、資産全体のバランス</div>
-    <div style="font-size:8.5px;color:#888;margin:2px 0 5px">上のSTEP1〜3を実行した結果、いまの総資産が資産クラス別にどう分かれるか（今の配分との比較）。あくまで参考値です。</div>
+    <div style="font-size:8.5px;color:#888;margin:2px 0 5px">上のSTEP1〜3を実行すると、いまの総資産が資産クラス別にこう分かれます。あくまで参考値です。</div>
     <table style="width:100%;border-collapse:collapse;font-size:10px">
       <tr style="background:#eaf0ea"><th style="${cL}"></th><th style="${cC}">現金</th><th style="${cC}">株式</th><th style="${cC}">債券</th><th style="${cC}">オルタナ</th><th style="${cC}">趣味</th></tr>
-      <tr><td style="padding:4px 6px;font-weight:700">今</td><td style="${cC}">${pc(R.now.cash,R.nowTotal)}%</td><td style="${cC}">${pc(R.now.stock,R.nowTotal)}%</td><td style="${cC}">${pc(R.now.bond,R.nowTotal)}%</td><td style="${cC}">${pc(R.now.alt,R.nowTotal)}%</td><td style="${cC}">0%</td></tr>
       <tr><td style="padding:4px 6px;font-weight:700;color:#47664b">設計後</td><td style="${cC}">${pc(R.res.cash,R.resTotal)}%</td><td style="${cC}">${pc(R.res.stock,R.resTotal)}%</td><td style="${cC}">${pc(R.res.bond,R.resTotal)}%</td><td style="${cC}">${pc(R.res.alt,R.resTotal)}%</td><td style="${cC}">${pc(R.res.hobby,R.resTotal)}%</td></tr>
     </table>
     <div style="font-size:8.5px;color:#888;margin-top:12px;border-top:1px solid #ccc;padding-top:6px">「到達見込」は各ポートフォリオの想定年利（保守的な仮定）で、記載の積立を続けた場合の目標時期の残高見込み（△は目標との差）。本レポートは情報提供であり投資助言ではありません。想定年利・将来リターンは不確実で、結果を保証しません。投資判断は自己責任でお願いします。／ らくらく夫婦 life-works.net</div>`;
 }
 
+/* ---- リスク許容度セレクタ（診断ボタンの前） ---- */
+function renderRiskTol(){
+  const box=document.getElementById('riskTolBox'); if(!box) return;
+  const stock=riskStock(), r=rFromStock(stock);
+  box.innerHTML=`<div class="stance">
+    <div class="lab"><span style="font-weight:800">投資のリスク許容度</span><span class="cur">${RISKTOL[S.riskTol].lbl}・株式${stock}%（想定年利${r}%）</span></div>
+    <div class="opts" id="riskTolOpts" role="group">${RISKTOL.map((t,i)=>`<button data-v="${i}" aria-pressed="${S.riskTol===i}">${t.lbl}</button>`).join('')}</div>
+    <p class="hint" style="margin-top:6px">保守＝株50%／標準＝100−年齢／積極＝株90%。診断はこの比率で計算します。目的ごとの細かい配分は、解錠後の目的別プランで。</p>
+  </div>`;
+  box.querySelectorAll('#riskTolOpts button').forEach(b=>b.onclick=()=>{ S.riskTol=+b.dataset.v; render(); });
+}
+
+/* ---- 無料の診断結果（数値タイル→コメント→ミスマッチ→CTA） ---- */
+function renderFreeResult(R){
+  const box=document.getElementById('freeResult'); if(!box) return;
+  if(!S.simulated){ box.innerHTML=''; return; }
+  const seg=R.segment, showCTA=(seg==='parallel'||seg==='reached'||seg==='gap');
+  const dff=yen(R.dfFloor);
+  // ① 数値タイル（投資に進める人）
+  let stats='';
+  if(showCTA){
+    const gapWarn=(R.freeGap!=null&&R.freeGap>0);
+    const capTile=R.capacity!=null
+      ? `<div class="fstat ${gapWarn?'warn':'good'}"><div class="k">毎月の余力（黒字）</div><div class="v tnum">${yen(R.capacity)}</div></div>`
+      : `<div class="fstat"><div class="k">毎月の余力</div><div class="v" style="font-size:13px;font-weight:700">手取り月収を入力</div></div>`;
+    stats=`<div class="fstats">
+      <div class="fstat"><div class="k">目標（老後＋教育）</div><div class="v tnum">${yen(R.totalTarget)}</div></div>
+      <div class="fstat"><div class="k">運用中＋すぐ投資に回せる現金</div><div class="v tnum">${yen(R.allocPool)}</div></div>
+      <div class="fstat accent"><div class="k">必要な毎月積立</div><div class="v tnum">${yen1(R.freeRequired)}</div></div>
+      ${capTile}
+    </div>
+    <p class="fmeta"><b>株式${R.singleStock}%・想定年利${R.singleR}%（${RISKTOL[S.riskTol].lbl}）</b>で、全目標を1つの比率で見た合計です。${gapWarn?`いまの余力では <b style="color:var(--warn)">${yen1(R.freeGap)}/月 不足</b>。`:(R.capacity!=null?`いまの余力で <b style="color:var(--good)">まかなえます</b>。`:'')}</p>`;
+  }
+  // ② 診断コメント（純診断）
+  let comment='';
+  if(seg==='incomplete') comment=`<div class="advice-item"><span>STEP①〜③の「生活費・手取り月収・現金」を入れると、いま投資にいくら回せて、目標に届くかを診断します。</span></div>`;
+  else if(seg==='deficit') comment=`<div class="advice-item warn"><b>⚠ いまは毎月が赤字です</b><span>手取り ${yen(R.income)} − 生活費 ${yen(R.expense)} ＝ 毎月 ${yen(R.expense-R.income)} の赤字。投資の設計より先に、まず固定費の見直しで黒字化を。整えば生活防衛資金づくり→投資へと自然に進めます。焦らなくて大丈夫です。</span></div>`;
+  else if(seg==='belowFloor') comment=`<div class="advice-item warn"><b>⚠ まず生活防衛資金の下限（${dff}）まで</b><span>投資に回せる余力はありますが、現金がまだ下限（生活費×3ヶ月＝${dff}）に届いていません。並行で増やすなら投資は少なめにして、まずは生活防衛資金を優先で。目的別の設計は、この土台ができてからのほうが効いてきます。</span></div>`;
+  else if(seg==='parallel') comment=`<div class="advice-item ok"><b>✓ 生活防衛資金の下限はクリア</b><span>ここからは貯金の上積みと投資を同時に進めてOK。まずは全世界株インデックス1本で積み立てるだけでも十分立派です。「もっと自分の目的に合わせて割りたい」と思ったら、目的別の設計へ。</span></div>`;
+  else if(seg==='reached') comment=`<div class="advice-item ok"><b>✓ 土台は十分できています</b><span>生活防衛資金も確保、投資余力もあり、いまの積立ペースで目標にも届きそうです。あとは"中身"の最適化。老後と教育を混ぜず、目的ごとに運用を分けると、もっと納得感が出ます。</span></div>`;
+  else if(seg==='gap') comment=`<div class="advice-item warn"><b>あと一歩：目標に ${yen1(R.freeGap)}/月 届いていません</b><span>投資に回せる余力はしっかりあります。この"足りない"は、目的ごとに運用を分けると埋めやすくなります。</span></div>`;
+  // ③ ミスマッチ（コメントと同じブロックにまとめる）
+  const mm=[];
+  if(R.mismatchNear) mm.push({h:'⚠ 近い教育費に、リスクの取りすぎ',b:'教育資金（中高）は使う時期が近いのに、いまの比率だと株式が多めです。使う直前に相場が下がると、必要なときに元本が削られるかもしれません。'});
+  if(R.mismatchFar) mm.push({h:'💡 遠い老後は、もっと攻めていい',b:'老後まで時間があるのに、いまの比率だと守りに寄りすぎです。複利を取りこぼしているかもしれません。'});
+  const mmItems=(showCTA?mm:[]).map(m=>`<div class="advice-item warn"><b>${m.h}</b><span>${m.b}</span></div>`).join('');
+  // ④ CTA（長文はボタン外・ボタンは短く）
+  let cta='';
+  if(showCTA) cta=`<div style="margin-top:16px;border-top:1px dashed var(--line);padding-top:16px">
+    <p style="font-weight:800;margin:0 0 8px">こんな疑問が浮かんだあなたへ</p>
+    <ul style="margin:0;padding-left:0;list-style:none;display:grid;gap:6px;font-size:13px">
+      <li>・教育資金まで投資に回して、本当に大丈夫…？</li>
+      <li>・もっとリスクを取って増やしたい</li>
+      <li>・結局、どんな銘柄で老後・教育に備えればいい？</li>
+      <li>・余った分で、趣味の投資も少し楽しみたい</li>
+    </ul>
+    <p class="cta-line">らくらく夫婦の「<b>目的別投資</b>」は、お金に序列をつけ、目的（老後・中高・大学）ごとに<b>"使う時期"でリスクを変える</b>考え方です。近い目的は守り（債券多め）、遠い目的は攻める（株式多め）。まとめて1つの比率より、無駄なく・こわれにくく設計できます。</p>
+    <p class="cta-line">あと5分の入力で、この「守り」と「攻め」を分けた目的別プランが完成します。</p>
+    <div class="sim-wrap" style="margin:10px 0 0">
+      <button class="btn btn-primary" id="ctaUnlock">目的別プランを作成する →</button>
+      <p class="sim-note">${S.unlocked?'✓ 解錠済み。下のSTEP5へ':'有料note内のパスワードで解錠します'}</p>
+    </div>
+  </div>`;
+  box.innerHTML=`<div class="sec" id="freeSec">
+    <div class="sec-h"><span class="sec-n" style="background:var(--sage-d)">🩺</span><h2 style="font-size:17px">診断結果</h2></div>
+    <p class="sec-sub" style="margin-bottom:14px">①〜④の入力から、いまのあなたの家計と投資を無料で診断します。</p>
+    ${stats}
+    <div class="advice" style="box-shadow:none;margin-bottom:0">${comment}${mmItems}</div>
+    ${cta}
+  </div>`;
+  const cu=document.getElementById('ctaUnlock');
+  if(cu) cu.onclick=()=>{ if(S.unlocked) document.getElementById('s5').scrollIntoView({behavior:'smooth',block:'start'}); else openGate(); };
+}
+function openGate(){ document.body.classList.add('gate-open'); setTimeout(()=>{const p=document.getElementById('gatePw');if(p)p.focus();},50); }
+function closeGate(){ document.body.classList.remove('gate-open'); }
+
 /* ---- ステッパー ---- */
 const STEPS=[['1','家族'],['2','資産'],['3','守り'],['4','目標'],['5','配分'],['6','ゆとり'],['7','完成']];
 function renderStepper(){
   const el=document.getElementById('stepper');
-  const lockMap={'5':!S.simulated, '6':!S.step6, '7':!S.confirmed};
+  const paidOn=S.simulated&&S.unlocked;
+  const lockMap={'5':!paidOn, '6':!(paidOn&&S.step6), '7':!(paidOn&&S.confirmed)};
   el.innerHTML=`<div class="stepper-in">`+STEPS.map(([n,l])=>{
     const locked=!!lockMap[n];
     return `<button class="stp${locked?' locked':' done'}" data-goto="${n}"><span class="dot">${n}</span>${l}</button>`;
@@ -1064,8 +1227,6 @@ function renderReserves(){
 function bindNum(id,setter){document.getElementById(id).addEventListener('input',e=>{setter(num(e.target.value));render();});}
 bindNum('ageH',v=>S.ageH=v); bindNum('ageW',v=>S.ageW=v); bindNum('expense',v=>S.expense=v); bindNum('income',v=>S.income=v);
 bindNum('assets',v=>S.assets=v); bindNum('cash',v=>S.cash=v);
-bindNum('mixStock',v=>S.mix.stock=v); bindNum('mixBond',v=>S.mix.bond=v); bindNum('mixAlt',v=>S.mix.alt=v);
-bindNum('retireTarget',v=>S.retireTarget=v);
 document.querySelectorAll('#workStyle button').forEach(b=>b.onclick=()=>{
   S.workStyle=b.dataset.v;
   document.querySelectorAll('#workStyle button').forEach(x=>x.setAttribute('aria-pressed',x===b));
@@ -1077,11 +1238,13 @@ document.getElementById('dfMonths').addEventListener('input',e=>{S.dfMonths=+e.t
 document.getElementById('addReserve').onclick=()=>{S.reserves.push({name:'',amt:null});renderReserves();render();};
 document.querySelectorAll('#riskOpts button').forEach(b=>b.onclick=()=>{S.risk=+b.dataset.v;render();});
 document.querySelectorAll('#hobbyOpts button').forEach(b=>b.onclick=()=>{S.hobby=+b.dataset.v;render();});
+document.getElementById('baseCheckBtn').onclick=()=>{
+  S.baseChecked=true; render();
+  setTimeout(()=>document.getElementById('adviceBlock')?.scrollIntoView({behavior:'smooth',block:'start'}),80);
+};
 document.getElementById('simBtn').onclick=()=>{
-  S.simulated=true;
-  document.getElementById('results').classList.add('on');
-  render();
-  setTimeout(()=>document.getElementById('s5').scrollIntoView({behavior:'smooth',block:'start'}),80);
+  S.simulated=true; render();
+  setTimeout(()=>document.getElementById('freeSec')?.scrollIntoView({behavior:'smooth',block:'start'}),80);
 };
 document.getElementById('proceed6').onclick=()=>{
   S.step6=true; render();
@@ -1105,13 +1268,17 @@ async function sha256hex(s){
 async function tryUnlock(){
   const inp=document.getElementById('gatePw'), err=document.getElementById('gateErr');
   const h=await sha256hex((inp.value||'').trim());
-  if(h===PW_HASH){ localStorage.setItem('shisan_unlocked','1'); err.textContent=''; document.body.classList.remove('locked'); window.scrollTo(0,0); }
+  if(h===PW_HASH){ localStorage.setItem('shisan_unlocked','1'); S.unlocked=true; err.textContent=''; closeGate(); render();
+    setTimeout(()=>document.getElementById('s5')?.scrollIntoView({behavior:'smooth',block:'start'}),80); }
   else { err.textContent='パスワードが違います。有料note内のパスワードをご確認ください。'; inp.select(); }
 }
 document.getElementById('gateBtn').onclick=tryUnlock;
 document.getElementById('gatePw').addEventListener('keydown',e=>{ if(e.key==='Enter') tryUnlock(); });
+document.getElementById('gateClose').onclick=closeGate;
+document.getElementById('gate').addEventListener('click',e=>{ if(e.target.id==='gate') closeGate(); });
 
 /* ============ 起動 ============ */
+S.unlocked = localStorage.getItem('shisan_unlocked')==='1';
 renderKidCount(); renderKidAges(); renderReserves(); render();
 </script>
 </body>
