@@ -1,9 +1,26 @@
 ---
-// サイト共通ヘッダー。ロゴのみのシンプル構成（既存デザインを踏襲）
+// サイト共通ヘッダー。ここにリンクを足すと全ページに反映される。
+const path = Astro.url.pathname;
+const isActive = (href: string) => (href === '/' ? path === '/' : path.startsWith(href));
+
+const nav = [
+  { href: '/', label: 'ツール' },
+  { href: '/blog/', label: 'ブログ' },
+  { href: '/about/', label: 'このサイトについて' },
+];
 ---
 
 <header class="header">
   <div class="header-inner">
     <a href="/" class="logo">らくらく夫婦<span>ツール</span></a>
+    <nav class="header-nav">
+      {
+        nav.map((n) => (
+          <a href={n.href} class:list={['header-link', { active: isActive(n.href) }]}>
+            {n.label}
+          </a>
+        ))
+      }
+    </nav>
   </div>
 </header>

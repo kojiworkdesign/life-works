@@ -54,6 +54,41 @@ body {
   color: var(--color-primary);
 }
 
+/* ヘッダーのナビ */
+.header-nav {
+  margin-left: auto;
+  display: flex;
+  gap: 20px;
+  align-items: center;
+}
+
+.header-link {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--color-text-muted);
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.header-link:hover,
+.header-link.active {
+  color: var(--color-primary);
+}
+
+/* フッターのナビ */
+.footer-nav {
+  display: flex;
+  gap: 18px;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-bottom: 16px;
+}
+
+.footer-nav a {
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
 /* ヒーロー */
 .hero {
   background: var(--color-surface);
@@ -243,4 +278,14 @@ body {
   .hero-title { font-size: 1.8rem; }
   .app-grid { grid-template-columns: 1fr; }
   .container { padding: 40px 16px 60px; }
+  .header-inner { padding: 0 16px; }
+  .logo { font-size: 1rem; }
+  .header-nav { gap: 12px; }
+  .header-link { font-size: 0.74rem; }
+  .footer-nav { gap: 12px; }
+}
+
+@media (max-width: 380px) {
+  /* 幅が足りないときはナビの最後の項目を隠す（フッターから辿れる） */
+  .header-nav .header-link:last-child { display: none; }
 }

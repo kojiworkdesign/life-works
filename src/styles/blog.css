@@ -1,0 +1,373 @@
+/* ブログ（長文を読ませるための組版）。ツールのCSSとは別物。 */
+
+.blog-wrap {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 28px 20px 72px;
+}
+
+/* パンくず */
+.breadcrumb {
+  font-size: 0.76rem;
+  color: var(--color-text-muted);
+  margin-bottom: 22px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: center;
+}
+.breadcrumb a {
+  color: var(--color-text-muted);
+  text-decoration: none;
+}
+.breadcrumb a:hover {
+  color: var(--color-primary);
+  text-decoration: underline;
+}
+.breadcrumb span[aria-current] {
+  color: var(--color-text);
+}
+
+/* 記事ヘッダー */
+.article-head {
+  margin-bottom: 30px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid var(--color-border);
+}
+.article-title {
+  font-size: 1.85rem;
+  font-weight: 900;
+  line-height: 1.45;
+  letter-spacing: -0.01em;
+  margin-bottom: 14px;
+}
+.article-meta {
+  font-size: 0.78rem;
+  color: var(--color-text-muted);
+  display: flex;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+/* 目次 */
+.toc {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 14px;
+  padding: 20px 22px;
+  margin-bottom: 38px;
+}
+.toc-label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  color: var(--color-text-muted);
+  margin-bottom: 12px;
+}
+.toc ol {
+  list-style: none;
+  counter-reset: toc;
+}
+.toc li {
+  counter-increment: toc;
+  margin: 9px 0;
+  line-height: 1.6;
+}
+.toc li.depth-3 {
+  margin-left: 18px;
+  font-size: 0.86rem;
+}
+.toc a {
+  color: var(--color-text);
+  text-decoration: none;
+  font-size: 0.9rem;
+}
+.toc a:hover {
+  color: var(--color-primary);
+  text-decoration: underline;
+}
+
+/* 本文 */
+.article-body {
+  font-size: 1.0625rem; /* 17px */
+  line-height: 1.95;
+}
+.article-body > * + * {
+  margin-top: 1.5em;
+}
+.article-body h2 {
+  font-size: 1.35rem;
+  font-weight: 800;
+  line-height: 1.5;
+  margin-top: 2.6em;
+  padding-top: 1.4em;
+  border-top: 1px solid var(--color-border);
+}
+.article-body h3 {
+  font-size: 1.1rem;
+  font-weight: 800;
+  margin-top: 2em;
+  color: var(--color-primary);
+}
+.article-body a {
+  color: var(--color-primary);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.article-body strong {
+  font-weight: 800;
+  background: linear-gradient(transparent 62%, var(--color-primary-light) 62%);
+}
+.article-body ul,
+.article-body ol {
+  padding-left: 1.4em;
+}
+.article-body li + li {
+  margin-top: 0.6em;
+}
+.article-body blockquote {
+  border-left: 3px solid var(--color-primary);
+  background: var(--color-primary-light);
+  padding: 16px 20px;
+  border-radius: 0 10px 10px 0;
+  font-size: 0.97rem;
+}
+.article-body blockquote > * + * {
+  margin-top: 0.8em;
+}
+.article-body hr {
+  border: 0;
+  border-top: 1px solid var(--color-border);
+  margin: 2.6em 0;
+}
+.article-body img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 12px;
+}
+.article-body code {
+  background: var(--color-bg-sub);
+  padding: 2px 6px;
+  border-radius: 5px;
+  font-size: 0.88em;
+}
+
+/* 表は横スクロールさせる（スマホで崩さない） */
+.table-scroll {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+.article-body table {
+  border-collapse: collapse;
+  width: 100%;
+  font-size: 0.9rem;
+  min-width: 420px;
+}
+.article-body th,
+.article-body td {
+  border: 1px solid var(--color-border);
+  padding: 10px 12px;
+  text-align: left;
+  vertical-align: top;
+}
+.article-body th {
+  background: var(--color-bg-sub);
+  font-weight: 700;
+}
+
+/* 見出しへのアンカー（目次から飛んだとき、ヘッダーに隠れないように） */
+.article-body :is(h2, h3) {
+  scroll-margin-top: 76px;
+}
+
+/* 著者ボックス */
+.author-box {
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 14px;
+  padding: 20px;
+  margin-top: 48px;
+}
+.author-box img {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.author-name {
+  font-weight: 800;
+  font-size: 0.95rem;
+  margin-bottom: 6px;
+}
+.author-desc {
+  font-size: 0.82rem;
+  line-height: 1.8;
+  color: var(--color-text-muted);
+}
+.author-desc a {
+  color: var(--color-primary);
+}
+
+/* CTA */
+.cta {
+  border-radius: 16px;
+  padding: 24px 22px;
+  margin: 40px 0;
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+}
+.cta-line {
+  border-color: #06c755;
+  background: #f2fbf5;
+}
+.cta-title {
+  font-weight: 800;
+  font-size: 1.02rem;
+  line-height: 1.6;
+  margin-bottom: 8px;
+}
+.cta-desc {
+  font-size: 0.88rem;
+  line-height: 1.85;
+  color: var(--color-text-muted);
+  margin-bottom: 16px;
+}
+.cta-btn {
+  display: inline-block;
+  background: var(--color-primary);
+  color: #fff;
+  font-weight: 800;
+  font-size: 0.92rem;
+  text-decoration: none;
+  padding: 13px 26px;
+  border-radius: 999px;
+}
+.cta-line .cta-btn {
+  background: #06c755;
+}
+.cta-btn:hover {
+  opacity: 0.88;
+}
+
+/* 結論ボックス */
+.callout {
+  background: var(--color-primary-light);
+  border: 1px solid var(--color-primary);
+  border-radius: 12px;
+  padding: 18px 20px;
+  font-size: 0.97rem;
+  line-height: 1.85;
+}
+.callout-label {
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  color: var(--color-primary);
+  margin-bottom: 8px;
+}
+
+/* 関連記事 */
+.related {
+  margin-top: 48px;
+}
+.related-label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  color: var(--color-text-muted);
+  border-bottom: 1px solid var(--color-border);
+  padding-bottom: 10px;
+  margin-bottom: 16px;
+}
+.related-item {
+  display: block;
+  text-decoration: none;
+  color: var(--color-text);
+  padding: 14px 16px;
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  background: var(--color-surface);
+  margin-bottom: 10px;
+}
+.related-item:hover {
+  border-color: var(--color-primary);
+}
+.related-item .t {
+  font-weight: 700;
+  font-size: 0.94rem;
+  line-height: 1.6;
+}
+.related-item .d {
+  font-size: 0.8rem;
+  color: var(--color-text-muted);
+  margin-top: 5px;
+  line-height: 1.7;
+}
+
+/* 記事一覧 */
+.blog-list-head {
+  text-align: center;
+  padding: 56px 20px 40px;
+  background: var(--color-surface);
+  border-bottom: 1px solid var(--color-border);
+}
+.blog-list-title {
+  font-size: 1.9rem;
+  font-weight: 900;
+}
+.blog-list-sub {
+  font-size: 0.9rem;
+  color: var(--color-text-muted);
+  margin-top: 12px;
+  line-height: 1.8;
+}
+.post-card {
+  display: block;
+  text-decoration: none;
+  color: var(--color-text);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 14px;
+  padding: 22px;
+  margin-bottom: 16px;
+}
+.post-card:hover {
+  border-color: var(--color-primary);
+  transform: translateY(-2px);
+  transition: all 0.2s;
+}
+.post-card .t {
+  font-size: 1.08rem;
+  font-weight: 800;
+  line-height: 1.55;
+}
+.post-card .d {
+  font-size: 0.85rem;
+  color: var(--color-text-muted);
+  line-height: 1.85;
+  margin-top: 10px;
+}
+.post-card .m {
+  font-size: 0.74rem;
+  color: var(--color-text-muted);
+  margin-top: 12px;
+}
+
+@media (max-width: 600px) {
+  .article-title {
+    font-size: 1.5rem;
+  }
+  .article-body {
+    font-size: 1rem;
+    line-height: 1.9;
+  }
+  .article-body h2 {
+    font-size: 1.22rem;
+  }
+  .blog-wrap {
+    padding: 20px 16px 60px;
+  }
+}

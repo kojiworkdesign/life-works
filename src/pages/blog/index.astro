@@ -1,0 +1,44 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import '../../styles/blog.css';
+
+const posts = (await getCollection('blog', ({ data }) => !data.draft)).sort(
+  (a, b) => b.data.publishedAt.getTime() - a.data.publishedAt.getTime()
+);
+
+const fmt = (d: Date) =>
+  new Intl.DateTimeFormat('ja-JP', { year: 'numeric', month: 'long', day: 'numeric' }).format(d);
+---
+
+<Base
+  title="ブログ | らくらく夫婦"
+  description="夫婦の家計と投資を、話し合わずに回す仕組みの作り方。我が家で実際にやっている運用と、その判断の順番を書いています。"
+>
+  <header class="blog-list-head">
+    <h1 class="blog-list-title">ブログ</h1>
+    <p class="blog-list-sub">
+      夫婦のお金を「話し合わなくても回る」形にする方法を、<br />我が家の実際の運用をもとに書いています。
+    </p>
+  </header>
+
+  <div class="blog-wrap">
+    {
+      posts.length === 0 ? (
+        <p>準備中です。</p>
+      ) : (
+        posts.map((post) => (
+          <a class="post-card" href={`/blog/${post.id}/`}>
+            <p class="t">{post.data.title}</p>
+            <p class="d">{post.data.description}</p>
+            <p class="m">
+              <time datetime={post.data.publishedAt.toISOString().split('T')[0]}>
+                {fmt(post.data.publishedAt)}
+              </time>
+            </p>
+          </a>
+        ))
+      )
+    }
+  </div>
+</Base>

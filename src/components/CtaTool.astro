@@ -1,0 +1,21 @@
+---
+interface Props {
+  /** 誘導先ツールのパス */
+  href?: string;
+  title?: string;
+  desc?: string;
+  label?: string;
+}
+const {
+  href = '/shisan-haibun/',
+  title = '自分の家の数字で確かめられます',
+  desc = '入力するだけで、いま投資にいくら回せるか、老後と教育のお金が足りるかを無料で診断できます。',
+  label = '無料で診断する →',
+} = Astro.props;
+---
+
+<div class="cta">
+  <p class="cta-title">{title}</p>
+  <p class="cta-desc">{desc}</p>
+  <a class="cta-btn" href={href}>{label}</a>
+</div>

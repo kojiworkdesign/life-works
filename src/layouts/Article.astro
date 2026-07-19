@@ -1,0 +1,137 @@
+---
+import Base from './Base.astro';
+import AuthorBox from '../components/AuthorBox.astro';
+import CtaLine from '../components/CtaLine.astro';
+import CtaTool from '../components/CtaTool.astro';
+import '../styles/blog.css';
+import type { MarkdownHeading } from 'astro';
+
+interface Props {
+  title: string;
+  description: string;
+  publishedAt: Date;
+  updatedAt?: Date;
+  ogImage?: string;
+  headings: MarkdownHeading[];
+  related?: { slug: string; title: string; description: string }[];
+  cta?: 'line' | 'tool';
+  ctaTool?: string;
+}
+
+const {
+  title,
+  description,
+  publishedAt,
+  updatedAt,
+  ogImage,
+  headings,
+  related = [],
+  cta = 'line',
+  ctaTool = '/shisan-haibun/',
+} = Astro.props;
+
+const fmt = (d: Date) =>
+  new Intl.DateTimeFormat('ja-JP', { year: 'numeric', month: 'long', day: 'numeric' }).format(d);
+const iso = (d: Date) => d.toISOString().split('T')[0];
+
+// 目次はH2とH3だけ（H4以下は細かすぎて目次の役に立たない）
+const toc = headings.filter((h) => h.depth === 2 || h.depth === 3);
+
+const url = new URL(Astro.url.pathname, Astro.site).href;
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'BlogPosting',
+      headline: title,
+      description,
+      datePublished: iso(publishedAt),
+      dateModified: iso(updatedAt ?? publishedAt),
+      mainEntityOfPage: url,
+      image: new URL(ogImage ?? '/images/ogp.png', Astro.site).href,
+      author: {
+        '@type': 'Person',
+        name: 'らくらく夫婦（夫）',
+        url: new URL('/about/', Astro.site).href,
+      },
+      publisher: {
+        '@type': 'Organization',
+        name: 'らくらく夫婦ツール',
+        logo: {
+          '@type': 'ImageObject',
+          url: new URL('/images/icon.png', Astro.site).href,
+        },
+      },
+    },
+    {
+      '@type': 'BreadcrumbList',
+      itemListElement: [
+        { '@type': 'ListItem', position: 1, name: 'ホーム', item: new URL('/', Astro.site).href },
+        { '@type': 'ListItem', position: 2, name: 'ブログ', item: new URL('/blog/', Astro.site).href },
+        { '@type': 'ListItem', position: 3, name: title, item: url },
+      ],
+    },
+  ],
+};
+---
+
+<Base title={`${title} | らくらく夫婦`} description={description} ogImage={ogImage} ogType="article">
+  <script type="application/ld+json" is:inline set:html={JSON.stringify(jsonLd)} />
+
+  <div class="blog-wrap">
+    <nav class="breadcrumb" aria-label="パンくず">
+      <a href="/">ホーム</a>
+      <span>›</span>
+      <a href="/blog/">ブログ</a>
+      <span>›</span>
+      <span aria-current="page">{title}</span>
+    </nav>
+
+    <header class="article-head">
+      <h1 class="article-title">{title}</h1>
+      <div class="article-meta">
+        <time datetime={iso(publishedAt)}>公開：{fmt(publishedAt)}</time>
+        {updatedAt && <time datetime={iso(updatedAt)}>更新：{fmt(updatedAt)}</time>}
+      </div>
+    </header>
+
+    {
+      toc.length > 2 && (
+        <nav class="toc" aria-label="目次">
+          <p class="toc-label">もくじ</p>
+          <ol>
+            {toc.map((h) => (
+              <li class={`depth-${h.depth}`}>
+                <a href={`#${h.slug}`}>{h.text}</a>
+              </li>
+            ))}
+          </ol>
+        </nav>
+      )
+    }
+
+    <div class="article-body">
+      <slot />
+    </div>
+
+    {cta === 'tool' && <CtaTool href={ctaTool} />}
+    <CtaLine />
+
+    <AuthorBox />
+
+    {
+      related.length > 0 && (
+        <section class="related">
+          <p class="related-label">あわせて読みたい</p>
+          {related.map((r) => (
+            <a class="related-item" href={`/blog/${r.slug}/`}>
+              <span class="t">{r.title}</span>
+              <span class="d">{r.description}</span>
+            </a>
+          ))}
+        </section>
+      )
+    }
+  </div>
+</Base>

@@ -1,0 +1,35 @@
+---
+import { getCollection, render } from 'astro:content';
+import Article from '../../layouts/Article.astro';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('blog', ({ data }) => !data.draft);
+  return posts.map((post) => ({
+    params: { slug: post.id },
+    props: { post, all: posts },
+  }));
+}
+
+const { post, all } = Astro.props;
+const { Content, headings } = await render(post);
+
+// frontmatter の related（slug配列）を実データに解決する。存在しないslugは黙って捨てる
+const related = post.data.related
+  .map((slug: string) => all.find((p) => p.id === slug))
+  .filter(Boolean)
+  .map((p) => ({ slug: p!.id, title: p!.data.title, description: p!.data.description }));
+---
+
+<Article
+  title={post.data.title}
+  description={post.data.description}
+  publishedAt={post.data.publishedAt}
+  updatedAt={post.data.updatedAt}
+  ogImage={post.data.ogImage}
+  headings={headings}
+  related={related}
+  cta={post.data.cta}
+  ctaTool={post.data.ctaTool}
+>
+  <Content />
+</Article>

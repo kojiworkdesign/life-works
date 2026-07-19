@@ -1,0 +1,18 @@
+---
+interface Props {
+  title?: string;
+  desc?: string;
+}
+const {
+  title = 'LINEで、我が家が実際に使っているテンプレートを配布しています',
+  desc = '口座の分け方と自動振替の設計図です。登録は無料で、いつでも解除できます。',
+} = Astro.props;
+---
+
+<div class="cta cta-line">
+  <p class="cta-title">{title}</p>
+  <p class="cta-desc">{desc}</p>
+  <a class="cta-btn" href="https://lin.ee/xUvz1le" target="_blank" rel="noopener">
+    LINEで受け取る →
+  </a>
+</div>
