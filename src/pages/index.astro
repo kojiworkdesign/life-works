@@ -1,0 +1,88 @@
+---
+import Base from '../layouts/Base.astro';
+
+// ツールを増やすときはこの配列に1件足すだけ
+const tools = [
+  {
+    href: '/shisan-haibun/',
+    name: '家計と投資の健康診断',
+    desc: '入力するだけで、今投資にいくら回せて、老後・教育のお金が足りるかが無料で分かります。もっと詳しく設計したい方には、守りと攻めを分けた目的別投資プランの設計も。',
+    cta: '診断する →',
+    image: '/images/card-shisan-haibun.png',
+    icon: '📊',
+  },
+  {
+    href: '/rougo-junbiritsu/',
+    name: '老後資金 準備率チェッカー',
+    desc: '今の積立ペースで老後資金が何%準備できるか、すぐわかります。不足額と対策もあわせて表示。',
+    cta: 'チェックする →',
+    image: '/images/card-rougo-junbiritsu.png',
+  },
+  {
+    href: '/kyoiku-hi/',
+    name: '教育費シミュレーター',
+    desc: '子どもの年齢・進路から教育費の総額と必要な積立額を計算します。幼稚園から大学まで細かく設定できます。',
+    cta: 'シミュレーションする →',
+    image: '/images/card-kyoiku-hi.png',
+  },
+  {
+    href: '/ideco-nisa/',
+    name: 'iDeCo 診断ツール',
+    desc: '年収・年齢・考え方を入力するだけ。iDeCoを始めるべきか、節税額はいくらか、何に投資すべきかが一括でわかります。',
+    cta: '診断する →',
+    image: '/images/ideco-nisa.png',
+  },
+  {
+    href: '/kakeibo-shindan/',
+    name: 'お金グセ命名診断',
+    desc: '10問に答えるだけ。AIがあなただけのお金グセ命名をします。夫婦あるある・お金の価値観まで丸裸に。',
+    cta: '診断する →',
+    image: '/images/card-kakeibo-shindan.png',
+  },
+];
+---
+
+<Base
+  title="らくらく夫婦ツール | 家計・資産形成の無料ツール集"
+  description="夫婦で、お金が増える仕組みづくりを。老後資金・教育費・家計診断など、無料で使える家計・資産形成ツール集。"
+>
+  <section class="hero">
+    <p class="hero-eyebrow">らくらく夫婦 公式ツール</p>
+    <h1 class="hero-title">夫婦で、お金が増える<br /><span>仕組みづくり</span>を。</h1>
+    <p class="hero-sub">
+      家計管理・投資・保険をテーマにした、夫婦目線の無料ツール集。<br />難しい計算はツールにおまかせ。
+    </p>
+  </section>
+
+  <main class="container">
+    <section class="category">
+      <h2 class="category-label">家計・資産形成</h2>
+      <div class="app-grid">
+        {
+          tools.map((tool, i) => (
+            <a href={tool.href} class="app-card">
+              <div class="card-image" style="--card-color: #5B7C5F">
+                {tool.icon && <span class="card-icon">{tool.icon}</span>}
+                {/* 最初の2枚はファーストビューに入るので遅延させない（LCP対策） */}
+                <img
+                  src={tool.image}
+                  alt={tool.name}
+                  width="1733"
+                  height="907"
+                  loading={i < 2 ? 'eager' : 'lazy'}
+                  fetchpriority={i === 0 ? 'high' : undefined}
+                  decoding="async"
+                />
+              </div>
+              <div class="card-body">
+                <p class="app-name">{tool.name}</p>
+                <p class="app-desc">{tool.desc}</p>
+                <span class="card-cta">{tool.cta}</span>
+              </div>
+            </a>
+          ))
+        }
+      </div>
+    </section>
+  </main>
+</Base>

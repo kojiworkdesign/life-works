@@ -2,8 +2,15 @@
   "name": "life-works",
   "version": "1.0.0",
   "private": true,
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview"
+  },
   "dependencies": {
-    "@anthropic-ai/sdk": "0.91.1"
+    "@anthropic-ai/sdk": "0.91.1",
+    "@astrojs/sitemap": "^3.7.3",
+    "astro": "^7.1.1"
   },
   "type": "module"
 }
