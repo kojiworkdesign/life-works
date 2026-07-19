@@ -11,6 +11,8 @@ interface Props {
   /** OGP画像のパス。サイトルートからの絶対パスで渡す */
   ogImage?: string;
   ogType?: 'website' | 'article';
+  /** 検索結果に出したくないページだけ true */
+  noindex?: boolean;
 }
 
 const {
@@ -18,6 +20,7 @@ const {
   description,
   ogImage = '/images/ogp.png',
   ogType = 'website',
+  noindex = false,
 } = Astro.props;
 
 const canonical = new URL(Astro.url.pathname, Astro.site).href;
@@ -33,6 +36,7 @@ const ogImageUrl = new URL(ogImage, Astro.site).href;
     <title>{title}</title>
     <meta name="description" content={description} />
     <link rel="canonical" href={canonical} />
+    {noindex && <meta name="robots" content="noindex" />}
 
     <meta property="og:type" content={ogType} />
     <meta property="og:site_name" content="らくらく夫婦ツール" />
