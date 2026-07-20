@@ -4,9 +4,19 @@ description: "夫婦の資産は全部共有すべきか。我が家が妻に伝
 publishedAt: 2026-07-19
 targetKeyword: "夫婦 資産額 共有 どこまで"
 pillar: "P2"
-related: ["quit-allowance-system", "stay-at-home-wife-budget"]
+related: ["household-without-meetings", "quit-allowance-system", "stay-at-home-wife-budget"]
 cta: "line"
 ---
+<!--
+公開URL：https://life-works.net/blog/couple-asset-sharing/
+公開日：2026-07-19
+チャネル：ブログ（SEO）※noteではない
+ターゲットKW：夫婦 資産額 共有 どこまで
+クラスター：P2「話し合わずに回る夫婦のお金」主力クラスター記事
+CTA：LINE直（引き継ぎシート配布予告）
+文体：結論先行→人格は本文に織る（ブログ用の型）
+-->
+
 夫婦の資産管理について調べると、たいてい「すべてオープンにしましょう」と書いてあります。
 
 我が家は、そうしていません。

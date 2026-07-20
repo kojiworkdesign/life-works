@@ -4,10 +4,20 @@ description: "「このまま専業主婦で大丈夫？」と妻に聞かれ、
 publishedAt: 2026-07-19
 targetKeyword: "妻 専業主婦 家計 大丈夫か 不安"
 pillar: "P2"
-related: ["couple-asset-sharing", "quit-allowance-system"]
+related: ["household-without-meetings", "couple-asset-sharing", "quit-allowance-system"]
 cta: "tool"
 ctaTool: "/shisan-haibun/"
 ---
+<!--
+公開URL：https://life-works.net/blog/stay-at-home-wife-budget/
+公開日：2026-07-19
+チャネル：ブログ（SEO）※noteではない
+ターゲットKW：妻 専業主婦 家計 大丈夫か 不安
+クラスター：P2「話し合わずに回る夫婦のお金」クラスター記事（P6と隣接。判断手順＝P2、働き方の判断そのもの＝P6）
+CTA：家計と投資の健康診断（https://life-works.net/shisan-haibun/）→ LINE登録で有料機能解錠
+文体：結論先行→人格は本文に織る（ブログ用の型）
+-->
+
 妻が妊娠を機に仕事を辞めて、我が家は一馬力になりました。しばらくして、妻からこう聞かれました。
 
 妻「私、このまま専業主婦で家計的に大丈夫なん？」
