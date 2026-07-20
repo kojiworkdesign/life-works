@@ -17,7 +17,12 @@ const { Content, headings } = await render(post);
 const related = post.data.related
   .map((slug: string) => all.find((p) => p.id === slug))
   .filter(Boolean)
-  .map((p) => ({ slug: p!.id, title: p!.data.title, description: p!.data.description }));
+  .map((p) => ({
+    slug: p!.id,
+    title: p!.data.title,
+    description: p!.data.description,
+    pillar: p!.data.pillar,
+  }));
 ---
 
 <Article
@@ -30,6 +35,7 @@ const related = post.data.related
   related={related}
   cta={post.data.cta}
   ctaTool={post.data.ctaTool}
+  pillar={post.data.pillar}
 >
   <Content />
 </Article>

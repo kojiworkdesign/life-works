@@ -3,6 +3,7 @@ import Base from './Base.astro';
 import AuthorBox from '../components/AuthorBox.astro';
 import CtaLine from '../components/CtaLine.astro';
 import CtaTool from '../components/CtaTool.astro';
+import PostCover from '../components/PostCover.astro';
 import '../styles/blog.css';
 import type { MarkdownHeading } from 'astro';
 
@@ -13,9 +14,10 @@ interface Props {
   updatedAt?: Date;
   ogImage?: string;
   headings: MarkdownHeading[];
-  related?: { slug: string; title: string; description: string }[];
+  related?: { slug: string; title: string; description: string; pillar: string }[];
   cta?: 'line' | 'tool';
   ctaTool?: string;
+  pillar: string;
 }
 
 const {
@@ -28,6 +30,7 @@ const {
   related = [],
   cta = 'line',
   ctaTool = '/shisan-haibun/',
+  pillar,
 } = Astro.props;
 
 const fmt = (d: Date) =>
@@ -88,32 +91,38 @@ const jsonLd = {
       <span aria-current="page">{title}</span>
     </nav>
 
-    <header class="article-head">
-      <h1 class="article-title">{title}</h1>
-      <div class="article-meta">
-        <time datetime={iso(publishedAt)}>公開：{fmt(publishedAt)}</time>
-        {updatedAt && <time datetime={iso(updatedAt)}>更新：{fmt(updatedAt)}</time>}
+    <article class="article-card">
+      <PostCover title={title} pillar={pillar} variant="hero" />
+
+      <div class="article-inner">
+        <header class="article-head">
+          <h1 class="article-title">{title}</h1>
+          <div class="article-meta">
+            <time datetime={iso(publishedAt)}>公開：{fmt(publishedAt)}</time>
+            {updatedAt && <time datetime={iso(updatedAt)}>更新：{fmt(updatedAt)}</time>}
+          </div>
+        </header>
+
+        {
+          toc.length > 2 && (
+            <nav class="toc" aria-label="目次">
+              <p class="toc-label">もくじ</p>
+              <ol>
+                {toc.map((h) => (
+                  <li class={`depth-${h.depth}`}>
+                    <a href={`#${h.slug}`}>{h.text}</a>
+                  </li>
+                ))}
+              </ol>
+            </nav>
+          )
+        }
+
+        <div class="article-body">
+          <slot />
+        </div>
       </div>
-    </header>
-
-    {
-      toc.length > 2 && (
-        <nav class="toc" aria-label="目次">
-          <p class="toc-label">もくじ</p>
-          <ol>
-            {toc.map((h) => (
-              <li class={`depth-${h.depth}`}>
-                <a href={`#${h.slug}`}>{h.text}</a>
-              </li>
-            ))}
-          </ol>
-        </nav>
-      )
-    }
-
-    <div class="article-body">
-      <slot />
-    </div>
+    </article>
 
     {cta === 'tool' && <CtaTool href={ctaTool} />}
     <CtaLine />
@@ -126,8 +135,11 @@ const jsonLd = {
           <p class="related-label">あわせて読みたい</p>
           {related.map((r) => (
             <a class="related-item" href={`/blog/${r.slug}/`}>
-              <span class="t">{r.title}</span>
-              <span class="d">{r.description}</span>
+              <PostCover title={r.title} pillar={r.pillar} variant="hero" />
+              <span>
+                <span class="t">{r.title}</span>
+                <span class="d">{r.description}</span>
+              </span>
             </a>
           ))}
         </section>

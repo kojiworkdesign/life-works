@@ -1,0 +1,27 @@
+---
+import { pillarOf } from '../data/pillars';
+
+interface Props {
+  title: string;
+  pillar: string;
+  /** card = 一覧のサムネイル / hero = 記事上部・関連記事 */
+  variant?: 'card' | 'hero';
+}
+
+const { title, pillar, variant = 'card' } = Astro.props;
+const { label, tone } = pillarOf(pillar);
+
+// 同じピラーの記事が並んだときに同じ絵にならないよう、タイトルから角度と光の位置をずらす
+const hash = [...title].reduce((a, c) => (a * 31 + c.charCodeAt(0)) % 997, 7);
+const angle = 110 + (hash % 5) * 22;
+const spotX = 8 + (hash % 7) * 11;
+---
+
+<div
+  class:list={['cover', `cover-${variant}`]}
+  data-tone={tone}
+  style={`--angle:${angle}deg; --spot-x:${spotX}%`}
+  aria-hidden="true"
+>
+  <span class="cover-cat">{label}</span>
+</div>
