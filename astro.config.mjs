@@ -4,9 +4,16 @@ import sitemap from '@astrojs/sitemap';
 
 export default defineConfig({
   site: 'https://life-works.net',
-  // noindex のページを作ったときは sitemap({ filter: ... }) で除外すること。
-  // sitemap掲載＝「インデックスして」なので、noindexと同時に出すと矛盾になる。
-  integrations: [sitemap()],
+  // noindex のページはサイトマップからも外す（掲載＝「インデックスして」なので矛盾する）。
+  // noindex ページを増やしたら、このリストにパスを足すこと。
+  integrations: [
+    sitemap({
+      filter: (page) => {
+        const noindex = ['/downloads/'];
+        return !noindex.some((p) => page.includes(p));
+      },
+    }),
+  ],
   // 末尾スラッシュあり（/shisan-haibun/）で既存URLと揃える
   trailingSlash: 'always',
   build: {
